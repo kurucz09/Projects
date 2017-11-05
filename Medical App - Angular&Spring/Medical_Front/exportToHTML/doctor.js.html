@@ -1,0 +1,213 @@
+<html>
+<head>
+<title>doctor.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); font-weight: bold; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(106,135,89); }
+.s3 { color: rgb(204,120,50); }
+.s4 { color: rgb(128,128,128); }
+.s5 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+doctor.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">var </span><span class="s1">doctor = angular.module(</span><span class="s2">'doctorController'</span><span class="s3">, </span><span class="s1">[</span><span class="s2">'ngRoute'</span><span class="s1">]) 
+ 
+doctor.controller(</span><span class="s2">'doctorCtrl'</span><span class="s3">, </span><span class="s1">[</span><span class="s2">'$scope'</span><span class="s3">, </span><span class="s2">'$http'</span><span class="s3">,</span><span class="s2">'$timeout'</span><span class="s3">,</span><span class="s2">'doctorFactory'</span><span class="s3">, </span><span class="s2">'$rootScope'</span><span class="s3">, </span><span class="s2">'$location'</span><span class="s3">, </span><span class="s2">'$window'</span><span class="s3">,</span><span class="s1"> 
+    </span><span class="s0">function </span><span class="s1">($scope</span><span class="s3">, </span><span class="s1">$http</span><span class="s3">,</span><span class="s1">$timeout</span><span class="s3">,</span><span class="s1">doctorFactory</span><span class="s3">, </span><span class="s1">$rootScope</span><span class="s3">, </span><span class="s1">$location</span><span class="s3">,</span><span class="s1">$window) { 
+ 
+ 
+        $scope.select = {}</span><span class="s3">;</span><span class="s1"> 
+        $scope.select.username = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+        $scope.select.name = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+        $scope.select.checked = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+        $scope.select.alert = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+        $scope.patientFilter = </span><span class="s2">&quot;&quot;</span><span class="s3">;</span><span class="s1"> 
+        $scope.patients = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+        $scope.consultations = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+        $scope.patientSelected = </span><span class="s2">&quot;emptySel23&quot;</span><span class="s3">;</span><span class="s1"> 
+        $scope.consDetails = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+ 
+        $scope.memoryPatient = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+        $scope.memoryCons = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+        $scope.endConsultationVar = </span><span class="s0">false</span><span class="s3">;</span><span class="s1"> 
+ 
+        doctorFactory.getAllPatients().then(</span><span class="s0">function </span><span class="s1">(d) { </span><span class="s4">//2. so you can use .then()</span><span class="s1"> 
+            $scope.patients = d.data</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+ 
+        $scope.doctorLogged = doctorFactory.decode()</span><span class="s3">;</span><span class="s1"> 
+ 
+        doctorFactory.getConsultationOfDoctorPatient($scope.doctorLogged</span><span class="s3">,</span><span class="s1">$scope.patientSelected).then(</span><span class="s0">function</span><span class="s1">(d){ 
+           $scope.consultations = d.data</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        $scope.setSelectedPatient = </span><span class="s0">function </span><span class="s1">(pnc) { 
+            </span><span class="s0">if</span><span class="s1">(pnc!==</span><span class="s0">null</span><span class="s1">){ 
+                $scope.consDetails = </span><span class="s2">&quot;&quot;</span><span class="s3">;</span><span class="s1"> 
+                $scope.patientSelected = pnc</span><span class="s3">;</span><span class="s1"> 
+                doctorFactory.getConsultationOfDoctorPatient($scope.doctorLogged</span><span class="s3">,</span><span class="s1">$scope.patientSelected).then(</span><span class="s0">function</span><span class="s1">(d){ 
+                    $scope.consultations = d.data</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+            } 
+        }</span><span class="s3">;</span><span class="s1"> 
+ 
+        $scope.setSelectedCons = </span><span class="s0">function</span><span class="s1">(cons){ 
+            </span><span class="s0">if</span><span class="s1">(cons!==</span><span class="s0">null</span><span class="s1">){ 
+                $scope.consSelected = cons</span><span class="s3">;</span><span class="s1"> 
+                $scope.consDetails = cons.details</span><span class="s3">;</span><span class="s1"> 
+                </span><span class="s0">var </span><span class="s1">enabler = document.getElementById(</span><span class="s2">&quot;consultUpdateBtn&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                enabler.disabled = </span><span class="s0">false</span><span class="s3">;</span><span class="s1"> 
+            } 
+        }</span><span class="s3">;</span><span class="s1"> 
+ 
+        $scope.setSelectedConsById = </span><span class="s0">function </span><span class="s1">(id){ 
+            </span><span class="s0">for</span><span class="s1">(i </span><span class="s0">in </span><span class="s1">$scope.consultations){ 
+                </span><span class="s0">if</span><span class="s1">($scope.consultations[i].id === id){ 
+                    $scope.setSelectedCons($scope.consultations[i])</span><span class="s3">;</span><span class="s1"> 
+                } 
+            } 
+        }</span><span class="s3">;</span><span class="s1"> 
+ 
+ 
+        $scope.viewAllConsult = </span><span class="s0">function</span><span class="s1">(){ 
+            $scope.patientFilter = </span><span class="s2">&quot;&quot;</span><span class="s3">;</span><span class="s1"> 
+            $scope.setSelectedPatient(</span><span class="s2">&quot;emptySel23&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s0">var </span><span class="s1">enabler = document.getElementById(</span><span class="s2">&quot;consultUpdateBtn&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            enabler.disabled = </span><span class="s0">true</span><span class="s3">;</span><span class="s1"> 
+            $scope.consSelected = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+ 
+        }</span><span class="s3">;</span><span class="s1"> 
+ 
+        $scope.addConsultDetails = </span><span class="s0">function</span><span class="s1">(){ 
+ 
+            </span><span class="s0">var </span><span class="s1">newData = { 
+                </span><span class="s2">&quot;id&quot;</span><span class="s1">: $scope.consSelected.id</span><span class="s3">,</span><span class="s1"> 
+                </span><span class="s2">&quot;patient_id&quot;</span><span class="s1">:  $scope.patientSelected</span><span class="s3">,</span><span class="s1"> 
+                </span><span class="s2">&quot;startDate&quot;</span><span class="s1">:  $scope.consSelected.startDate</span><span class="s3">,</span><span class="s1"> 
+                </span><span class="s2">&quot;endDate&quot;</span><span class="s1">: $scope.consSelected.endDate</span><span class="s3">,</span><span class="s1"> 
+                </span><span class="s2">&quot;details&quot;</span><span class="s1">: $scope.consDetails</span><span class="s3">,</span><span class="s1"> 
+                </span><span class="s2">&quot;checked&quot;</span><span class="s1">: $scope.consSelected.checked</span><span class="s3">,</span><span class="s1"> 
+                </span><span class="s2">&quot;alert&quot;</span><span class="s1">: $scope.consSelected.alert 
+            }</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s0">for</span><span class="s1">(i </span><span class="s0">in </span><span class="s1">$scope.consultations){ 
+                </span><span class="s0">if</span><span class="s1">($scope.consultations[i].id === $scope.consSelected.id){ 
+                    $scope.consultations[i].details = $scope.consDetails</span><span class="s3">;</span><span class="s1"> 
+                } 
+            } 
+            $scope.consDetails = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+            doctorFactory.updateConsultation(newData)</span><span class="s3">;</span><span class="s1"> 
+ 
+        }</span><span class="s3">;</span><span class="s1"> 
+ 
+        $scope.sort = </span><span class="s0">function </span><span class="s1">(keyname) { 
+            $scope.sortKey = keyname</span><span class="s3">;   </span><span class="s4">//set the sortKey to the param passed</span><span class="s1"> 
+            $scope.reverse = !$scope.reverse</span><span class="s3">; </span><span class="s4">//if true make it false and vice versa</span><span class="s1"> 
+        }</span><span class="s3">;</span><span class="s1"> 
+ 
+ 
+        $scope.endConsultation = </span><span class="s0">function</span><span class="s1">() { 
+            $scope.endConsultationVar = </span><span class="s0">false</span><span class="s3">;</span><span class="s1"> 
+            $scope.memoryPatient = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+            $scope.memoryCons = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+            $scope.viewAllConsult()</span><span class="s3">;</span><span class="s1"> 
+        }</span><span class="s3">;</span><span class="s1"> 
+ 
+        </span><span class="s0">var </span><span class="s1">loadTime = </span><span class="s5">3000</span><span class="s3">, </span><span class="s4">//Load the data every second</span><span class="s1"> 
+            errorCount = </span><span class="s5">0</span><span class="s3">, </span><span class="s4">//Counter for the server errors</span><span class="s1"> 
+            loadPromise</span><span class="s3">; </span><span class="s4">//Pointer to the promise created by the Angular $timout service</span><span class="s1"> 
+ 
+        </span><span class="s0">var </span><span class="s1">getData = </span><span class="s0">function</span><span class="s1">() { 
+            </span><span class="s0">var </span><span class="s1">email = { 
+                </span><span class="s2">&quot;msg&quot;</span><span class="s1">: $scope.doctorLogged 
+            }</span><span class="s3">;</span><span class="s1"> 
+            doctorFactory.getConsultationOfDoctor(email) 
+                .then(</span><span class="s0">function</span><span class="s1">(d){ 
+ 
+                    $scope.consultationss = d.data</span><span class="s3">;</span><span class="s1"> 
+                    errorCount = </span><span class="s5">0</span><span class="s3">;</span><span class="s1"> 
+                    </span><span class="s0">for</span><span class="s1">(i </span><span class="s0">in </span><span class="s1">$scope.consultationss){ 
+                        </span><span class="s0">if</span><span class="s1">($scope.consultationss[i].alert === </span><span class="s2">&quot;true&quot;</span><span class="s1">){ 
+                            swal({ 
+                                    title: </span><span class="s2">&quot;Patient arrived&quot;</span><span class="s3">,</span><span class="s1"> 
+                                    text: </span><span class="s2">&quot;Name: &quot;</span><span class="s1">+$scope.consultationss[i].patient.name</span><span class="s3">,</span><span class="s1"> 
+                                    type: </span><span class="s2">&quot;info&quot;</span><span class="s3">,</span><span class="s1"> 
+                                    closeOnConfirm: </span><span class="s0">false</span><span class="s3">,</span><span class="s1"> 
+                                    showLoaderOnConfirm: </span><span class="s0">true</span><span class="s1"> 
+                                }</span><span class="s3">,</span><span class="s1"> 
+                                </span><span class="s0">function</span><span class="s1">(){ 
+                                    setTimeout(</span><span class="s0">function</span><span class="s1">(){ 
+                                        swal(</span><span class="s2">&quot;Patient invited&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                                    }</span><span class="s3">, </span><span class="s5">1000</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                                })</span><span class="s3">;</span><span class="s1"> 
+                            </span><span class="s0">var </span><span class="s1">newData = { 
+                                </span><span class="s2">&quot;id&quot;</span><span class="s1">: $scope.consultationss[i].id</span><span class="s3">,</span><span class="s1"> 
+                                </span><span class="s2">&quot;patient_id&quot;</span><span class="s1">:  $scope.consultationss[i].patient.pnc</span><span class="s3">,</span><span class="s1"> 
+                                </span><span class="s2">&quot;startDate&quot;</span><span class="s1">:  $scope.consultationss[i].startDate</span><span class="s3">,</span><span class="s1"> 
+                                </span><span class="s2">&quot;endDate&quot;</span><span class="s1">: $scope.consultationss[i].endDate</span><span class="s3">,</span><span class="s1"> 
+                                </span><span class="s2">&quot;details&quot;</span><span class="s1">: $scope.consultationss[i].details</span><span class="s3">,</span><span class="s1"> 
+                                </span><span class="s2">&quot;alert&quot;</span><span class="s1">: </span><span class="s2">&quot;false&quot;</span><span class="s3">,</span><span class="s1"> 
+                                </span><span class="s2">&quot;checked&quot;</span><span class="s1">: </span><span class="s2">&quot;true&quot;</span><span class="s1"> 
+                            }</span><span class="s3">;</span><span class="s1"> 
+                            doctorFactory.updateConsultation(newData)</span><span class="s3">;</span><span class="s1"> 
+                            $scope.memoryPatient = $scope.consultationss[i].patient.pnc</span><span class="s3">;</span><span class="s1"> 
+                            $scope.memoryCons = $scope.consultationss[i].id</span><span class="s3">;</span><span class="s1"> 
+ 
+                            </span><span class="s0">if</span><span class="s1">(!$scope.endConsultationVar){ 
+                                $scope.setSelectedPatient($scope.memoryPatient)</span><span class="s3">;</span><span class="s1"> 
+                                $scope.setSelectedConsById($scope.memoryCons)</span><span class="s3">;</span><span class="s1"> 
+                                $scope.endConsultationVar = </span><span class="s0">true</span><span class="s3">;</span><span class="s1"> 
+                            } 
+                        } 
+                    } 
+ 
+ 
+ 
+                    nextLoad()</span><span class="s3">;</span><span class="s1"> 
+                }) 
+                .catch(</span><span class="s0">function</span><span class="s1">(res) { 
+                    nextLoad(++errorCount * </span><span class="s5">2 </span><span class="s1">* loadTime)</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+        }</span><span class="s3">;</span><span class="s1"> 
+ 
+        </span><span class="s0">var </span><span class="s1">cancelNextLoad = </span><span class="s0">function</span><span class="s1">() { 
+            $timeout.cancel(loadPromise)</span><span class="s3">;</span><span class="s1"> 
+        }</span><span class="s3">;</span><span class="s1"> 
+ 
+        </span><span class="s0">var </span><span class="s1">nextLoad = </span><span class="s0">function</span><span class="s1">(mill) { 
+            mill = mill || loadTime</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">//Always make sure the last timeout is cleared before starting a new one</span><span class="s1"> 
+            cancelNextLoad()</span><span class="s3">;</span><span class="s1"> 
+            loadPromise = $timeout(getData</span><span class="s3">, </span><span class="s1">mill)</span><span class="s3">;</span><span class="s1"> 
+        }</span><span class="s3">;</span><span class="s1"> 
+ 
+ 
+        </span><span class="s4">//Start polling the data from the server</span><span class="s1"> 
+        getData()</span><span class="s3">;</span><span class="s1"> 
+ 
+ 
+        </span><span class="s4">//Always clear the timeout when the view is destroyed, otherwise it will keep polling</span><span class="s1"> 
+        $scope.$on(</span><span class="s2">'$destroy'</span><span class="s3">, </span><span class="s0">function</span><span class="s1">() { 
+            cancelNextLoad()</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        $scope.data = </span><span class="s2">'Loading...'</span><span class="s3">;</span><span class="s1"> 
+ 
+ 
+    }] 
+)</span><span class="s3">;</span><span class="s1"> 
+</span></pre>
+</body>
+</html>

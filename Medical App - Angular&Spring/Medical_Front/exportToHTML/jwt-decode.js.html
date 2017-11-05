@@ -1,0 +1,150 @@
+<html>
+<head>
+<title>jwt-decode.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(169,183,198); }
+.s1 { color: rgb(204,120,50); font-weight: bold; }
+.s2 { color: rgb(204,120,50); }
+.s3 { color: rgb(106,135,89); }
+.s4 { color: rgb(104,151,187); }
+.s5 { color: rgb(98,151,85); font-style: italic; }
+.s6 { color: rgb(128,128,128); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+jwt-decode.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">(</span><span class="s1">function </span><span class="s0">e(t</span><span class="s2">,</span><span class="s0">n</span><span class="s2">,</span><span class="s0">r){</span><span class="s1">function </span><span class="s0">s(o</span><span class="s2">,</span><span class="s0">u){</span><span class="s1">if</span><span class="s0">(!n[o]){</span><span class="s1">if</span><span class="s0">(!t[o]){</span><span class="s1">var </span><span class="s0">a=</span><span class="s1">typeof </span><span class="s0">require==</span><span class="s3">&quot;function&quot;</span><span class="s0">&amp;&amp;require</span><span class="s2">;</span><span class="s1">if</span><span class="s0">(!u&amp;&amp;a)</span><span class="s1">return </span><span class="s0">a(o</span><span class="s2">,</span><span class="s0">!</span><span class="s4">0</span><span class="s0">)</span><span class="s2">;</span><span class="s1">if</span><span class="s0">(i)</span><span class="s1">return </span><span class="s0">i(o</span><span class="s2">,</span><span class="s0">!</span><span class="s4">0</span><span class="s0">)</span><span class="s2">;</span><span class="s1">var </span><span class="s0">f=</span><span class="s1">new </span><span class="s0">Error(</span><span class="s3">&quot;Cannot find module '&quot;</span><span class="s0">+o+</span><span class="s3">&quot;'&quot;</span><span class="s0">)</span><span class="s2">;</span><span class="s1">throw </span><span class="s0">f.code=</span><span class="s3">&quot;MODULE_NOT_FOUND&quot;</span><span class="s2">,</span><span class="s0">f}</span><span class="s1">var </span><span class="s0">l=n[o]={exports:{}}</span><span class="s2">;</span><span class="s0">t[o][</span><span class="s4">0</span><span class="s0">].call(l.exports</span><span class="s2">,</span><span class="s1">function</span><span class="s0">(e){</span><span class="s1">var </span><span class="s0">n=t[o][</span><span class="s4">1</span><span class="s0">][e]</span><span class="s2">;</span><span class="s1">return </span><span class="s0">s(n?n:e)}</span><span class="s2">,</span><span class="s0">l</span><span class="s2">,</span><span class="s0">l.exports</span><span class="s2">,</span><span class="s0">e</span><span class="s2">,</span><span class="s0">t</span><span class="s2">,</span><span class="s0">n</span><span class="s2">,</span><span class="s0">r)}</span><span class="s1">return </span><span class="s0">n[o].exports}</span><span class="s1">var </span><span class="s0">i=</span><span class="s1">typeof </span><span class="s0">require==</span><span class="s3">&quot;function&quot;</span><span class="s0">&amp;&amp;require</span><span class="s2">;</span><span class="s1">for</span><span class="s0">(</span><span class="s1">var </span><span class="s0">o=</span><span class="s4">0</span><span class="s2">;</span><span class="s0">o&lt;r.length</span><span class="s2">;</span><span class="s0">o++)s(r[o])</span><span class="s2">;</span><span class="s1">return </span><span class="s0">s})({</span><span class="s4">1</span><span class="s0">:[</span><span class="s1">function</span><span class="s0">(require</span><span class="s2">,</span><span class="s0">module</span><span class="s2">,</span><span class="s0">exports){ 
+</span><span class="s5">/** 
+ * The code was extracted from: 
+ * https://github.com/davidchambers/Base64.js 
+ */</span><span class="s0"> 
+ 
+</span><span class="s1">var </span><span class="s0">chars = </span><span class="s3">'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='</span><span class="s2">;</span><span class="s0"> 
+ 
+</span><span class="s1">function </span><span class="s0">InvalidCharacterError(message) { 
+  </span><span class="s1">this</span><span class="s0">.message = message</span><span class="s2">;</span><span class="s0"> 
+} 
+ 
+InvalidCharacterError.prototype = </span><span class="s1">new </span><span class="s0">Error()</span><span class="s2">;</span><span class="s0"> 
+InvalidCharacterError.prototype.name = </span><span class="s3">'InvalidCharacterError'</span><span class="s2">;</span><span class="s0"> 
+ 
+</span><span class="s1">function </span><span class="s0">polyfill (input) { 
+  </span><span class="s1">var </span><span class="s0">str = String(input).replace(</span><span class="s3">/=+$/</span><span class="s2">, </span><span class="s3">''</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+  </span><span class="s1">if </span><span class="s0">(str.length % </span><span class="s4">4 </span><span class="s0">== </span><span class="s4">1</span><span class="s0">) { 
+    </span><span class="s1">throw new </span><span class="s0">InvalidCharacterError(</span><span class="s3">&quot;'atob' failed: The string to be decoded is not correctly encoded.&quot;</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+  } 
+  </span><span class="s1">for </span><span class="s0">( 
+    </span><span class="s6">// initialize result and counters</span><span class="s0"> 
+    </span><span class="s1">var </span><span class="s0">bc = </span><span class="s4">0</span><span class="s2">, </span><span class="s0">bs</span><span class="s2">, </span><span class="s0">buffer</span><span class="s2">, </span><span class="s0">idx = </span><span class="s4">0</span><span class="s2">, </span><span class="s0">output = </span><span class="s3">''</span><span class="s2">;</span><span class="s0"> 
+    </span><span class="s6">// get next character</span><span class="s0"> 
+    buffer = str.charAt(idx++)</span><span class="s2">;</span><span class="s0"> 
+    </span><span class="s6">// character found in table? initialize bit storage and add its ascii value;</span><span class="s0"> 
+    ~buffer &amp;&amp; (bs = bc % </span><span class="s4">4 </span><span class="s0">? bs * </span><span class="s4">64 </span><span class="s0">+ buffer : buffer</span><span class="s2">,</span><span class="s0"> 
+      </span><span class="s6">// and if not first of each 4 characters,</span><span class="s0"> 
+      </span><span class="s6">// convert the first 8 bits to one ascii character</span><span class="s0"> 
+      bc++ % </span><span class="s4">4</span><span class="s0">) ? output += String.fromCharCode(</span><span class="s4">255 </span><span class="s0">&amp; bs &gt;&gt; (-</span><span class="s4">2 </span><span class="s0">* bc &amp; </span><span class="s4">6</span><span class="s0">)) : </span><span class="s4">0</span><span class="s0"> 
+  ) { 
+    </span><span class="s6">// try to find character in table (0-63, not found =&gt; -1)</span><span class="s0"> 
+    buffer = chars.indexOf(buffer)</span><span class="s2">;</span><span class="s0"> 
+  } 
+  </span><span class="s1">return </span><span class="s0">output</span><span class="s2">;</span><span class="s0"> 
+} 
+ 
+ 
+module.exports = </span><span class="s1">typeof </span><span class="s0">window !== </span><span class="s3">'undefined' </span><span class="s0">&amp;&amp; window.atob &amp;&amp; window.atob.bind(window) || polyfill</span><span class="s2">;</span><span class="s0"> 
+ 
+}</span><span class="s2">,</span><span class="s0">{}]</span><span class="s2">,</span><span class="s4">2</span><span class="s0">:[</span><span class="s1">function</span><span class="s0">(require</span><span class="s2">,</span><span class="s0">module</span><span class="s2">,</span><span class="s0">exports){ 
+</span><span class="s1">var </span><span class="s0">atob = require(</span><span class="s3">'./atob'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+</span><span class="s1">function </span><span class="s0">b64DecodeUnicode(str) { 
+  </span><span class="s1">return </span><span class="s0">decodeURIComponent(atob(str).replace(</span><span class="s3">/(.)/g</span><span class="s2">, </span><span class="s1">function </span><span class="s0">(m</span><span class="s2">, </span><span class="s0">p) { 
+    </span><span class="s1">var </span><span class="s0">code = p.charCodeAt(</span><span class="s4">0</span><span class="s0">).toString(</span><span class="s4">16</span><span class="s0">).toUpperCase()</span><span class="s2">;</span><span class="s0"> 
+    </span><span class="s1">if </span><span class="s0">(code.length &lt; </span><span class="s4">2</span><span class="s0">) { 
+      code = </span><span class="s3">'0' </span><span class="s0">+ code</span><span class="s2">;</span><span class="s0"> 
+    } 
+    </span><span class="s1">return </span><span class="s3">'%' </span><span class="s0">+ code</span><span class="s2">;</span><span class="s0"> 
+  }))</span><span class="s2">;</span><span class="s0"> 
+} 
+ 
+module.exports = </span><span class="s1">function</span><span class="s0">(str) { 
+  </span><span class="s1">var </span><span class="s0">output = str.replace(</span><span class="s3">/-/g</span><span class="s2">, </span><span class="s3">&quot;+&quot;</span><span class="s0">).replace(</span><span class="s3">/_/g</span><span class="s2">, </span><span class="s3">&quot;/&quot;</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+  </span><span class="s1">switch </span><span class="s0">(output.length % </span><span class="s4">4</span><span class="s0">) { 
+    </span><span class="s1">case </span><span class="s4">0</span><span class="s0">: 
+      </span><span class="s1">break</span><span class="s2">;</span><span class="s0"> 
+    </span><span class="s1">case </span><span class="s4">2</span><span class="s0">: 
+      output += </span><span class="s3">&quot;==&quot;</span><span class="s2">;</span><span class="s0"> 
+      </span><span class="s1">break</span><span class="s2">;</span><span class="s0"> 
+    </span><span class="s1">case </span><span class="s4">3</span><span class="s0">: 
+      output += </span><span class="s3">&quot;=&quot;</span><span class="s2">;</span><span class="s0"> 
+      </span><span class="s1">break</span><span class="s2">;</span><span class="s0"> 
+    </span><span class="s1">default</span><span class="s0">: 
+      </span><span class="s1">throw </span><span class="s3">&quot;Illegal base64url string!&quot;</span><span class="s2">;</span><span class="s0"> 
+  } 
+ 
+  </span><span class="s1">try</span><span class="s0">{ 
+    </span><span class="s1">return </span><span class="s0">b64DecodeUnicode(output)</span><span class="s2">;</span><span class="s0"> 
+  } </span><span class="s1">catch </span><span class="s0">(err) { 
+    </span><span class="s1">return </span><span class="s0">atob(output)</span><span class="s2">;</span><span class="s0"> 
+  } 
+}</span><span class="s2">;</span><span class="s0"> 
+ 
+}</span><span class="s2">,</span><span class="s0">{</span><span class="s3">&quot;./atob&quot;</span><span class="s0">:</span><span class="s4">1</span><span class="s0">}]</span><span class="s2">,</span><span class="s4">3</span><span class="s0">:[</span><span class="s1">function</span><span class="s0">(require</span><span class="s2">,</span><span class="s0">module</span><span class="s2">,</span><span class="s0">exports){ 
+</span><span class="s3">'use strict'</span><span class="s2">;</span><span class="s0"> 
+ 
+</span><span class="s1">var </span><span class="s0">base64_url_decode = require(</span><span class="s3">'./base64_url_decode'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+</span><span class="s1">function </span><span class="s0">InvalidTokenError(message) { 
+  </span><span class="s1">this</span><span class="s0">.message = message</span><span class="s2">;</span><span class="s0"> 
+} 
+ 
+InvalidTokenError.prototype = </span><span class="s1">new </span><span class="s0">Error()</span><span class="s2">;</span><span class="s0"> 
+InvalidTokenError.prototype.name = </span><span class="s3">'InvalidTokenError'</span><span class="s2">;</span><span class="s0"> 
+ 
+module.exports = </span><span class="s1">function </span><span class="s0">(token</span><span class="s2">,</span><span class="s0">options) { 
+  </span><span class="s1">if </span><span class="s0">(</span><span class="s1">typeof </span><span class="s0">token !== </span><span class="s3">'string'</span><span class="s0">) { 
+    </span><span class="s1">throw new </span><span class="s0">InvalidTokenError(</span><span class="s3">'Invalid token specified'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+  } 
+ 
+  options = options || {}</span><span class="s2">;</span><span class="s0"> 
+  </span><span class="s1">var </span><span class="s0">pos = options.header === </span><span class="s1">true </span><span class="s0">? </span><span class="s4">0 </span><span class="s0">: </span><span class="s4">1</span><span class="s2">;</span><span class="s0"> 
+  </span><span class="s1">try </span><span class="s0">{ 
+    </span><span class="s1">return </span><span class="s0">JSON.parse(base64_url_decode(token.split(</span><span class="s3">'.'</span><span class="s0">)[pos]))</span><span class="s2">;</span><span class="s0"> 
+  } </span><span class="s1">catch </span><span class="s0">(e) { 
+    </span><span class="s1">throw new </span><span class="s0">InvalidTokenError(</span><span class="s3">'Invalid token specified: ' </span><span class="s0">+ e.message)</span><span class="s2">;</span><span class="s0"> 
+  } 
+}</span><span class="s2">;</span><span class="s0"> 
+ 
+module.exports.InvalidTokenError = InvalidTokenError</span><span class="s2">;</span><span class="s0"> 
+ 
+}</span><span class="s2">,</span><span class="s0">{</span><span class="s3">&quot;./base64_url_decode&quot;</span><span class="s0">:</span><span class="s4">2</span><span class="s0">}]</span><span class="s2">,</span><span class="s4">4</span><span class="s0">:[</span><span class="s1">function</span><span class="s0">(require</span><span class="s2">,</span><span class="s0">module</span><span class="s2">,</span><span class="s0">exports){ 
+(</span><span class="s1">function </span><span class="s0">(global){ 
+</span><span class="s6">/* 
+ * 
+ * This is used to build the bundle with browserify. 
+ * 
+ * The bundle is used by people who doesn't use browserify. 
+ * Those who use browserify will install with npm and require the module, 
+ * the package.json file points to index.js. 
+ */</span><span class="s0"> 
+</span><span class="s1">var </span><span class="s0">jwt_decode = require(</span><span class="s3">'./lib/index'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+</span><span class="s6">//use amd or just throught to window object.</span><span class="s0"> 
+</span><span class="s1">if </span><span class="s0">(</span><span class="s1">typeof </span><span class="s0">global.window.define == </span><span class="s3">'function' </span><span class="s0">&amp;&amp; global.window.define.amd) { 
+  global.window.define(</span><span class="s3">'jwt_decode'</span><span class="s2">, </span><span class="s1">function </span><span class="s0">() { </span><span class="s1">return </span><span class="s0">jwt_decode</span><span class="s2">; </span><span class="s0">})</span><span class="s2">;</span><span class="s0"> 
+} </span><span class="s1">else if </span><span class="s0">(global.window) { 
+  global.window.jwt_decode = jwt_decode</span><span class="s2">;</span><span class="s0"> 
+} 
+}).call(</span><span class="s1">this</span><span class="s2">,</span><span class="s1">typeof </span><span class="s0">global !== </span><span class="s3">&quot;undefined&quot; </span><span class="s0">? global : </span><span class="s1">typeof </span><span class="s0">self !== </span><span class="s3">&quot;undefined&quot; </span><span class="s0">? self : </span><span class="s1">typeof </span><span class="s0">window !== </span><span class="s3">&quot;undefined&quot; </span><span class="s0">? window : {}) 
+ 
+}</span><span class="s2">,</span><span class="s0">{</span><span class="s3">&quot;./lib/index&quot;</span><span class="s0">:</span><span class="s4">3</span><span class="s0">}]}</span><span class="s2">,</span><span class="s0">{}</span><span class="s2">,</span><span class="s0">[</span><span class="s4">4</span><span class="s0">]) 
+</span><span class="s6">//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm5vZGVfbW9kdWxlcy9ncnVudC1icm93c2VyaWZ5L25vZGVfbW9kdWxlcy9icm93c2VyaWZ5L25vZGVfbW9kdWxlcy9icm93c2VyLXBhY2svX3ByZWx1ZGUuanMiLCJsaWIvYXRvYi5qcyIsImxpYi9iYXNlNjRfdXJsX2RlY29kZS5qcyIsImxpYi9pbmRleC5qcyIsInN0YW5kYWxvbmUuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7QUNBQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7O0FDdENBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBOztBQ2pDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7OztBQzFCQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQSIsImZpbGUiOiJnZW5lcmF0ZWQuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlc0NvbnRlbnQiOlsiKGZ1bmN0aW9uIGUodCxuLHIpe2Z1bmN0aW9uIHMobyx1KXtpZighbltvXSl7aWYoIXRbb10pe3ZhciBhPXR5cGVvZiByZXF1aXJlPT1cImZ1bmN0aW9uXCImJnJlcXVpcmU7aWYoIXUmJmEpcmV0dXJuIGEobywhMCk7aWYoaSlyZXR1cm4gaShvLCEwKTt2YXIgZj1uZXcgRXJyb3IoXCJDYW5ub3QgZmluZCBtb2R1bGUgJ1wiK28rXCInXCIpO3Rocm93IGYuY29kZT1cIk1PRFVMRV9OT1RfRk9VTkRcIixmfXZhciBsPW5bb109e2V4cG9ydHM6e319O3Rbb11bMF0uY2FsbChsLmV4cG9ydHMsZnVuY3Rpb24oZSl7dmFyIG49dFtvXVsxXVtlXTtyZXR1cm4gcyhuP246ZSl9LGwsbC5leHBvcnRzLGUsdCxuLHIpfXJldHVybiBuW29dLmV4cG9ydHN9dmFyIGk9dHlwZW9mIHJlcXVpcmU9PVwiZnVuY3Rpb25cIiYmcmVxdWlyZTtmb3IodmFyIG89MDtvPHIubGVuZ3RoO28rKylzKHJbb10pO3JldHVybiBzfSkiLCIvKipcbiAqIFRoZSBjb2RlIHdhcyBleHRyYWN0ZWQgZnJvbTpcbiAqIGh0dHBzOi8vZ2l0aHViLmNvbS9kYXZpZGNoYW1iZXJzL0Jhc2U2NC5qc1xuICovXG5cbnZhciBjaGFycyA9ICdBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWmFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6MDEyMzQ1Njc4OSsvPSc7XG5cbmZ1bmN0aW9uIEludmFsaWRDaGFyYWN0ZXJFcnJvcihtZXNzYWdlKSB7XG4gIHRoaXMubWVzc2FnZSA9IG1lc3NhZ2U7XG59XG5cbkludmFsaWRDaGFyYWN0ZXJFcnJvci5wcm90b3R5cGUgPSBuZXcgRXJyb3IoKTtcbkludmFsaWRDaGFyYWN0ZXJFcnJvci5wcm90b3R5cGUubmFtZSA9ICdJbnZhbGlkQ2hhcmFjdGVyRXJyb3InO1xuXG5mdW5jdGlvbiBwb2x5ZmlsbCAoaW5wdXQpIHtcbiAgdmFyIHN0ciA9IFN0cmluZyhpbnB1dCkucmVwbGFjZSgvPSskLywgJycpO1xuICBpZiAoc3RyLmxlbmd0aCAlIDQgPT0gMSkge1xuICAgIHRocm93IG5ldyBJbnZhbGlkQ2hhcmFjdGVyRXJyb3IoXCInYXRvYicgZmFpbGVkOiBUaGUgc3RyaW5nIHRvIGJlIGRlY29kZWQgaXMgbm90IGNvcnJlY3RseSBlbmNvZGVkLlwiKTtcbiAgfVxuICBmb3IgKFxuICAgIC8vIGluaXRpYWxpemUgcmVzdWx0IGFuZCBjb3VudGVyc1xuICAgIHZhciBiYyA9IDAsIGJzLCBidWZmZXIsIGlkeCA9IDAsIG91dHB1dCA9ICcnO1xuICAgIC8vIGdldCBuZXh0IGNoYXJhY3RlclxuICAgIGJ1ZmZlciA9IHN0ci5jaGFyQXQoaWR4KyspO1xuICAgIC8vIGNoYXJhY3RlciBmb3VuZCBpbiB0YWJsZT8gaW5pdGlhbGl6ZSBiaXQgc3RvcmFnZSBhbmQgYWRkIGl0cyBhc2NpaSB2YWx1ZTtcbiAgICB+YnVmZmVyICYmIChicyA9IGJjICUgNCA/IGJzICogNjQgKyBidWZmZXIgOiBidWZmZXIsXG4gICAgICAvLyBhbmQgaWYgbm90IGZpcnN0IG9mIGVhY2ggNCBjaGFyYWN0ZXJzLFxuICAgICAgLy8gY29udmVydCB0aGUgZmlyc3QgOCBiaXRzIHRvIG9uZSBhc2NpaSBjaGFyYWN0ZXJcbiAgICAgIGJjKysgJSA0KSA/IG91dHB1dCArPSBTdHJpbmcuZnJvbUNoYXJDb2RlKDI1NSAmIGJzID4+ICgtMiAqIGJjICYgNikpIDogMFxuICApIHtcbiAgICAvLyB0cnkgdG8gZmluZCBjaGFyYWN0ZXIgaW4gdGFibGUgKDAtNjMsIG5vdCBmb3VuZCA9PiAtMSlcbiAgICBidWZmZXIgPSBjaGFycy5pbmRleE9mKGJ1ZmZlcik7XG4gIH1cbiAgcmV0dXJuIG91dHB1dDtcbn1cblxuXG5tb2R1bGUuZXhwb3J0cyA9IHR5cGVvZiB3aW5kb3cgIT09ICd1bmRlZmluZWQnICYmIHdpbmRvdy5hdG9iICYmIHdpbmRvdy5hdG9iLmJpbmQod2luZG93KSB8fCBwb2x5ZmlsbDtcbiIsInZhciBhdG9iID0gcmVxdWlyZSgnLi9hdG9iJyk7XG5cbmZ1bmN0aW9uIGI2NERlY29kZVVuaWNvZGUoc3RyKSB7XG4gIHJldHVybiBkZWNvZGVVUklDb21wb25lbnQoYXRvYihzdHIpLnJlcGxhY2UoLyguKS9nLCBmdW5jdGlvbiAobSwgcCkge1xuICAgIHZhciBjb2RlID0gcC5jaGFyQ29kZUF0KDApLnRvU3RyaW5nKDE2KS50b1VwcGVyQ2FzZSgpO1xuICAgIGlmIChjb2RlLmxlbmd0aCA8IDIpIHtcbiAgICAgIGNvZGUgPSAnMCcgKyBjb2RlO1xuICAgIH1cbiAgICByZXR1cm4gJyUnICsgY29kZTtcbiAgfSkpO1xufVxuXG5tb2R1bGUuZXhwb3J0cyA9IGZ1bmN0aW9uKHN0cikge1xuICB2YXIgb3V0cHV0ID0gc3RyLnJlcGxhY2UoLy0vZywgXCIrXCIpLnJlcGxhY2UoL18vZywgXCIvXCIpO1xuICBzd2l0Y2ggKG91dHB1dC5sZW5ndGggJSA0KSB7XG4gICAgY2FzZSAwOlxuICAgICAgYnJlYWs7XG4gICAgY2FzZSAyOlxuICAgICAgb3V0cHV0ICs9IFwiPT1cIjtcbiAgICAgIGJyZWFrO1xuICAgIGNhc2UgMzpcbiAgICAgIG91dHB1dCArPSBcIj1cIjtcbiAgICAgIGJyZWFrO1xuICAgIGRlZmF1bHQ6XG4gICAgICB0aHJvdyBcIklsbGVnYWwgYmFzZTY0dXJsIHN0cmluZyFcIjtcbiAgfVxuXG4gIHRyeXtcbiAgICByZXR1cm4gYjY0RGVjb2RlVW5pY29kZShvdXRwdXQpO1xuICB9IGNhdGNoIChlcnIpIHtcbiAgICByZXR1cm4gYXRvYihvdXRwdXQpO1xuICB9XG59O1xuIiwiJ3VzZSBzdHJpY3QnO1xuXG52YXIgYmFzZTY0X3VybF9kZWNvZGUgPSByZXF1aXJlKCcuL2Jhc2U2NF91cmxfZGVjb2RlJyk7XG5cbmZ1bmN0aW9uIEludmFsaWRUb2tlbkVycm9yKG1lc3NhZ2UpIHtcbiAgdGhpcy5tZXNzYWdlID0gbWVzc2FnZTtcbn1cblxuSW52YWxpZFRva2VuRXJyb3IucHJvdG90eXBlID0gbmV3IEVycm9yKCk7XG5JbnZhbGlkVG9rZW5FcnJvci5wcm90b3R5cGUubmFtZSA9ICdJbnZhbGlkVG9rZW5FcnJvcic7XG5cbm1vZHVsZS5leHBvcnRzID0gZnVuY3Rpb24gKHRva2VuLG9wdGlvbnMpIHtcbiAgaWYgKHR5cGVvZiB0b2tlbiAhPT0gJ3N0cmluZycpIHtcbiAgICB0aHJvdyBuZXcgSW52YWxpZFRva2VuRXJyb3IoJ0ludmFsaWQgdG9rZW4gc3BlY2lmaWVkJyk7XG4gIH1cblxuICBvcHRpb25zID0gb3B0aW9ucyB8fCB7fTtcbiAgdmFyIHBvcyA9IG9wdGlvbnMuaGVhZGVyID09PSB0cnVlID8gMCA6IDE7XG4gIHRyeSB7XG4gICAgcmV0dXJuIEpTT04ucGFyc2UoYmFzZTY0X3VybF9kZWNvZGUodG9rZW4uc3BsaXQoJy4nKVtwb3NdKSk7XG4gIH0gY2F0Y2ggKGUpIHtcbiAgICB0aHJvdyBuZXcgSW52YWxpZFRva2VuRXJyb3IoJ0ludmFsaWQgdG9rZW4gc3BlY2lmaWVkOiAnICsgZS5tZXNzYWdlKTtcbiAgfVxufTtcblxubW9kdWxlLmV4cG9ydHMuSW52YWxpZFRva2VuRXJyb3IgPSBJbnZhbGlkVG9rZW5FcnJvcjtcbiIsIi8qXG4gKlxuICogVGhpcyBpcyB1c2VkIHRvIGJ1aWxkIHRoZSBidW5kbGUgd2l0aCBicm93c2VyaWZ5LlxuICpcbiAqIFRoZSBidW5kbGUgaXMgdXNlZCBieSBwZW9wbGUgd2hvIGRvZXNuJ3QgdXNlIGJyb3dzZXJpZnkuXG4gKiBUaG9zZSB3aG8gdXNlIGJyb3dzZXJpZnkgd2lsbCBpbnN0YWxsIHdpdGggbnBtIGFuZCByZXF1aXJlIHRoZSBtb2R1bGUsXG4gKiB0aGUgcGFja2FnZS5qc29uIGZpbGUgcG9pbnRzIHRvIGluZGV4LmpzLlxuICovXG52YXIgand0X2RlY29kZSA9IHJlcXVpcmUoJy4vbGliL2luZGV4Jyk7XG5cbi8vdXNlIGFtZCBvciBqdXN0IHRocm91Z2h0IHRvIHdpbmRvdyBvYmplY3QuXG5pZiAodHlwZW9mIGdsb2JhbC53aW5kb3cuZGVmaW5lID09ICdmdW5jdGlvbicgJiYgZ2xvYmFsLndpbmRvdy5kZWZpbmUuYW1kKSB7XG4gIGdsb2JhbC53aW5kb3cuZGVmaW5lKCdqd3RfZGVjb2RlJywgZnVuY3Rpb24gKCkgeyByZXR1cm4gand0X2RlY29kZTsgfSk7XG59IGVsc2UgaWYgKGdsb2JhbC53aW5kb3cpIHtcbiAgZ2xvYmFsLndpbmRvdy5qd3RfZGVjb2RlID0gand0X2RlY29kZTtcbn0iXX0=</span><span class="s0"> 
+</span></pre>
+</body>
+</html>

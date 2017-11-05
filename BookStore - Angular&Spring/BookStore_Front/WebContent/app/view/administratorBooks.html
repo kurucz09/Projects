@@ -1,0 +1,473 @@
+<style>
+
+    .columnAuto {
+        width: 1px;
+        white-space: nowrap
+    }
+
+    .linkColumn {
+        max-width: 200px;
+        word-break: break-all;
+    }
+
+    .adminStyle {
+        background-color: #C09F80;
+    }
+
+    .rowSelected {
+        background-color: #D7CEC7;
+    }
+
+    .adminSelect {
+        background-color: #565656;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        background-color: #565656;
+        color: #FFFFFF;
+        border-top: 0
+    }
+
+    a {
+        color: #565656;
+        text-decoration: none;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #D7CEC7;
+        color: #000000
+    }
+
+    .refresh_icon {
+        border-radius: 50%;
+        -webkit-transition: -webkit-transform .8s ease-in-out;
+        transition: transform .8s ease-in-out;
+    }
+
+    .refresh_icon:hover {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+
+    .btn-color-red:hover {
+        color: #fff;
+        background-color: #4a1312;
+        border-color: #FFFFFF
+    }
+
+</style>
+
+<div ng-controller="adminCtrlBooks">
+    <nav class="navbar navbar-default adminStyle">
+        <div>
+
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" ng-click="return()"> <img
+                            src="\BookStore_Front\WebContent\assets\img\Logo_Book.png" align="middle" alt="LOGO"
+                            width="200" height="50"></a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li><a ng-click="switchAdminPage('users')">Users</a></li>
+                        <li class="adminSelect"><a ng-click="switchAdminPage('books')">Books</a></li>
+                        <li><a ng-click="switchAdminPage('report')">Reports</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+
+                        <p style="margin: 10px; color: #ffffff;" class="navbar-text">Signed in as <b>{{usernameLoggedin}}</b>.
+                            <a ng-click="logOut()" class="btn btn-primary btn-sm" style="margin-bottom: 0px; margin-left: 20px; background-color:#565656">
+                            <span class="glyphicon glyphicon-log-out" style="margin: 0px"></span> Log out
+                        </a>
+                        </p>
+
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </div>
+    </nav>
+
+    <div class="menuContent" data-ng-init="init()">
+        <div>
+            <div class="col-md-12" style="padding-top: 50px">
+                <div class="col-md-1">
+                </div>
+
+                <div class="col-md-10">
+                    <button id="addBookM" type="button" class="btn btn-primary" data-toggle="modal"
+                            ng-click="setToNull()" data-target="#addBookModal">
+                        Add Book
+                    </button>
+                    <button id="updateBook" type="button" class="btn btn-primary"
+                            ng-click="initUpdate()" data-toggle="modal" data-target="#updateBookModal" disabled>
+                        Update Book
+                    </button>
+                    <button id="removeBook" type="button" class="btn btn-primary" disabled
+                            ng-click="deleteBook()">
+                        Delete Book
+                    </button>
+
+                        <div class="form-group col-md-4 pull-right" style="margin-bottom: 5px">
+                            <div class="input-group">
+                                <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                                <input id="search_books" type="text" class="form-control col-md-12"
+                                       placeholder="Search"
+                                       ng-model="searchedFilter"></div>
+                        </div>
+
+
+                </div>
+
+                <div class="col-md-1">
+                </div>
+            </div>
+
+
+            <div class="col-md-12">
+                <!--  table -->
+
+                <div class="col-md-1">
+
+                </div>
+                <div class="col-md-10">
+                    <table class="table table-striped table-bordered table-responsive table-hover">
+                        <thead>
+                        <tr class="">
+                            <th>ISBN</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Year</th>
+                            <th>Genre</th>
+                            <th class="linkColumn">Image</th>
+                            <th>Review</th>
+                            <th>Price</th>
+                            <th class="columnAuto">Items Stock</th>
+                        </tr>
+                        </thead>
+                        <tr ng-repeat="book in books | filter:searchedFilter"
+                            ng-click="
+                            select.isbn = book.isbn;
+                            select.title = book.title;
+                            select.authors = book.authors;
+                            select.year = book.year;
+                            select.image = book.image;
+                            select.price = book.price;
+                            select.review = book.review;
+                            select.nrOfItems = book.nrOfItems;
+                            setSelectedBook(book.isbn,book.genres);"
+                            ng-class="{rowSelected : book.isbn === isbnSelected}">
+                            <td class="columnAuto">{{book.isbn}}</td>
+                            <td>{{book.title}}</td>
+                            <td class="columnAuto">{{book.authors}}</td>
+                            <td class="columnAuto">{{book.year}}</td>
+                            <td>
+                                <span ng-repeat="genre in book.genres ">
+                                {{genre}},
+                                </span>
+                            </td>
+                            <td class="linkColumn">{{book.image}}</td>
+                            <td class="columnAuto">
+                                <span ng-repeat-start="i in getNumberFull(book.review)  track by $index" ng-bind="label"
+                                      style="color: #C09F80;" class="glyphicon glyphicon-star"></span>
+                                <span ng-repeat-end></span>
+                                <span ng-repeat-start="i in getNumberEmpty(book.review)  track by $index"
+                                      class="glyphicon glyphicon-star-empty">{{ }}</span>
+                                <span ng-repeat-end></span>
+                            </td>
+                            <td class="columnAuto">{{book.price}}.00 RON</td>
+                            <td>
+                                <span>
+                                    <a style="font-weight: bold">{{book.nrOfItems}}</a>
+                                    <a style="margin-right: 5px;" class="pull-right" href=""
+                                       ng-click="increaseStock(book.isbn)" title="Delete"><span
+                                            class="glyphicon glyphicon-plus-sign"></span></a>
+                                    <a style="padding-right: 5px" class="pull-right" href=""
+                                       ng-click="dereaseStock(book.isbn)" title="Delete"><span
+                                            class="glyphicon glyphicon-minus-sign"></span></a>
+
+                                </span>
+                            </td>
+
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-1">
+
+                </div>
+                <!--  table -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal add -->
+    <div class="modal fade" id="addBookModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #D7CEC7; font-weight: bold; color: #ffffff;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add new book</h4>
+                </div>
+                <div >
+
+                    <form name="booksForm" class="col-md-12" style="margin-top: 30px" novalidate >
+
+
+                        <!--  ISBN -->
+                        <div name="update_isbnForm">
+                            <label>ISBN:</label>
+                            <input id="isbn_input" type="text" class="form-control col-md-12" name="ISBN"
+                                   placeholder="Username" ng-pattern="isbnPattern"
+                                   ng-model="select.isbn" required>
+                            <div ng-show="booksForm.ISBN.$invalid && booksForm.ISBN.$error.pattern"
+                                 class="alert alert-danger col-md-12"
+                                 style="margin-top: -20px">
+                                <p style=" font-size: 10px;">Insert a valid ISBN. Form: 0-596-00681-0
+                                    allowed!</p>
+                            </div>
+                            <br/>
+                        </div>
+                        <!--  Title -->
+                        <div name="update_titleForm">
+                            <label>Title:</label>
+                            <input id="title_input" type="text" class="form-control col-md-12" name="title"
+                                   placeholder="Title" required
+                                   ng-model="select.title">
+                            <br/>
+                        </div>
+                        <!--  Authors -->
+                        <div name="update_authorsForm">
+                            <label>Authors:</label>
+                            <input id="authors_input" type="text" class="form-control col-md-12" name="authors"
+                                   placeholder="Authors" ng-pattern="authorsPattern"
+                                   ng-model="select.authors" required>
+                            <div ng-show="booksForm.authors.$invalid && booksForm.authors.$error.pattern"
+                                 class="alert alert-danger col-md-12"
+                                 style="margin-top: -20px">
+                                <p style=" font-size: 10px;">Multiple authors should separated by comma
+                                    allowed!</p>
+                            </div>
+                            <br/>
+                        </div>
+                        <!--  Year -->
+                        <div name="update_yearForm">
+                            <label>Year:</label>
+                            <input id="year_input" type="text" class="form-control col-md-12" name="year"
+                                   placeholder="Year" ng-pattern="yearPattern"
+                                   ng-model="select.year" required>
+                            <div ng-show="booksForm.year.$invalid && booksForm.year.$error.pattern"
+                                 class="alert alert-danger col-md-12"
+                                 style="margin-top: -20px">
+                                <p style=" font-size: 10px;">Insert a valid year!</p>
+                            </div>
+                            <br/>
+                        </div>
+                        <!--  Genres -->
+                        <div>
+                            <label>Genres:</label>
+                            <span ng-switch on="select.showCancel">
+                                   <select ng-switch-when="true" disabled ng-model="selectedType"
+                                           class="form-control col-md-12" ng-change="changedGenreType(selectedType)"
+                                           ng-options="genre.type for genre in genreType">
+                                        <option value='' disabled style='display:none;'>
+                                            User type
+                                        </option>
+                                    </select>
+                                    <select ng-switch-default ng-model="selectedType" class="form-control col-md-12"
+                                            ng-change="changedGenreType(selectedType)"
+                                            ng-options="genre.type for genre in genreType">
+                                        <option value='' disabled style='display:none;'>
+                                            User type
+                                        </option>
+                                </select>
+                                </span>
+                        </div>
+                        <!--  Image -->
+                        <div name="update_yearForm">
+                            <label>Image:</label>
+                            <input id="image_input" type="text" class="form-control col-md-12" name="image"
+                                   placeholder="Image" ng-pattern="imagePattern"
+                                   ng-model="select.image" required>
+                            <div ng-show="booksForm.image.$invalid && booksForm.image.$error.pattern"
+                                 class="alert alert-danger col-md-12"
+                                 style="margin-top: -20px">
+                                <p style=" font-size: 10px;">Insert a valid image url - full link (http://...jpg)
+                                    allowed!</p>
+                            </div>
+                            <br/>
+                        </div>
+                        <!--  Price -->
+                        <div name="update_priceForm">
+                            <label>Price:</label>
+                            <input id="price_input" type="text" class="form-control col-md-12" name="price"
+                                   placeholder="Price" ng-pattern="pricePattern"
+                                   ng-model="select.price" required>
+                            <div ng-show="booksForm.price.$invalid && booksForm.price.$error.pattern"
+                                 class="alert alert-danger col-md-12"
+                                 style="margin-top: -20px">
+                                <p style=" font-size: 10px;">Insert a valid price. Only digits allowed
+                                    allowed!</p>
+                            </div>
+                            <br/>
+                        </div>
+
+                        <button id="addBookButton" type="button-primary" class="btn btn-primary pull-right col-md-4"
+                                ng-click="addBook(booksForm.$valid)">
+                            Add Book
+                        </button>
+                        <button type="button" class="btn btn-primary pull-right col-md-4" data-dismiss="modal">
+                            Close
+                        </button>
+                    </form>
+
+                </div>
+
+
+                <div class="modal-footer " >
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="updateBookModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #D7CEC7; font-weight: bold; color: #ffffff;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add new book</h4>
+                </div>
+                <div >
+
+                    <form name="booksUpdateForm" class="col-md-12" style="margin-top: 30px" novalidate >
+
+
+                        <!--  ISBN -->
+                        <div name="isbnForm">
+                            <label>ISBN:</label>
+                            <input id="update_isbn_input" type="text" class="form-control col-md-12" name="ISBN"
+                                   placeholder="Username" ng-pattern="isbnPattern"
+                                   ng-model="select.isbn" required>
+                            <div ng-show="booksUpdateForm.ISBN.$invalid && booksUpdateForm.ISBN.$error.pattern"
+                                 class="alert alert-danger col-md-12"
+                                 style="margin-top: -20px">
+                                <p style=" font-size: 10px;">Insert a valid ISBN. Form: 0-596-00681-0
+                                    allowed!</p>
+                            </div>
+                            <br/>
+                        </div>
+                        <!--  Title -->
+                        <div name="titleForm">
+                            <label>Title:</label>
+                            <input id="update_title_input" type="text" class="form-control col-md-12" name="title"
+                                   placeholder="Title" required
+                                   ng-model="select.title">
+                            <br/>
+                        </div>
+                        <!--  Authors -->
+                        <div name="authorsForm">
+                            <label>Authors:</label>
+                            <input id="update_authors_input" type="text" class="form-control col-md-12" name="authors"
+                                   placeholder="Authors" ng-pattern="authorsPattern"
+                                   ng-model="select.authors" required>
+                            <div ng-show="booksUpdateForm.authors.$invalid && booksUpdateForm.authors.$error.pattern"
+                                 class="alert alert-danger col-md-12"
+                                 style="margin-top: -20px">
+                                <p style=" font-size: 10px;">Multiple authors should separated by comma
+                                    allowed!</p>
+                            </div>
+                            <br/>
+                        </div>
+                        <!--  Year -->
+                        <div name="yearForm">
+                            <label>Year:</label>
+                            <input id="update_year_input" type="text" class="form-control col-md-12" name="year"
+                                   placeholder="Year" ng-pattern="yearPattern"
+                                   ng-model="select.year" required>
+                            <div ng-show="booksUpdateForm.year.$invalid && booksUpdateForm.year.$error.pattern"
+                                 class="alert alert-danger col-md-12"
+                                 style="margin-top: -20px">
+                                <p style=" font-size: 10px;">Insert a valid year!</p>
+                            </div>
+                            <br/>
+                        </div>
+                        <!--  Genres -->
+                        <div>
+                            <label>Genres:</label>
+                            <span ng-switch on="select.showCancel">
+                                   <select ng-switch-when="true" disabled ng-model="selectedType"
+                                           class="form-control col-md-12" ng-change="changedGenreType(selectedType)"
+                                           ng-options="genre.type for genre in genreType">
+                                        <option value='' disabled style='display:none;'>
+                                            User type
+                                        </option>
+                                    </select>
+                                    <select ng-switch-default ng-model="selectedType" class="form-control col-md-12"
+                                            ng-change="changedGenreType(selectedType)"
+                                            ng-options="genre.type for genre in genreType">
+                                        <option value='' disabled style='display:none;'>
+                                            User type
+                                        </option>
+                                </select>
+                                </span>
+                        </div>
+                        <!--  Image -->
+                        <div name="imageForm">
+                            <label>Image:</label>
+                            <input id="update_image_input" type="text" class="form-control col-md-12" name="image"
+                                   placeholder="Image" ng-pattern="imagePattern"
+                                   ng-model="select.image" required>
+                            <div ng-show="booksUpdateForm.image.$invalid && booksUpdateForm.image.$error.pattern"
+                                 class="alert alert-danger col-md-12"
+                                 style="margin-top: -20px">
+                                <p style=" font-size: 10px;">Insert a valid image url - full link (http://...jpg)
+                                    allowed!</p>
+                            </div>
+                            <br/>
+                        </div>
+                        <!--  Price -->
+                        <div name="priceForm">
+                            <label>Price:</label>
+                            <input id="update_price_input" type="text" class="form-control col-md-12" name="price"
+                                   placeholder="Price" ng-pattern="pricePattern"
+                                   ng-model="select.price" required>
+                            <div ng-show="booksUpdateForm.price.$invalid && booksUpdateForm.price.$error.pattern"
+                                 class="alert alert-danger col-md-12"
+                                 style="margin-top: -20px">
+                                <p style=" font-size: 10px;">Insert a valid price. Only digits allowed
+                                    allowed!</p>
+                            </div>
+                            <br/>
+                        </div>
+
+                        <button id="update_updateBookButton" type="button-primary" class="btn btn-primary pull-right col-md-4"
+                                ng-click="updateBook(booksUpdateForm.$valid)">
+                            Update Book
+                        </button>
+                        <button type="button" class="btn btn-primary pull-right col-md-4" data-dismiss="modal">
+                            Close
+                        </button>
+                    </form>
+
+                </div>
+
+
+                <div class="modal-footer " >
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+

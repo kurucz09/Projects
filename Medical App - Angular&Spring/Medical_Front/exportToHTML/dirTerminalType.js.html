@@ -1,0 +1,318 @@
+<html>
+<head>
+<title>dirTerminalType.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(98,151,85); font-style: italic; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(204,120,50); font-weight: bold; }
+.s3 { color: rgb(106,135,89); }
+.s4 { color: rgb(204,120,50); }
+.s5 { color: rgb(128,128,128); }
+.s6 { color: rgb(104,151,187); }
+.s7 { color: rgb(98,151,85); font-weight: bold; font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+dirTerminalType.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/** 
+ * A directive for AngularJS that makes an effect akin to text being typed on a computer terminal. 
+ * 
+ * Copyright 2014 Michael Bromley &lt;michael@michaelbromley.co.uk&gt; 
+ */</span><span class="s1"> 
+(</span><span class="s2">function</span><span class="s1">() { 
+ 
+    </span><span class="s0">/** 
+     * Config 
+     */</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">moduleName = </span><span class="s3">'angularUtils.directives.dirTerminalType'</span><span class="s4">;</span><span class="s1"> 
+ 
+    </span><span class="s0">/** 
+     * Module 
+     */</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">module</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s2">try </span><span class="s1">{ 
+        module = angular.module(moduleName)</span><span class="s4">;</span><span class="s1"> 
+    } </span><span class="s2">catch</span><span class="s1">(err) { 
+        </span><span class="s5">// named module does not exist, so create one</span><span class="s1"> 
+        module = angular.module(moduleName</span><span class="s4">, </span><span class="s1">[])</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    module.directive(</span><span class="s3">'dirTerminalType'</span><span class="s4">, </span><span class="s1">[</span><span class="s3">'$window'</span><span class="s4">, </span><span class="s3">'$document'</span><span class="s4">, </span><span class="s3">'$timeout'</span><span class="s4">, </span><span class="s3">'$interpolate'</span><span class="s4">, </span><span class="s3">'$parse'</span><span class="s4">, </span><span class="s2">function </span><span class="s1">($window</span><span class="s4">, </span><span class="s1">$document</span><span class="s4">, </span><span class="s1">$timeout</span><span class="s4">, </span><span class="s1">$interpolate</span><span class="s4">, </span><span class="s1">$parse) { 
+ 
+        </span><span class="s0">/** 
+         * requestAnimationFrame polyfill from http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/ 
+         */</span><span class="s1"> 
+        (</span><span class="s2">function</span><span class="s1">() { 
+            </span><span class="s2">var </span><span class="s1">lastTime = </span><span class="s6">0</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">var </span><span class="s1">vendors = [</span><span class="s3">'webkit'</span><span class="s4">, </span><span class="s3">'moz'</span><span class="s1">]</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">for</span><span class="s1">(</span><span class="s2">var </span><span class="s1">x = </span><span class="s6">0</span><span class="s4">; </span><span class="s1">x &lt; vendors.length &amp;&amp; !window.requestAnimationFrame</span><span class="s4">; </span><span class="s1">++x) { 
+                window.requestAnimationFrame = window[vendors[x]+</span><span class="s3">'RequestAnimationFrame'</span><span class="s1">]</span><span class="s4">;</span><span class="s1"> 
+                window.cancelAnimationFrame = 
+                    window[vendors[x]+</span><span class="s3">'CancelAnimationFrame'</span><span class="s1">] || window[vendors[x]+</span><span class="s3">'CancelRequestAnimationFrame'</span><span class="s1">]</span><span class="s4">;</span><span class="s1"> 
+            } 
+ 
+            </span><span class="s2">if </span><span class="s1">(!window.requestAnimationFrame) { 
+                window.requestAnimationFrame = </span><span class="s2">function</span><span class="s1">(callback</span><span class="s4">, </span><span class="s1">element) { 
+                    </span><span class="s2">var </span><span class="s1">currTime = </span><span class="s2">new </span><span class="s1">Date().getTime()</span><span class="s4">;</span><span class="s1"> 
+                    </span><span class="s2">var </span><span class="s1">timeToCall = Math.max(</span><span class="s6">0</span><span class="s4">, </span><span class="s6">16 </span><span class="s1">- (currTime - lastTime))</span><span class="s4">;</span><span class="s1"> 
+                    </span><span class="s2">var </span><span class="s1">id = window.setTimeout(</span><span class="s2">function</span><span class="s1">() { callback(currTime + timeToCall)</span><span class="s4">; </span><span class="s1">}</span><span class="s4">,</span><span class="s1"> 
+                        timeToCall)</span><span class="s4">;</span><span class="s1"> 
+                    lastTime = currTime + timeToCall</span><span class="s4">;</span><span class="s1"> 
+                    </span><span class="s2">return </span><span class="s1">id</span><span class="s4">;</span><span class="s1"> 
+                }</span><span class="s4">;</span><span class="s1"> 
+            } 
+ 
+            </span><span class="s2">if </span><span class="s1">(!window.cancelAnimationFrame) { 
+                window.cancelAnimationFrame = </span><span class="s2">function</span><span class="s1">(id) { 
+                    clearTimeout(id)</span><span class="s4">;</span><span class="s1"> 
+                }</span><span class="s4">;</span><span class="s1"> 
+            } 
+        }())</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s0">/** 
+         * Recursively traverse the node tree and set the nodeValue of any text nodes to '', whilst 
+         * storing the original value in the newly-created field _originalNodeValue for later use. 
+         * 
+         * </span><span class="s7">@param </span><span class="s0">node 
+         * </span><span class="s7">@param </span><span class="s0">totalChars 
+         * </span><span class="s7">@returns </span><span class="s0">{number} 
+         */</span><span class="s1"> 
+        </span><span class="s2">function </span><span class="s1">clearTextAndStoreValues(node</span><span class="s4">, </span><span class="s1">totalChars</span><span class="s4">, </span><span class="s1">originalNodeValues) { 
+            </span><span class="s2">var </span><span class="s1">i</span><span class="s4">;</span><span class="s1"> 
+            totalChars = totalChars || </span><span class="s6">0</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s2">if </span><span class="s1">(node.nodeValue !== </span><span class="s2">null</span><span class="s1">) { 
+                </span><span class="s2">var </span><span class="s1">nodeValue = node.nodeValue.replace(</span><span class="s3">/\s+/g</span><span class="s4">, </span><span class="s3">' '</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                originalNodeValues.values.push(nodeValue)</span><span class="s4">;</span><span class="s1"> 
+                node.nodeValue = </span><span class="s3">''</span><span class="s4">;</span><span class="s1"> 
+                totalChars += nodeValue.length</span><span class="s4">;</span><span class="s1"> 
+            } 
+ 
+            </span><span class="s2">for </span><span class="s1">(i = </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i &lt; node.childNodes.length</span><span class="s4">; </span><span class="s1">i++) { 
+                totalChars = clearTextAndStoreValues(node.childNodes[i]</span><span class="s4">, </span><span class="s1">totalChars</span><span class="s4">, </span><span class="s1">originalNodeValues)</span><span class="s4">;</span><span class="s1"> 
+            } 
+ 
+            </span><span class="s2">return </span><span class="s1">totalChars</span><span class="s4">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s0">/** 
+         * Update the nodeValues of any text nodes within element, filling in the corresponding 
+         * amount of characters commensurate with the current progress. 
+         * 
+         * </span><span class="s7">@param </span><span class="s0">element 
+         * </span><span class="s7">@param </span><span class="s0">currentIteration 
+         * </span><span class="s7">@param </span><span class="s0">totalIterations 
+         * </span><span class="s7">@param </span><span class="s0">totalChars 
+         * </span><span class="s7">@returns </span><span class="s0">{boolean} 
+         */</span><span class="s1"> 
+        </span><span class="s2">function </span><span class="s1">type(element</span><span class="s4">, </span><span class="s1">currentIteration</span><span class="s4">, </span><span class="s1">totalIterations</span><span class="s4">, </span><span class="s1">totalChars</span><span class="s4">, </span><span class="s1">originalNodeValues) { 
+            </span><span class="s2">var </span><span class="s1">currentChar = Math.ceil(currentIteration / totalIterations * totalChars)</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s2">var </span><span class="s1">charsTyped = typeUpToCurrentChar(element</span><span class="s4">, </span><span class="s1">currentChar</span><span class="s4">, </span><span class="s6">0</span><span class="s4">, </span><span class="s1">originalNodeValues</span><span class="s4">, </span><span class="s2">true</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s2">var </span><span class="s1">done = totalChars &lt;= charsTyped</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">return </span><span class="s1">done</span><span class="s4">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s0">/** 
+         * Recursive function that traverses a node tree and updates the nodeValue of each 
+         * text node until the total number of characters &quot;typed&quot; is equal to the value 
+         * of currentChar. 
+         * 
+         * </span><span class="s7">@param </span><span class="s0">node 
+         * </span><span class="s7">@param </span><span class="s0">currentChar 
+         * </span><span class="s7">@param </span><span class="s0">charsTyped 
+         * </span><span class="s7">@returns </span><span class="s0">{*} 
+         */</span><span class="s1"> 
+        </span><span class="s2">function </span><span class="s1">typeUpToCurrentChar(node</span><span class="s4">, </span><span class="s1">currentChar</span><span class="s4">, </span><span class="s1">charsTyped</span><span class="s4">, </span><span class="s1">originalNodeValues</span><span class="s4">, </span><span class="s1">resetCounter) { 
+ 
+            </span><span class="s2">if </span><span class="s1">(resetCounter) { 
+                originalNodeValues.counter = </span><span class="s6">0</span><span class="s4">;</span><span class="s1"> 
+            } 
+ 
+            </span><span class="s2">if </span><span class="s1">(node.nodeValue !== </span><span class="s2">null</span><span class="s1">) { 
+                </span><span class="s2">var </span><span class="s1">originalValue =  originalNodeValues.values[originalNodeValues.counter]</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">if </span><span class="s1">(currentChar - charsTyped &lt; originalValue.length) { 
+                    </span><span class="s2">var </span><span class="s1">charsToType = currentChar - charsTyped</span><span class="s4">;</span><span class="s1"> 
+                    node.nodeValue = originalValue.substring(</span><span class="s6">0</span><span class="s4">, </span><span class="s1">charsToType)</span><span class="s4">;</span><span class="s1"> 
+                    charsTyped += charsToType</span><span class="s4">;</span><span class="s1"> 
+                } </span><span class="s2">else </span><span class="s1">{ 
+                    node.nodeValue = originalValue</span><span class="s4">;</span><span class="s1"> 
+                    charsTyped += originalValue.length</span><span class="s4">;</span><span class="s1"> 
+                } 
+ 
+                originalNodeValues.counter ++</span><span class="s4">;</span><span class="s1"> 
+            } 
+ 
+            </span><span class="s2">for </span><span class="s1">(</span><span class="s2">var </span><span class="s1">i = </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i &lt; node.childNodes.length</span><span class="s4">; </span><span class="s1">i++) { 
+                </span><span class="s2">if </span><span class="s1">(charsTyped &lt; currentChar) { 
+                    charsTyped = typeUpToCurrentChar(node.childNodes[i]</span><span class="s4">, </span><span class="s1">currentChar</span><span class="s4">, </span><span class="s1">charsTyped</span><span class="s4">, </span><span class="s1">originalNodeValues)</span><span class="s4">;</span><span class="s1"> 
+                } </span><span class="s2">else </span><span class="s1">{ 
+                    </span><span class="s2">break</span><span class="s4">;</span><span class="s1"> 
+                } 
+            } 
+ 
+            </span><span class="s2">return </span><span class="s1">charsTyped</span><span class="s4">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s0">/** 
+         * Add the caret to the end of the element, and style it to fit the text. 
+         * First line checks if a caret already exists, in which case do nothing. 
+         * 
+         * </span><span class="s7">@param </span><span class="s0">element 
+         */</span><span class="s1"> 
+        </span><span class="s2">function </span><span class="s1">addCaret(element) { 
+            </span><span class="s2">var </span><span class="s1">elementAlreadyHasCaret = element[</span><span class="s6">0</span><span class="s1">].querySelector(</span><span class="s3">'.dirTerminalType-caret'</span><span class="s1">) !== </span><span class="s2">null</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s2">if </span><span class="s1">(!elementAlreadyHasCaret) { 
+                </span><span class="s2">var </span><span class="s1">height = parseInt($window.getComputedStyle(element[</span><span class="s6">0</span><span class="s1">])[</span><span class="s3">'font-size'</span><span class="s1">])</span><span class="s4">;</span><span class="s1"> 
+                height -= </span><span class="s6">2</span><span class="s4">; </span><span class="s5">// make it a bit smaller to prevent it interfering with document flow.</span><span class="s1"> 
+                </span><span class="s2">var </span><span class="s1">backgroundColor = $window.getComputedStyle(element[</span><span class="s6">0</span><span class="s1">])[</span><span class="s3">'color'</span><span class="s1">]</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">var </span><span class="s1">width = Math.ceil(height * </span><span class="s6">0.05</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">var </span><span class="s1">marginBottom = Math.ceil(height * -</span><span class="s6">0.1</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">var </span><span class="s1">caret = $document[</span><span class="s6">0</span><span class="s1">].createElement(</span><span class="s3">'span'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                caret.classList.add(</span><span class="s3">'dirTerminalType-caret'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                caret.style.height = height + </span><span class="s3">'px'</span><span class="s4">;</span><span class="s1"> 
+                caret.style.width = width + </span><span class="s3">'px'</span><span class="s4">;</span><span class="s1"> 
+                caret.style.backgroundColor = backgroundColor</span><span class="s4">;</span><span class="s1"> 
+                caret.style.marginBottom = marginBottom + </span><span class="s3">'px'</span><span class="s4">;</span><span class="s1"> 
+                element.append(caret)</span><span class="s4">;</span><span class="s1"> 
+            } 
+        } 
+ 
+        </span><span class="s2">function </span><span class="s1">removeCaret(element) { 
+            </span><span class="s2">var </span><span class="s1">caret = element[</span><span class="s6">0</span><span class="s1">].querySelector(</span><span class="s3">'.dirTerminalType-caret'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+            angular.element(caret).remove()</span><span class="s4">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s0">/** 
+         * If any of the text nodes contain interpolation expressions {{ like.this }}, we need to 
+         * interpolate them to get the actual value to be displayed. This will change the 
+         * totalChars count so that must also be updated. 
+         * 
+         * </span><span class="s7">@param </span><span class="s0">node 
+         * </span><span class="s7">@param </span><span class="s0">scope 
+         * </span><span class="s7">@param </span><span class="s0">totalChars 
+         */</span><span class="s1"> 
+        </span><span class="s2">function </span><span class="s1">interpolateText(node</span><span class="s4">, </span><span class="s1">scope</span><span class="s4">, </span><span class="s1">totalChars</span><span class="s4">, </span><span class="s1">originalNodeValues</span><span class="s4">, </span><span class="s1">resetCounter) { 
+            </span><span class="s2">var </span><span class="s1">i</span><span class="s4">,</span><span class="s1"> 
+                currentNodeContent</span><span class="s4">,</span><span class="s1"> 
+                currentLength</span><span class="s4">,</span><span class="s1"> 
+                interpolatedContent</span><span class="s4">,</span><span class="s1"> 
+                interpolatedLength</span><span class="s4">,</span><span class="s1"> 
+                lengthDelta</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s2">if </span><span class="s1">(resetCounter) { 
+                originalNodeValues.counter = </span><span class="s6">0</span><span class="s4">;</span><span class="s1"> 
+            } 
+ 
+            </span><span class="s2">if </span><span class="s1">(node.nodeValue !== </span><span class="s2">null</span><span class="s1">) { 
+                currentNodeContent = originalNodeValues.values[originalNodeValues.counter]</span><span class="s4">;</span><span class="s1"> 
+                currentLength = currentNodeContent.length</span><span class="s4">;</span><span class="s1"> 
+                interpolatedContent = $interpolate(currentNodeContent)(scope)</span><span class="s4">;</span><span class="s1"> 
+                interpolatedLength = interpolatedContent.length</span><span class="s4">;</span><span class="s1"> 
+ 
+                lengthDelta = interpolatedLength - currentLength</span><span class="s4">;</span><span class="s1"> 
+                totalChars += lengthDelta</span><span class="s4">;</span><span class="s1"> 
+                originalNodeValues.values[originalNodeValues.counter] = interpolatedContent</span><span class="s4">;</span><span class="s1"> 
+ 
+                originalNodeValues.counter ++</span><span class="s4">;</span><span class="s1"> 
+            } 
+ 
+            </span><span class="s2">for </span><span class="s1">(i = </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i &lt; node.childNodes.length</span><span class="s4">; </span><span class="s1">i++) { 
+                totalChars = interpolateText(node.childNodes[i]</span><span class="s4">, </span><span class="s1">scope</span><span class="s4">, </span><span class="s1">totalChars</span><span class="s4">, </span><span class="s1">originalNodeValues)</span><span class="s4">;</span><span class="s1"> 
+            } 
+ 
+            </span><span class="s2">return </span><span class="s1">totalChars</span><span class="s4">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s2">return </span><span class="s1">{ 
+            restrict: </span><span class="s3">'AE'</span><span class="s4">,</span><span class="s1"> 
+            link: </span><span class="s2">function</span><span class="s1">(scope</span><span class="s4">, </span><span class="s1">element</span><span class="s4">, </span><span class="s1">attrs) { 
+ 
+                </span><span class="s0">/** 
+                 * These two variables are used to store the original text values of any text nodes in the element. The original approach involved 
+                 * simply appending a new property onto the DOM node itself, but this proved to be a bad idea since it breaks in IE. This new approach 
+                 * is a little more complex since we now have to track the index of each text node in the originalNodeValues array. 
+                 * </span><span class="s7">@type </span><span class="s0">{Array} 
+                 */</span><span class="s1"> 
+                </span><span class="s2">var </span><span class="s1">originalNodeValues = { 
+                    values: []</span><span class="s4">,</span><span class="s1"> 
+                    counter: </span><span class="s6">0</span><span class="s1"> 
+                }</span><span class="s4">;</span><span class="s1"> 
+ 
+                </span><span class="s2">var </span><span class="s1">totalChars = clearTextAndStoreValues(element[</span><span class="s6">0</span><span class="s1">]</span><span class="s4">, </span><span class="s6">0</span><span class="s4">, </span><span class="s1">originalNodeValues)</span><span class="s4">;</span><span class="s1"> 
+ 
+                </span><span class="s2">var </span><span class="s1">start</span><span class="s4">, </span><span class="s1">elapsed</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">var </span><span class="s1">duration = attrs.duration || </span><span class="s6">1000</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">var </span><span class="s1">removeCaretAfter = attrs.removeCaret || </span><span class="s6">1000</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">var </span><span class="s1">onCompletion = $parse(attrs.onCompletion) || </span><span class="s2">null</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">var </span><span class="s1">forceCaret = </span><span class="s2">typeof </span><span class="s1">attrs.forceCaret !== </span><span class="s3">'undefined' </span><span class="s1">? </span><span class="s2">true </span><span class="s1">: </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+ 
+                </span><span class="s2">if </span><span class="s1">(</span><span class="s2">typeof </span><span class="s1">attrs.startTyping !==</span><span class="s3">'undefined'</span><span class="s1">) { 
+                    </span><span class="s2">if </span><span class="s1">(forceCaret) { 
+                        addCaret(element)</span><span class="s4">;</span><span class="s1"> 
+                    } 
+                    scope.$watch(</span><span class="s2">function</span><span class="s1">() { 
+                        </span><span class="s2">return </span><span class="s1">scope.$eval(attrs.startTyping)</span><span class="s4">;</span><span class="s1"> 
+                    }</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(val) { 
+                        </span><span class="s2">if </span><span class="s1">(val) { 
+                            startTyping()</span><span class="s4">;</span><span class="s1"> 
+                        } 
+                    })</span><span class="s4">;</span><span class="s1"> 
+                } </span><span class="s2">else </span><span class="s1">{ 
+                    startTyping()</span><span class="s4">;</span><span class="s1"> 
+                } 
+ 
+                </span><span class="s2">function </span><span class="s1">startTyping() { 
+                    addCaret(element)</span><span class="s4">;</span><span class="s1"> 
+                    totalChars = interpolateText(element[</span><span class="s6">0</span><span class="s1">]</span><span class="s4">, </span><span class="s1">scope</span><span class="s4">, </span><span class="s1">totalChars</span><span class="s4">, </span><span class="s1">originalNodeValues</span><span class="s4">, </span><span class="s2">true</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                    window.requestAnimationFrame(tick)</span><span class="s4">;</span><span class="s1"> 
+                } 
+ 
+                </span><span class="s0">/** 
+                 * This is the animation function that gets looped in a requestAnimationFrame call. 
+                 * </span><span class="s7">@param </span><span class="s0">timestamp 
+                 */</span><span class="s1"> 
+                </span><span class="s2">function </span><span class="s1">tick(timestamp) { 
+                    </span><span class="s2">var </span><span class="s1">currentIteration</span><span class="s4">, </span><span class="s1">totalIterations</span><span class="s4">, </span><span class="s1">done</span><span class="s4">;</span><span class="s1"> 
+ 
+                    </span><span class="s2">if </span><span class="s1">(</span><span class="s2">typeof </span><span class="s1">start === </span><span class="s3">'undefined'</span><span class="s1">) { 
+                        start = timestamp</span><span class="s4">;</span><span class="s1"> 
+                    } 
+                    elapsed = timestamp - start</span><span class="s4">;</span><span class="s1"> 
+ 
+                    totalIterations = Math.round(duration / </span><span class="s6">1000 </span><span class="s1">* </span><span class="s6">60</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                    currentIteration = Math.round(elapsed / </span><span class="s6">1000 </span><span class="s1">* </span><span class="s6">60</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                    done = type(element[</span><span class="s6">0</span><span class="s1">]</span><span class="s4">, </span><span class="s1">currentIteration</span><span class="s4">, </span><span class="s1">totalIterations</span><span class="s4">, </span><span class="s1">totalChars</span><span class="s4">, </span><span class="s1">originalNodeValues)</span><span class="s4">;</span><span class="s1"> 
+ 
+                    </span><span class="s2">if </span><span class="s1">(elapsed &lt; duration &amp;&amp; !done) { 
+                        window.requestAnimationFrame(tick)</span><span class="s4">;</span><span class="s1"> 
+                    } </span><span class="s2">else </span><span class="s1">{ 
+                        $timeout(</span><span class="s2">function</span><span class="s1">() { 
+                            removeCaret(element)</span><span class="s4">;</span><span class="s1"> 
+                        }</span><span class="s4">, </span><span class="s1">removeCaretAfter)</span><span class="s4">;</span><span class="s1"> 
+ 
+                        start = undefined</span><span class="s4">;  </span><span class="s5">// reset</span><span class="s1"> 
+ 
+                        </span><span class="s5">// if a callback was defined by the on-completion attribute, invoke it now</span><span class="s1"> 
+                        </span><span class="s2">if </span><span class="s1">(onCompletion !== </span><span class="s2">null</span><span class="s1">) { 
+                            onCompletion(scope)</span><span class="s4">;</span><span class="s1"> 
+                        } 
+                    } 
+                } 
+            } 
+        }</span><span class="s4">;</span><span class="s1"> 
+    }])</span><span class="s4">;</span><span class="s1"> 
+ 
+})()</span><span class="s4">;</span><span class="s1"> 
+</span></pre>
+</body>
+</html>

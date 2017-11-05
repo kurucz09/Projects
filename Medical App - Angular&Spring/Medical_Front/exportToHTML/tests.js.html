@@ -1,0 +1,76 @@
+<html>
+<head>
+<title>tests.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); font-weight: bold; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(106,135,89); }
+.s3 { color: rgb(204,120,50); }
+.s4 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+tests.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">var </span><span class="s1">token = </span><span class="s2">'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmb28iOiJiYXIiLCJleHAiOjEzOTMyODY4OTMsImlhdCI6MTM5MzI2ODg5M30.4-iaDojEVl0pJQMjrbM1EzUIfAZgsbK_kgnVyVxFSVo'</span><span class="s3">;</span><span class="s1"> 
+ 
+</span><span class="s0">if </span><span class="s1">(</span><span class="s0">typeof </span><span class="s1">jwt_decode === </span><span class="s2">'undefined'</span><span class="s1">) { 
+  </span><span class="s0">var </span><span class="s1">jwt_decode = require(</span><span class="s2">'../'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+} 
+ 
+</span><span class="s0">if </span><span class="s1">(</span><span class="s0">typeof </span><span class="s1">expect === </span><span class="s2">'undefined'</span><span class="s1">) { 
+  </span><span class="s0">var </span><span class="s1">expect = require(</span><span class="s2">'expect.js'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+} 
+ 
+describe(</span><span class="s2">'jwt-decode'</span><span class="s3">, </span><span class="s0">function </span><span class="s1">() { 
+ 
+  it(</span><span class="s2">'should fail to construct without a clientID'</span><span class="s3">, </span><span class="s0">function </span><span class="s1">() { 
+    </span><span class="s0">var </span><span class="s1">decoded = jwt_decode(token)</span><span class="s3">;</span><span class="s1"> 
+    expect(decoded.exp).to.equal(</span><span class="s4">1393286893</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    expect(decoded.iat).to.equal(</span><span class="s4">1393268893</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    expect(decoded.foo).to.equal(</span><span class="s2">'bar'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+  })</span><span class="s3">;</span><span class="s1"> 
+ 
+  it(</span><span class="s2">'should return header information'</span><span class="s3">, </span><span class="s0">function </span><span class="s1">() { 
+    </span><span class="s0">var </span><span class="s1">decoded = jwt_decode(token</span><span class="s3">, </span><span class="s1">{ header: </span><span class="s0">true </span><span class="s1">})</span><span class="s3">;</span><span class="s1"> 
+    expect(decoded.typ).to.equal(</span><span class="s2">'JWT'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    expect(decoded.alg).to.equal(</span><span class="s2">'HS256'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+  })</span><span class="s3">;</span><span class="s1"> 
+ 
+  it(</span><span class="s2">'should work with utf8 tokens'</span><span class="s3">, </span><span class="s0">function </span><span class="s1">() { 
+    </span><span class="s0">var </span><span class="s1">utf8_token = </span><span class="s2">&quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiSm9zw6kiLCJpYXQiOjE0MjU2NDQ5NjZ9.1CfFtdGUPs6q8kT3OGQSVlhEMdbuX0HfNSqum0023a0&quot;</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">var </span><span class="s1">decoded = jwt_decode(utf8_token)</span><span class="s3">;</span><span class="s1"> 
+    expect(decoded.name).to.equal(</span><span class="s2">'José'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+  })</span><span class="s3">;</span><span class="s1"> 
+ 
+  it(</span><span class="s2">'should work with binary tokens'</span><span class="s3">, </span><span class="s0">function </span><span class="s1">() { 
+    </span><span class="s0">var </span><span class="s1">binary_token = </span><span class="s2">&quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiSm9z6SIsImlhdCI6MTQyNTY0NDk2Nn0.cpnplCBxiw7Xqz5thkqs4Mo_dymvztnI0CI4BN0d1t8&quot;</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">var </span><span class="s1">decoded = jwt_decode(binary_token)</span><span class="s3">;</span><span class="s1"> 
+    expect(decoded.name).to.equal(</span><span class="s2">'José'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+  })</span><span class="s3">;</span><span class="s1"> 
+ 
+  it(</span><span class="s2">'should throw InvalidTokenError on nonstring'</span><span class="s3">, </span><span class="s0">function </span><span class="s1">() { 
+    </span><span class="s0">var </span><span class="s1">bad_token = </span><span class="s0">null</span><span class="s3">;</span><span class="s1"> 
+    expect(</span><span class="s0">function </span><span class="s1">() { jwt_decode(bad_token)</span><span class="s3">; </span><span class="s1">}) 
+      .to.throwException(</span><span class="s0">function </span><span class="s1">(e) { 
+        expect(e.name).to.be(</span><span class="s2">'InvalidTokenError'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+      })</span><span class="s3">;</span><span class="s1"> 
+  })</span><span class="s3">;</span><span class="s1"> 
+ 
+  it(</span><span class="s2">'should throw InvalidTokenError on string that is not a token'</span><span class="s3">, </span><span class="s0">function </span><span class="s1">() { 
+    </span><span class="s0">var </span><span class="s1">bad_token = </span><span class="s2">&quot;fubar&quot;</span><span class="s3">;</span><span class="s1"> 
+    expect(</span><span class="s0">function </span><span class="s1">() { jwt_decode(bad_token)</span><span class="s3">; </span><span class="s1">}) 
+      .to.throwException(</span><span class="s0">function </span><span class="s1">(e) { 
+        expect(e.name).to.be(</span><span class="s2">'InvalidTokenError'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+      })</span><span class="s3">;</span><span class="s1"> 
+  })</span><span class="s3">;</span><span class="s1"> 
+})</span><span class="s3">;</span><span class="s1"> 
+</span></pre>
+</body>
+</html>

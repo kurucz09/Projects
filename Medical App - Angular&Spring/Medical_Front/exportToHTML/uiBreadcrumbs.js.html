@@ -1,0 +1,204 @@
+<html>
+<head>
+<title>uiBreadcrumbs.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(98,151,85); font-style: italic; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(204,120,50); font-weight: bold; }
+.s3 { color: rgb(106,135,89); }
+.s4 { color: rgb(204,120,50); }
+.s5 { color: rgb(128,128,128); }
+.s6 { color: rgb(98,151,85); font-weight: bold; font-style: italic; }
+.s7 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+uiBreadcrumbs.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/** 
+ * uiBreadcrumbs automatic breadcrumbs directive for AngularJS &amp; Angular ui-router. 
+ * 
+ * https://github.com/michaelbromley/angularUtils/tree/master/src/directives/uiBreadcrumbs 
+ * 
+ * Copyright 2014 Michael Bromley &lt;michael@michaelbromley.co.uk&gt; 
+ */</span><span class="s1"> 
+ 
+ 
+(</span><span class="s2">function</span><span class="s1">() { 
+ 
+    </span><span class="s0">/** 
+     * Config 
+     */</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">moduleName = </span><span class="s3">'angularUtils.directives.uiBreadcrumbs'</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">templateUrl = </span><span class="s3">'directives/uiBreadcrumbs/uiBreadcrumbs.tpl.html'</span><span class="s4">;</span><span class="s1"> 
+ 
+    </span><span class="s0">/** 
+     * Module 
+     */</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">module</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s2">try </span><span class="s1">{ 
+        module = angular.module(moduleName)</span><span class="s4">;</span><span class="s1"> 
+    } </span><span class="s2">catch</span><span class="s1">(err) { 
+        </span><span class="s5">// named module does not exist, so create one</span><span class="s1"> 
+        module = angular.module(moduleName</span><span class="s4">, </span><span class="s1">[</span><span class="s3">'ui.router'</span><span class="s1">])</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    module.directive(</span><span class="s3">'uiBreadcrumbs'</span><span class="s4">, </span><span class="s1">[</span><span class="s3">'$interpolate'</span><span class="s4">, </span><span class="s3">'$state'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">($interpolate</span><span class="s4">, </span><span class="s1">$state) { 
+            </span><span class="s2">return </span><span class="s1">{ 
+                restrict: </span><span class="s3">'E'</span><span class="s4">,</span><span class="s1"> 
+                templateUrl: </span><span class="s2">function</span><span class="s1">(elem</span><span class="s4">, </span><span class="s1">attrs) { 
+                    </span><span class="s2">return </span><span class="s1">attrs.templateUrl || templateUrl</span><span class="s4">;</span><span class="s1"> 
+                }</span><span class="s4">,</span><span class="s1"> 
+                scope: { 
+                    displaynameProperty: </span><span class="s3">'@'</span><span class="s4">,</span><span class="s1"> 
+                    abstractProxyProperty: </span><span class="s3">'@?'</span><span class="s1"> 
+                }</span><span class="s4">,</span><span class="s1"> 
+                link: </span><span class="s2">function</span><span class="s1">(scope) { 
+                    scope.breadcrumbs = []</span><span class="s4">;</span><span class="s1"> 
+                    </span><span class="s2">if </span><span class="s1">($state.$current.name !== </span><span class="s3">''</span><span class="s1">) { 
+                        updateBreadcrumbsArray()</span><span class="s4">;</span><span class="s1"> 
+                    } 
+                    scope.$on(</span><span class="s3">'$stateChangeSuccess'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">() { 
+                        updateBreadcrumbsArray()</span><span class="s4">;</span><span class="s1"> 
+                    })</span><span class="s4">;</span><span class="s1"> 
+ 
+                    </span><span class="s0">/** 
+                     * Start with the current state and traverse up the path to build the 
+                     * array of breadcrumbs that can be used in an ng-repeat in the template. 
+                     */</span><span class="s1"> 
+                    </span><span class="s2">function </span><span class="s1">updateBreadcrumbsArray() { 
+                        </span><span class="s2">var </span><span class="s1">workingState</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">var </span><span class="s1">displayName</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">var </span><span class="s1">breadcrumbs = []</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">var </span><span class="s1">currentState = $state.$current</span><span class="s4">;</span><span class="s1"> 
+ 
+                        </span><span class="s2">while</span><span class="s1">(currentState &amp;&amp; currentState.name !== </span><span class="s3">''</span><span class="s1">) { 
+                            workingState = getWorkingState(currentState)</span><span class="s4">;</span><span class="s1"> 
+                            </span><span class="s2">if </span><span class="s1">(workingState) { 
+                                displayName = getDisplayName(workingState)</span><span class="s4">;</span><span class="s1"> 
+ 
+                                </span><span class="s2">if </span><span class="s1">(displayName !== </span><span class="s2">false </span><span class="s1">&amp;&amp; !stateAlreadyInBreadcrumbs(workingState</span><span class="s4">, </span><span class="s1">breadcrumbs)) { 
+                                    breadcrumbs.push({ 
+                                        displayName: displayName</span><span class="s4">,</span><span class="s1"> 
+                                        route: workingState.name 
+                                    })</span><span class="s4">;</span><span class="s1"> 
+                                } 
+                            } 
+                            currentState = currentState.parent</span><span class="s4">;</span><span class="s1"> 
+                        } 
+                        breadcrumbs.reverse()</span><span class="s4">;</span><span class="s1"> 
+                        scope.breadcrumbs = breadcrumbs</span><span class="s4">;</span><span class="s1"> 
+                    } 
+ 
+                    </span><span class="s0">/** 
+                     * Get the state to put in the breadcrumbs array, taking into account that if the current state is abstract, 
+                     * we need to either substitute it with the state named in the `scope.abstractProxyProperty` property, or 
+                     * set it to `false` which means this breadcrumb level will be skipped entirely. 
+                     * </span><span class="s6">@param </span><span class="s0">currentState 
+                     * </span><span class="s6">@returns </span><span class="s0">{*} 
+                     */</span><span class="s1"> 
+                    </span><span class="s2">function </span><span class="s1">getWorkingState(currentState) { 
+                        </span><span class="s2">var </span><span class="s1">proxyStateName</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">var </span><span class="s1">workingState = currentState</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">if </span><span class="s1">(currentState.abstract === </span><span class="s2">true</span><span class="s1">) { 
+                            </span><span class="s2">if </span><span class="s1">(</span><span class="s2">typeof </span><span class="s1">scope.abstractProxyProperty !== </span><span class="s3">'undefined'</span><span class="s1">) { 
+                                proxyStateName = getObjectValue(scope.abstractProxyProperty</span><span class="s4">, </span><span class="s1">currentState)</span><span class="s4">;</span><span class="s1"> 
+                                </span><span class="s2">if </span><span class="s1">(proxyStateName) { 
+                                    workingState = angular.copy($state.get(proxyStateName))</span><span class="s4">;</span><span class="s1"> 
+                                    </span><span class="s2">if </span><span class="s1">(workingState) { 
+                                        workingState.locals = currentState.locals</span><span class="s4">;</span><span class="s1"> 
+                                    } 
+                                } </span><span class="s2">else </span><span class="s1">{ 
+                                    workingState = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+                                } 
+                            } </span><span class="s2">else </span><span class="s1">{ 
+                                workingState = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+                            } 
+                        } 
+                        </span><span class="s2">return </span><span class="s1">workingState</span><span class="s4">;</span><span class="s1"> 
+                    } 
+ 
+                    </span><span class="s0">/** 
+                     * Resolve the displayName of the specified state. Take the property specified by the `displayname-property` 
+                     * attribute and look up the corresponding property on the state's config object. The specified string can be interpolated against any resolved 
+                     * properties on the state config object, by using the usual {{ }} syntax. 
+                     * </span><span class="s6">@param </span><span class="s0">currentState 
+                     * </span><span class="s6">@returns </span><span class="s0">{*} 
+                     */</span><span class="s1"> 
+                    </span><span class="s2">function </span><span class="s1">getDisplayName(currentState) { 
+                        </span><span class="s2">var </span><span class="s1">interpolationContext</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">var </span><span class="s1">propertyReference</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">var </span><span class="s1">displayName</span><span class="s4">;</span><span class="s1"> 
+ 
+                        </span><span class="s2">if </span><span class="s1">(!scope.displaynameProperty) { 
+                            </span><span class="s5">// if the displayname-property attribute was not specified, default to the state's name</span><span class="s1"> 
+                            </span><span class="s2">return </span><span class="s1">currentState.name</span><span class="s4">;</span><span class="s1"> 
+                        } 
+                        propertyReference = getObjectValue(scope.displaynameProperty</span><span class="s4">, </span><span class="s1">currentState)</span><span class="s4">;</span><span class="s1"> 
+ 
+                        </span><span class="s2">if </span><span class="s1">(propertyReference === </span><span class="s2">false</span><span class="s1">) { 
+                            </span><span class="s2">return false</span><span class="s4">;</span><span class="s1"> 
+                        } </span><span class="s2">else if </span><span class="s1">(</span><span class="s2">typeof </span><span class="s1">propertyReference === </span><span class="s3">'undefined'</span><span class="s1">) { 
+                            </span><span class="s2">return </span><span class="s1">currentState.name</span><span class="s4">;</span><span class="s1"> 
+                        } </span><span class="s2">else </span><span class="s1">{ 
+                            </span><span class="s5">// use the $interpolate service to handle any bindings in the propertyReference string.</span><span class="s1"> 
+                            interpolationContext =  (</span><span class="s2">typeof </span><span class="s1">currentState.locals !== </span><span class="s3">'undefined'</span><span class="s1">) ? currentState.locals.globals : currentState</span><span class="s4">;</span><span class="s1"> 
+                            displayName = $interpolate(propertyReference)(interpolationContext)</span><span class="s4">;</span><span class="s1"> 
+                            </span><span class="s2">return </span><span class="s1">displayName</span><span class="s4">;</span><span class="s1"> 
+                        } 
+                    } 
+ 
+                    </span><span class="s0">/** 
+                     * Given a string of the type 'object.property.property', traverse the given context (eg the current $state object) and return the 
+                     * value found at that path. 
+                     * 
+                     * </span><span class="s6">@param </span><span class="s0">objectPath 
+                     * </span><span class="s6">@param </span><span class="s0">context 
+                     * </span><span class="s6">@returns </span><span class="s0">{*} 
+                     */</span><span class="s1"> 
+                    </span><span class="s2">function </span><span class="s1">getObjectValue(objectPath</span><span class="s4">, </span><span class="s1">context) { 
+                        </span><span class="s2">var </span><span class="s1">i</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">var </span><span class="s1">propertyArray = objectPath.split(</span><span class="s3">'.'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">var </span><span class="s1">propertyReference = context</span><span class="s4">;</span><span class="s1"> 
+ 
+                        </span><span class="s2">for </span><span class="s1">(i = </span><span class="s7">0</span><span class="s4">; </span><span class="s1">i &lt; propertyArray.length</span><span class="s4">; </span><span class="s1">i ++) { 
+                            </span><span class="s2">if </span><span class="s1">(angular.isDefined(propertyReference[propertyArray[i]])) { 
+                                propertyReference = propertyReference[propertyArray[i]]</span><span class="s4">;</span><span class="s1"> 
+                            } </span><span class="s2">else </span><span class="s1">{ 
+                                </span><span class="s5">// if the specified property was not found, default to the state's name</span><span class="s1"> 
+                                </span><span class="s2">return </span><span class="s1">undefined</span><span class="s4">;</span><span class="s1"> 
+                            } 
+                        } 
+                        </span><span class="s2">return </span><span class="s1">propertyReference</span><span class="s4">;</span><span class="s1"> 
+                    } 
+ 
+                    </span><span class="s0">/** 
+                     * Check whether the current `state` has already appeared in the current breadcrumbs array. This check is necessary 
+                     * when using abstract states that might specify a proxy that is already there in the breadcrumbs. 
+                     * </span><span class="s6">@param </span><span class="s0">state 
+                     * </span><span class="s6">@param </span><span class="s0">breadcrumbs 
+                     * </span><span class="s6">@returns </span><span class="s0">{boolean} 
+                     */</span><span class="s1"> 
+                    </span><span class="s2">function </span><span class="s1">stateAlreadyInBreadcrumbs(state</span><span class="s4">, </span><span class="s1">breadcrumbs) { 
+                        </span><span class="s2">var </span><span class="s1">i</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">var </span><span class="s1">alreadyUsed = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">for</span><span class="s1">(i = </span><span class="s7">0</span><span class="s4">; </span><span class="s1">i &lt; breadcrumbs.length</span><span class="s4">; </span><span class="s1">i++) { 
+                            </span><span class="s2">if </span><span class="s1">(breadcrumbs[i].route === state.name) { 
+                                alreadyUsed = </span><span class="s2">true</span><span class="s4">;</span><span class="s1"> 
+                            } 
+                        } 
+                        </span><span class="s2">return </span><span class="s1">alreadyUsed</span><span class="s4">;</span><span class="s1"> 
+                    } 
+                } 
+            }</span><span class="s4">;</span><span class="s1"> 
+        }])</span><span class="s4">;</span><span class="s1"> 
+})()</span><span class="s4">;</span><span class="s1"> 
+</span></pre>
+</body>
+</html>

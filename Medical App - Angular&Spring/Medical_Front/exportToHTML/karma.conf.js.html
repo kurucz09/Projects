@@ -1,0 +1,104 @@
+<html>
+<head>
+<title>karma.conf.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(98,151,85); font-style: italic; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(204,120,50); font-weight: bold; }
+.s3 { color: rgb(128,128,128); }
+.s4 { color: rgb(106,135,89); }
+.s5 { color: rgb(204,120,50); }
+.s6 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+karma.conf.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/** 
+ * Karma config file for the internal PHPStorm Karma runner. 
+ */</span><span class="s1"> 
+ 
+module.exports = </span><span class="s2">function</span><span class="s1">(config) { 
+    config.set({ 
+ 
+        </span><span class="s3">// base path, that will be used to resolve files and exclude</span><span class="s1"> 
+        basePath: </span><span class="s4">''</span><span class="s5">,</span><span class="s1"> 
+ 
+ 
+        </span><span class="s3">// frameworks to use</span><span class="s1"> 
+        frameworks: [</span><span class="s4">'jasmine'</span><span class="s1">]</span><span class="s5">,</span><span class="s1"> 
+ 
+ 
+        </span><span class="s3">// list of files / patterns to load in the browser</span><span class="s1"> 
+        files: [ 
+            </span><span class="s4">'vendor/jquery/jquery-2.1.0.min.js'</span><span class="s5">, </span><span class="s3">// jQuery is included for the purposes of easier DOM selection when testing directives.</span><span class="s1"> 
+            </span><span class="s4">'vendor/angular/angular.js'</span><span class="s5">,</span><span class="s1"> 
+            </span><span class="s4">'vendor/angular-ui-router/release/angular-ui-router.js'</span><span class="s5">,</span><span class="s1"> 
+            </span><span class="s4">'vendor/angular-mocks/angular-mocks.js'</span><span class="s5">,</span><span class="s1"> 
+            </span><span class="s4">'tmp/templates.js'</span><span class="s5">,</span><span class="s1"> 
+            </span><span class="s4">'src/angularUtils.js'</span><span class="s5">,</span><span class="s1"> 
+            </span><span class="s4">'src/filters/**/*.js'</span><span class="s5">,</span><span class="s1"> 
+            </span><span class="s4">'src/filters/**/*.spec.js'</span><span class="s5">,</span><span class="s1"> 
+            </span><span class="s4">'src/directives/**/*.js'</span><span class="s5">,</span><span class="s1"> 
+            </span><span class="s4">'src/directives/**/*.spec.js'</span><span class="s5">,</span><span class="s1"> 
+            </span><span class="s4">'src/services/**/*.js'</span><span class="s5">,</span><span class="s1"> 
+            </span><span class="s4">'src/services/**/*.spec.js'</span><span class="s1"> 
+        ]</span><span class="s5">,</span><span class="s1"> 
+ 
+ 
+        </span><span class="s3">// list of files to exclude</span><span class="s1"> 
+        exclude: [ 
+        ]</span><span class="s5">,</span><span class="s1"> 
+ 
+ 
+        </span><span class="s3">// test results reporter to use</span><span class="s1"> 
+        </span><span class="s3">// possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'</span><span class="s1"> 
+        reporters: [</span><span class="s4">'progress'</span><span class="s1">]</span><span class="s5">,</span><span class="s1"> 
+ 
+ 
+        </span><span class="s3">// web server port</span><span class="s1"> 
+        port: </span><span class="s6">9876</span><span class="s5">,</span><span class="s1"> 
+ 
+ 
+        </span><span class="s3">// enable / disable colors in the output (reporters and logs)</span><span class="s1"> 
+        colors: </span><span class="s2">true</span><span class="s5">,</span><span class="s1"> 
+ 
+ 
+        </span><span class="s3">// level of logging</span><span class="s1"> 
+        </span><span class="s3">// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG</span><span class="s1"> 
+        logLevel: config.LOG_INFO</span><span class="s5">,</span><span class="s1"> 
+ 
+ 
+        </span><span class="s3">// enable / disable watching file and executing tests whenever any file changes</span><span class="s1"> 
+        autoWatch: </span><span class="s2">false</span><span class="s5">,</span><span class="s1"> 
+ 
+ 
+        </span><span class="s3">// Start these browsers, currently available:</span><span class="s1"> 
+        </span><span class="s3">// - Chrome</span><span class="s1"> 
+        </span><span class="s3">// - ChromeCanary</span><span class="s1"> 
+        </span><span class="s3">// - Firefox</span><span class="s1"> 
+        </span><span class="s3">// - Opera (has to be installed with `npm install karma-opera-launcher`)</span><span class="s1"> 
+        </span><span class="s3">// - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)</span><span class="s1"> 
+        </span><span class="s3">// - PhantomJS</span><span class="s1"> 
+        </span><span class="s3">// - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)</span><span class="s1"> 
+        browsers: [</span><span class="s4">'Chrome'</span><span class="s1">]</span><span class="s5">,</span><span class="s1"> 
+ 
+ 
+        </span><span class="s3">// If browser does not capture in given timeout [ms], kill it</span><span class="s1"> 
+        captureTimeout: </span><span class="s6">60000</span><span class="s5">,</span><span class="s1"> 
+ 
+ 
+        </span><span class="s3">// Continuous Integration mode</span><span class="s1"> 
+        </span><span class="s3">// if true, it capture browsers, run tests and exit</span><span class="s1"> 
+        singleRun: </span><span class="s2">false</span><span class="s1"> 
+    })</span><span class="s5">;</span><span class="s1"> 
+}</span><span class="s5">;</span><span class="s1"> 
+</span></pre>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<html>
+<head>
+<title>package.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(169,183,198); }
+.s1 { color: rgb(106,135,89); }
+.s2 { color: rgb(204,120,50); }
+.s3 { color: rgb(128,128,128); }
+.s4 { color: rgb(204,120,50); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+package.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">Package.describe({ 
+  name: </span><span class="s1">'hexencoded:bootstrap-ui-datetime-picker'</span><span class="s2">,</span><span class="s0"> 
+  version: </span><span class="s1">'2.0.42'</span><span class="s2">,</span><span class="s0"> 
+  </span><span class="s3">// Brief, one-line summary of the package.</span><span class="s0"> 
+  summary: </span><span class="s1">'AngularJs directive to use a date and/or time picker as a dropdown from an input'</span><span class="s2">,</span><span class="s0"> 
+  </span><span class="s3">// URL to the Git repository containing the source code for this package.</span><span class="s0"> 
+  git: </span><span class="s1">'https://github.com/hexencoded/bootstrap-ui-datetime-picker.git'</span><span class="s2">,</span><span class="s0"> 
+  </span><span class="s3">// By default, Meteor will default to using README.md for documentation.</span><span class="s0"> 
+  </span><span class="s3">// To avoid submitting documentation, set this field to null.</span><span class="s0"> 
+  documentation: </span><span class="s1">'README.md'</span><span class="s0"> 
+})</span><span class="s2">;</span><span class="s0"> 
+ 
+Package.onUse(</span><span class="s4">function</span><span class="s0">(api) { 
+  api.versionsFrom(</span><span class="s1">'1.2.1'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+  </span><span class="s3">// api.use('ecmascript');</span><span class="s0"> 
+  </span><span class="s3">// api.addFiles('bootstrap-ui-datetime-picker.js');</span><span class="s0"> 
+ 
+  </span><span class="s3">// Dependencies</span><span class="s0"> 
+  api.use(</span><span class="s1">'angular:angular@1.4.0'</span><span class="s2">, </span><span class="s1">'client'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+  api.use(</span><span class="s1">'angularui:angular-ui-bootstrap@1.1.0'</span><span class="s2">, </span><span class="s1">'client'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+  api.addFiles(</span><span class="s1">'dist/datetime-picker.js'</span><span class="s2">, </span><span class="s1">'client'</span><span class="s0">)</span><span class="s2">; </span><span class="s3">// Files in use</span><span class="s0"> 
+})</span><span class="s2">;</span><span class="s0"> 
+ 
+Package.onTest(</span><span class="s4">function</span><span class="s0">(api) { 
+  api.use(</span><span class="s1">'ecmascript'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+  api.use(</span><span class="s1">'tinytest'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+  api.use(</span><span class="s1">'hexencoded:bootstrap-ui-datetime-picker'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+  api.addFiles(</span><span class="s1">'bootstrap-ui-datetime-picker-tests.js'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+})</span><span class="s2">;</span><span class="s0"> 
+</span></pre>
+</body>
+</html>

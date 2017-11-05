@@ -1,0 +1,191 @@
+<html>
+<head>
+<title>index.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); font-weight: bold; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(106,135,89); }
+.s3 { color: rgb(204,120,50); }
+.s4 { color: rgb(128,128,128); }
+.s5 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+index.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">var </span><span class="s1">app = angular.module(</span><span class="s2">'app'</span><span class="s3">, </span><span class="s1">[</span><span class="s2">'ui.bootstrap'</span><span class="s3">, </span><span class="s2">'ui.bootstrap.datetimepicker'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+ 
+app.controller(</span><span class="s2">'MyController'</span><span class="s3">, </span><span class="s1">[</span><span class="s2">'$scope'</span><span class="s3">, </span><span class="s0">function</span><span class="s1">($scope) { 
+ 
+    </span><span class="s0">var </span><span class="s1">that = </span><span class="s0">this</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// date picker</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker1 = { 
+        date: </span><span class="s0">new </span><span class="s1">Date(</span><span class="s2">'2015-03-01T00:00:00Z'</span><span class="s1">)</span><span class="s3">,</span><span class="s1"> 
+        datepickerOptions: { 
+            showWeeks: </span><span class="s0">false</span><span class="s3">,</span><span class="s1"> 
+            startingDay: </span><span class="s5">1</span><span class="s3">,</span><span class="s1"> 
+            dateDisabled: </span><span class="s0">function</span><span class="s1">(data) { 
+                </span><span class="s0">return </span><span class="s1">(data.mode === </span><span class="s2">'day' </span><span class="s1">&amp;&amp; (</span><span class="s0">new </span><span class="s1">Date().toDateString() == data.date.toDateString()))</span><span class="s3">;</span><span class="s1"> 
+            } 
+        } 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// time picker</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker2 = { 
+        date: </span><span class="s0">new </span><span class="s1">Date(</span><span class="s2">'2015-03-01T12:30:00Z'</span><span class="s1">)</span><span class="s3">,</span><span class="s1"> 
+        timepickerOptions: { 
+            readonlyInput: </span><span class="s0">false</span><span class="s3">,</span><span class="s1"> 
+            showMeridian: </span><span class="s0">false</span><span class="s1"> 
+        } 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// date and time picker</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker3 = { 
+        date: </span><span class="s0">new </span><span class="s1">Date() 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// min date picker</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker4 = { 
+        date: </span><span class="s0">new </span><span class="s1">Date()</span><span class="s3">,</span><span class="s1"> 
+        datepickerOptions: { 
+            maxDate: </span><span class="s0">null</span><span class="s1"> 
+        } 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// max date picker</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker5 = { 
+        date: </span><span class="s0">new </span><span class="s1">Date()</span><span class="s3">,</span><span class="s1"> 
+        datepickerOptions: { 
+            minDate: </span><span class="s0">null</span><span class="s1"> 
+        } 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// set date for max picker, 10 days in future</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker5.date.setDate(</span><span class="s0">this</span><span class="s1">.picker5.date.getDate() + </span><span class="s5">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// global config picker</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker6 = { 
+        date: </span><span class="s0">new </span><span class="s1">Date() 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// dropdown up picker</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker7 = { 
+        date: </span><span class="s0">new </span><span class="s1">Date() 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// view mode picker</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker8 = { 
+        date: </span><span class="s0">new </span><span class="s1">Date()</span><span class="s3">,</span><span class="s1"> 
+        datepickerOptions: { 
+            mode: </span><span class="s2">'year'</span><span class="s3">,</span><span class="s1"> 
+            minMode: </span><span class="s2">'year'</span><span class="s3">,</span><span class="s1"> 
+            maxMode: </span><span class="s2">'year'</span><span class="s1"> 
+        } 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// dropdown up picker</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker9 = { 
+        date: </span><span class="s0">null</span><span class="s1"> 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// min time picker</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker10 = { 
+        date: </span><span class="s0">new </span><span class="s1">Date(</span><span class="s2">'2016-03-01T09:00:00Z'</span><span class="s1">)</span><span class="s3">,</span><span class="s1"> 
+        timepickerOptions: { 
+            max: </span><span class="s0">null</span><span class="s1"> 
+        } 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// max time picker</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker11 = { 
+        date: </span><span class="s0">new </span><span class="s1">Date(</span><span class="s2">'2016-03-01T10:00:00Z'</span><span class="s1">)</span><span class="s3">,</span><span class="s1"> 
+        timepickerOptions: { 
+            min: </span><span class="s0">null</span><span class="s1"> 
+        } 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// button bar</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker12 = { 
+        date: </span><span class="s0">new </span><span class="s1">Date()</span><span class="s3">,</span><span class="s1"> 
+        buttonBar: { 
+            show: </span><span class="s0">true</span><span class="s3">,</span><span class="s1"> 
+            now: { 
+                show: </span><span class="s0">true</span><span class="s3">,</span><span class="s1"> 
+                text: </span><span class="s2">'Now!'</span><span class="s1"> 
+            }</span><span class="s3">,</span><span class="s1"> 
+            today: { 
+                show: </span><span class="s0">true</span><span class="s3">,</span><span class="s1"> 
+                text: </span><span class="s2">'Today!'</span><span class="s1"> 
+            }</span><span class="s3">,</span><span class="s1"> 
+            clear: { 
+                show: </span><span class="s0">false</span><span class="s3">,</span><span class="s1"> 
+                text: </span><span class="s2">'Wipe'</span><span class="s1"> 
+            }</span><span class="s3">,</span><span class="s1"> 
+            date: { 
+                show: </span><span class="s0">true</span><span class="s3">,</span><span class="s1"> 
+                text: </span><span class="s2">'Date'</span><span class="s1"> 
+            }</span><span class="s3">,</span><span class="s1"> 
+            time: { 
+                show: </span><span class="s0">true</span><span class="s3">,</span><span class="s1"> 
+                text: </span><span class="s2">'Time'</span><span class="s1"> 
+            }</span><span class="s3">,</span><span class="s1"> 
+            close: { 
+                show: </span><span class="s0">true</span><span class="s3">,</span><span class="s1"> 
+                text: </span><span class="s2">'Shut'</span><span class="s1"> 
+            } 
+        } 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// when closed picker</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker13 = { 
+        date: </span><span class="s0">new </span><span class="s1">Date()</span><span class="s3">,</span><span class="s1"> 
+        closed: </span><span class="s0">function</span><span class="s1">(args) { 
+            that.closedArgs = args</span><span class="s3">;</span><span class="s1"> 
+        } 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// saveAs - ISO</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.picker14 = { 
+        date: </span><span class="s0">new </span><span class="s1">Date().toISOString() 
+    } 
+ 
+    </span><span class="s0">this</span><span class="s1">.openCalendar = </span><span class="s0">function</span><span class="s1">(e</span><span class="s3">, </span><span class="s1">picker) { 
+        that[picker].open = </span><span class="s0">true</span><span class="s3">;</span><span class="s1"> 
+    }</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// watch min and max dates to calculate difference</span><span class="s1"> 
+    </span><span class="s0">var </span><span class="s1">unwatchMinMaxValues = $scope.$watch(</span><span class="s0">function</span><span class="s1">() { 
+        </span><span class="s0">return </span><span class="s1">[that.picker4</span><span class="s3">, </span><span class="s1">that.picker5</span><span class="s3">, </span><span class="s1">that.picker10</span><span class="s3">, </span><span class="s1">that.picker11]</span><span class="s3">;</span><span class="s1"> 
+    }</span><span class="s3">, </span><span class="s0">function</span><span class="s1">() { 
+        </span><span class="s4">// min max dates</span><span class="s1"> 
+        that.picker4.datepickerOptions.maxDate = that.picker5.date</span><span class="s3">;</span><span class="s1"> 
+        that.picker5.datepickerOptions.minDate = that.picker4.date</span><span class="s3">;</span><span class="s1"> 
+ 
+        </span><span class="s0">if </span><span class="s1">(that.picker4.date &amp;&amp; that.picker5.date) { 
+            </span><span class="s0">var </span><span class="s1">diff = that.picker4.date.getTime() - that.picker5.date.getTime()</span><span class="s3">;</span><span class="s1"> 
+            that.dayRange = Math.round(Math.abs(diff/(</span><span class="s5">1000</span><span class="s1">*</span><span class="s5">60</span><span class="s1">*</span><span class="s5">60</span><span class="s1">*</span><span class="s5">24</span><span class="s1">))) 
+        } </span><span class="s0">else </span><span class="s1">{ 
+            that.dayRange = </span><span class="s2">'n/a'</span><span class="s3">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s4">// min max times</span><span class="s1"> 
+        that.picker10.timepickerOptions.max = that.picker11.date</span><span class="s3">;</span><span class="s1"> 
+        that.picker11.timepickerOptions.min = that.picker10.date</span><span class="s3">;</span><span class="s1"> 
+    }</span><span class="s3">, </span><span class="s0">true</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+ 
+    </span><span class="s4">// destroy watcher</span><span class="s1"> 
+    $scope.$on(</span><span class="s2">'$destroy'</span><span class="s3">, </span><span class="s0">function</span><span class="s1">() { 
+        unwatchMinMaxValues()</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+}])</span><span class="s3">;</span></pre>
+</body>
+</html>

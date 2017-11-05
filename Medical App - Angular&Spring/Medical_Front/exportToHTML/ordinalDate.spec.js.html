@@ -1,0 +1,64 @@
+<html>
+<head>
+<title>ordinalDate.spec.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(169,183,198); }
+.s1 { color: rgb(106,135,89); }
+.s2 { color: rgb(204,120,50); }
+.s3 { color: rgb(204,120,50); font-weight: bold; }
+.s4 { color: rgb(104,151,187); }
+.s5 { color: rgb(128,128,128); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+ordinalDate.spec.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">describe(</span><span class="s1">'ordinalDate'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">() { 
+    </span><span class="s3">var </span><span class="s0">ordinalDateFilter</span><span class="s2">;</span><span class="s0"> 
+    </span><span class="s3">var </span><span class="s0">timestamp1 = </span><span class="s4">1384474920000</span><span class="s2">; </span><span class="s5">// 15th November 2013, 00:22:00</span><span class="s0"> 
+ 
+    beforeEach(module(</span><span class="s1">'angularUtils.filters.ordinalDate'</span><span class="s0">))</span><span class="s2">;</span><span class="s0"> 
+    beforeEach (</span><span class="s3">function</span><span class="s0">(){ 
+        inject(</span><span class="s3">function </span><span class="s0">($injector) { 
+            ordinalDateFilter = $injector.get(</span><span class="s1">'ordinalDateFilter'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        })</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should add an ordinal suffix to days of month'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">() { 
+        expect(ordinalDateFilter(timestamp1</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'15th'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(timestamp1</span><span class="s2">, </span><span class="s1">&quot;EEEE 'the' d of MMMM&quot;</span><span class="s0">)).toEqual(</span><span class="s1">'Friday the 15th of November'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(timestamp1</span><span class="s2">, </span><span class="s1">&quot;d d&quot;</span><span class="s0">)).toEqual(</span><span class="s1">'15th 15th'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+    it(</span><span class="s1">'should add the correct suffix for all possible variations'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">() { 
+        expect(ordinalDateFilter(</span><span class="s4">1383265320000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'1st'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1383351720000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'2nd'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1383438120000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'3rd'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1383524520000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'4th'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1384042920000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'10th'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1384129320000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'11th'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1384215720000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'12th'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1384302120000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'13th'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1384906920000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'20th'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1384993320000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'21st'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1385079720000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'22nd'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1385079720000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'22nd'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1385166120000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'23rd'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1385252520000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'24th'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1385770920000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'30th'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(</span><span class="s4">1383178920000</span><span class="s2">, </span><span class="s1">'d'</span><span class="s0">)).toEqual(</span><span class="s1">'31st'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+    })</span><span class="s2">;</span><span class="s0"> 
+    it(</span><span class="s1">'should leave the </span><span class="s2">\'</span><span class="s1">dd</span><span class="s2">\'</span><span class="s1"> format day alone'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">() { 
+        expect(ordinalDateFilter(timestamp1</span><span class="s2">, </span><span class="s1">&quot;dd/MM/yyyy&quot;</span><span class="s0">)).toEqual(</span><span class="s1">'15/11/2013'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(timestamp1</span><span class="s2">, </span><span class="s1">&quot;yyyy-MM-dd&quot;</span><span class="s0">)).toEqual(</span><span class="s1">'2013-11-15'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        expect(ordinalDateFilter(timestamp1</span><span class="s2">, </span><span class="s1">&quot;'the' d 'day' of MMMM&quot;</span><span class="s0">)).toEqual(</span><span class="s1">'the 15th day of November'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+})</span><span class="s2">;</span></pre>
+</body>
+</html>

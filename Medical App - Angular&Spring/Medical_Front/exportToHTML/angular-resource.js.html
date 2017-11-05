@@ -1,0 +1,884 @@
+<html>
+<head>
+<title>angular-resource.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(98,151,85); font-style: italic; }
+.s1 { color: rgb(98,151,85); font-weight: bold; font-style: italic; }
+.s2 { color: rgb(169,183,198); }
+.s3 { color: rgb(204,120,50); font-weight: bold; }
+.s4 { color: rgb(204,120,50); }
+.s5 { color: rgb(106,135,89); }
+.s6 { color: rgb(128,128,128); }
+.s7 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+angular-resource.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/** 
+ * </span><span class="s1">@license </span><span class="s0">AngularJS v1.6.5-build.5353+sha.136a42a 
+ * (c) 2010-2017 Google, Inc. http://angularjs.org 
+ * License: MIT 
+ */</span><span class="s2"> 
+(</span><span class="s3">function</span><span class="s2">(window</span><span class="s4">, </span><span class="s2">angular) {</span><span class="s5">'use strict'</span><span class="s4">;</span><span class="s2"> 
+ 
+</span><span class="s3">var </span><span class="s2">$resourceMinErr = angular.$$minErr(</span><span class="s5">'$resource'</span><span class="s2">)</span><span class="s4">;</span><span class="s2"> 
+ 
+</span><span class="s6">// Helper functions and regex to lookup a dotted path on an object</span><span class="s2"> 
+</span><span class="s6">// stopping at undefined/null.  The path must be composed of ASCII</span><span class="s2"> 
+</span><span class="s6">// identifiers (just like $parse)</span><span class="s2"> 
+</span><span class="s3">var </span><span class="s2">MEMBER_NAME_REGEX = </span><span class="s5">/^(\.[a-zA-Z_$@][0-9a-zA-Z_$@]*)+$/</span><span class="s4">;</span><span class="s2"> 
+ 
+</span><span class="s3">function </span><span class="s2">isValidDottedPath(path) { 
+  </span><span class="s3">return </span><span class="s2">(path != </span><span class="s3">null </span><span class="s2">&amp;&amp; path !== </span><span class="s5">'' </span><span class="s2">&amp;&amp; path !== </span><span class="s5">'hasOwnProperty' </span><span class="s2">&amp;&amp; 
+      MEMBER_NAME_REGEX.test(</span><span class="s5">'.' </span><span class="s2">+ path))</span><span class="s4">;</span><span class="s2"> 
+} 
+ 
+</span><span class="s3">function </span><span class="s2">lookupDottedPath(obj</span><span class="s4">, </span><span class="s2">path) { 
+  </span><span class="s3">if </span><span class="s2">(!isValidDottedPath(path)) { 
+    </span><span class="s3">throw </span><span class="s2">$resourceMinErr(</span><span class="s5">'badmember'</span><span class="s4">, </span><span class="s5">'Dotted member path &quot;@{0}&quot; is invalid.'</span><span class="s4">, </span><span class="s2">path)</span><span class="s4">;</span><span class="s2"> 
+  } 
+  </span><span class="s3">var </span><span class="s2">keys = path.split(</span><span class="s5">'.'</span><span class="s2">)</span><span class="s4">;</span><span class="s2"> 
+  </span><span class="s3">for </span><span class="s2">(</span><span class="s3">var </span><span class="s2">i = </span><span class="s7">0</span><span class="s4">, </span><span class="s2">ii = keys.length</span><span class="s4">; </span><span class="s2">i &lt; ii &amp;&amp; angular.isDefined(obj)</span><span class="s4">; </span><span class="s2">i++) { 
+    </span><span class="s3">var </span><span class="s2">key = keys[i]</span><span class="s4">;</span><span class="s2"> 
+    obj = (obj !== </span><span class="s3">null</span><span class="s2">) ? obj[key] : undefined</span><span class="s4">;</span><span class="s2"> 
+  } 
+  </span><span class="s3">return </span><span class="s2">obj</span><span class="s4">;</span><span class="s2"> 
+} 
+ 
+</span><span class="s0">/** 
+ * Create a shallow copy of an object and clear other fields from the destination 
+ */</span><span class="s2"> 
+</span><span class="s3">function </span><span class="s2">shallowClearAndCopy(src</span><span class="s4">, </span><span class="s2">dst) { 
+  dst = dst || {}</span><span class="s4">;</span><span class="s2"> 
+ 
+  angular.forEach(dst</span><span class="s4">, </span><span class="s3">function</span><span class="s2">(value</span><span class="s4">, </span><span class="s2">key) { 
+    </span><span class="s3">delete </span><span class="s2">dst[key]</span><span class="s4">;</span><span class="s2"> 
+  })</span><span class="s4">;</span><span class="s2"> 
+ 
+  </span><span class="s3">for </span><span class="s2">(</span><span class="s3">var </span><span class="s2">key </span><span class="s3">in </span><span class="s2">src) { 
+    </span><span class="s3">if </span><span class="s2">(src.hasOwnProperty(key) &amp;&amp; !(key.charAt(</span><span class="s7">0</span><span class="s2">) === </span><span class="s5">'$' </span><span class="s2">&amp;&amp; key.charAt(</span><span class="s7">1</span><span class="s2">) === </span><span class="s5">'$'</span><span class="s2">)) { 
+      dst[key] = src[key]</span><span class="s4">;</span><span class="s2"> 
+    } 
+  } 
+ 
+  </span><span class="s3">return </span><span class="s2">dst</span><span class="s4">;</span><span class="s2"> 
+} 
+ 
+</span><span class="s0">/** 
+ * </span><span class="s1">@ngdoc </span><span class="s0">module 
+ * </span><span class="s1">@name </span><span class="s0">ngResource 
+ * </span><span class="s1">@description</span><span class="s0"> 
+ * 
+ * # ngResource 
+ * 
+ * The `ngResource` module provides interaction support with RESTful services 
+ * via the $resource service. 
+ * 
+ * 
+ * &lt;div doc-module-components=&quot;ngResource&quot;&gt;&lt;/div&gt; 
+ * 
+ * See {</span><span class="s1">@link </span><span class="s0">ngResource.$resourceProvider} and {</span><span class="s1">@link </span><span class="s0">ngResource.$resource} for usage. 
+ */</span><span class="s2"> 
+ 
+</span><span class="s0">/** 
+ * </span><span class="s1">@ngdoc </span><span class="s0">provider 
+ * </span><span class="s1">@name </span><span class="s0">$resourceProvider 
+ * 
+ * </span><span class="s1">@description</span><span class="s0"> 
+ * 
+ * Use `$resourceProvider` to change the default behavior of the {</span><span class="s1">@link </span><span class="s0">ngResource.$resource} 
+ * service. 
+ * 
+ * ## Dependencies 
+ * Requires the {</span><span class="s1">@link </span><span class="s0">ngResource } module to be installed. 
+ * 
+ */</span><span class="s2"> 
+ 
+</span><span class="s0">/** 
+ * </span><span class="s1">@ngdoc </span><span class="s0">service 
+ * </span><span class="s1">@name </span><span class="s0">$resource 
+ * </span><span class="s1">@requires </span><span class="s0">$http 
+ * </span><span class="s1">@requires </span><span class="s0">ng.$log 
+ * </span><span class="s1">@requires </span><span class="s0">$q 
+ * </span><span class="s1">@requires </span><span class="s0">ng.$timeout 
+ * 
+ * </span><span class="s1">@description</span><span class="s0"> 
+ * A factory which creates a resource object that lets you interact with 
+ * [RESTful](http://en.wikipedia.org/wiki/Representational_State_Transfer) server-side data sources. 
+ * 
+ * The returned resource object has action methods which provide high-level behaviors without 
+ * the need to interact with the low level {</span><span class="s1">@link </span><span class="s0">ng.$http $http} service. 
+ * 
+ * Requires the {</span><span class="s1">@link </span><span class="s0">ngResource `ngResource`} module to be installed. 
+ * 
+ * By default, trailing slashes will be stripped from the calculated URLs, 
+ * which can pose problems with server backends that do not expect that 
+ * behavior.  This can be disabled by configuring the `$resourceProvider` like 
+ * this: 
+ * 
+ * ```js 
+     app.config(['$resourceProvider', function($resourceProvider) { 
+       // Don't strip trailing slashes from calculated URLs 
+       $resourceProvider.defaults.stripTrailingSlashes = false; 
+     }]); 
+ * ``` 
+ * 
+ * </span><span class="s1">@param </span><span class="s0">{string} url A parameterized URL template with parameters prefixed by `:` as in 
+ *   `/user/:username`. If you are using a URL with a port number (e.g. 
+ *   `http://example.com:8080/api`), it will be respected. 
+ * 
+ *   If you are using a url with a suffix, just add the suffix, like this: 
+ *   `$resource('http://example.com/resource.json')` or `$resource('http://example.com/:id.json')` 
+ *   or even `$resource('http://example.com/resource/:resource_id.:format')` 
+ *   If the parameter before the suffix is empty, :resource_id in this case, then the `/.` will be 
+ *   collapsed down to a single `.`.  If you need this sequence to appear and not collapse then you 
+ *   can escape it with `/\.`. 
+ * 
+ * </span><span class="s1">@param </span><span class="s0">{Object=} paramDefaults Default values for `url` parameters. These can be overridden in 
+ *   `actions` methods. If a parameter value is a function, it will be called every time 
+ *   a param value needs to be obtained for a request (unless the param was overridden). The function 
+ *   will be passed the current data value as an argument. 
+ * 
+ *   Each key value in the parameter object is first bound to url template if present and then any 
+ *   excess keys are appended to the url search query after the `?`. 
+ * 
+ *   Given a template `/path/:verb` and parameter `{verb:'greet', salutation:'Hello'}` results in 
+ *   URL `/path/greet?salutation=Hello`. 
+ * 
+ *   If the parameter value is prefixed with `@`, then the value for that parameter will be 
+ *   extracted from the corresponding property on the `data` object (provided when calling actions 
+ *   with a request body). 
+ *   For example, if the `defaultParam` object is `{someParam: '@someProp'}` then the value of 
+ *   `someParam` will be `data.someProp`. 
+ *   Note that the parameter will be ignored, when calling a &quot;GET&quot; action method (i.e. an action 
+ *   method that does not accept a request body) 
+ * 
+ * </span><span class="s1">@param </span><span class="s0">{Object.&lt;Object&gt;=} actions Hash with declaration of custom actions that will be available 
+ *   in addition to the default set of resource actions (see below). If a custom action has the same 
+ *   key as a default action (e.g. `save`), then the default action will be *overwritten*, and not 
+ *   extended. 
+ * 
+ *   The declaration should be created in the format of {</span><span class="s1">@link </span><span class="s0">ng.$http#usage $http.config}: 
+ * 
+ *       {action1: {method:?, params:?, isArray:?, headers:?, ...}, 
+ *        action2: {method:?, params:?, isArray:?, headers:?, ...}, 
+ *        ...} 
+ * 
+ *   Where: 
+ * 
+ *   - **`action`** – {string} – The name of action. This name becomes the name of the method on 
+ *     your resource object. 
+ *   - **`method`** – {string} – Case insensitive HTTP method (e.g. `GET`, `POST`, `PUT`, 
+ *     `DELETE`, `JSONP`, etc). 
+ *   - **`params`** – {Object=} – Optional set of pre-bound parameters for this action. If any of 
+ *     the parameter value is a function, it will be called every time when a param value needs to 
+ *     be obtained for a request (unless the param was overridden). The function will be passed the 
+ *     current data value as an argument. 
+ *   - **`url`** – {string} – action specific `url` override. The url templating is supported just 
+ *     like for the resource-level urls. 
+ *   - **`isArray`** – {boolean=} – If true then the returned object for this action is an array, 
+ *     see `returns` section. 
+ *   - **`transformRequest`** – 
+ *     `{function(data, headersGetter)|Array.&lt;function(data, headersGetter)&gt;}` – 
+ *     transform function or an array of such functions. The transform function takes the http 
+ *     request body and headers and returns its transformed (typically serialized) version. 
+ *     By default, transformRequest will contain one function that checks if the request data is 
+ *     an object and serializes it using `angular.toJson`. To prevent this behavior, set 
+ *     `transformRequest` to an empty array: `transformRequest: []` 
+ *   - **`transformResponse`** – 
+ *     `{function(data, headersGetter, status)|Array.&lt;function(data, headersGetter, status)&gt;}` – 
+ *     transform function or an array of such functions. The transform function takes the http 
+ *     response body, headers and status and returns its transformed (typically deserialized) 
+ *     version. 
+ *     By default, transformResponse will contain one function that checks if the response looks 
+ *     like a JSON string and deserializes it using `angular.fromJson`. To prevent this behavior, 
+ *     set `transformResponse` to an empty array: `transformResponse: []` 
+ *   - **`cache`** – `{boolean|Cache}` – If true, a default $http cache will be used to cache the 
+ *     GET request, otherwise if a cache instance built with 
+ *     {</span><span class="s1">@link </span><span class="s0">ng.$cacheFactory $cacheFactory} is supplied, this cache will be used for 
+ *     caching. 
+ *   - **`timeout`** – `{number}` – timeout in milliseconds.&lt;br /&gt; 
+ *     **Note:** In contrast to {</span><span class="s1">@link </span><span class="s0">ng.$http#usage $http.config}, {</span><span class="s1">@link </span><span class="s0">ng.$q promises} are 
+ *     **not** supported in $resource, because the same value would be used for multiple requests. 
+ *     If you are looking for a way to cancel requests, you should use the `cancellable` option. 
+ *   - **`cancellable`** – `{boolean}` – if set to true, the request made by a &quot;non-instance&quot; call 
+ *     will be cancelled (if not already completed) by calling `$cancelRequest()` on the call's 
+ *     return value. Calling `$cancelRequest()` for a non-cancellable or an already 
+ *     completed/cancelled request will have no effect.&lt;br /&gt; 
+ *   - **`withCredentials`** - `{boolean}` - whether to set the `withCredentials` flag on the 
+ *     XHR object. See 
+ *     [requests with credentials](https://developer.mozilla.org/en/http_access_control#section_5) 
+ *     for more information. 
+ *   - **`responseType`** - `{string}` - see 
+ *     [requestType](https://developer.mozilla.org/en-US/docs/DOM/XMLHttpRequest#responseType). 
+ *   - **`interceptor`** - `{Object=}` - The interceptor object has two optional methods - 
+ *     `response` and `responseError`. Both `response` and `responseError` interceptors get called 
+ *     with `http response` object. See {</span><span class="s1">@link </span><span class="s0">ng.$http $http interceptors}. 
+ *   - **`hasBody`** - `{boolean}` - allows to specify if a request body should be included or not. 
+ *     If not specified only POST, PUT and PATCH requests will have a body. 
+ * 
+ * </span><span class="s1">@param </span><span class="s0">{Object} options Hash with custom settings that should extend the 
+ *   default `$resourceProvider` behavior.  The supported options are: 
+ * 
+ *   - **`stripTrailingSlashes`** – {boolean} – If true then the trailing 
+ *   slashes from any calculated URL will be stripped. (Defaults to true.) 
+ *   - **`cancellable`** – {boolean} – If true, the request made by a &quot;non-instance&quot; call will be 
+ *   cancelled (if not already completed) by calling `$cancelRequest()` on the call's return value. 
+ *   This can be overwritten per action. (Defaults to false.) 
+ * 
+ * </span><span class="s1">@returns </span><span class="s0">{Object} A resource &quot;class&quot; object with methods for the default set of resource actions 
+ *   optionally extended with custom `actions`. The default set contains these actions: 
+ *   ```js 
+ *   { 'get':    {method:'GET'}, 
+ *     'save':   {method:'POST'}, 
+ *     'query':  {method:'GET', isArray:true}, 
+ *     'remove': {method:'DELETE'}, 
+ *     'delete': {method:'DELETE'} }; 
+ *   ``` 
+ * 
+ *   Calling these methods invoke an {</span><span class="s1">@link </span><span class="s0">ng.$http} with the specified http method, 
+ *   destination and parameters. When the data is returned from the server then the object is an 
+ *   instance of the resource class. The actions `save`, `remove` and `delete` are available on it 
+ *   as  methods with the `$` prefix. This allows you to easily perform CRUD operations (create, 
+ *   read, update, delete) on server-side data like this: 
+ *   ```js 
+ *   var User = $resource('/user/:userId', {userId:'@id'}); 
+ *   var user = User.get({userId:123}, function() { 
+ *     user.abc = true; 
+ *     user.$save(); 
+ *   }); 
+ *   ``` 
+ * 
+ *   It is important to realize that invoking a $resource object method immediately returns an 
+ *   empty reference (object or array depending on `isArray`). Once the data is returned from the 
+ *   server the existing reference is populated with the actual data. This is a useful trick since 
+ *   usually the resource is assigned to a model which is then rendered by the view. Having an empty 
+ *   object results in no rendering, once the data arrives from the server then the object is 
+ *   populated with the data and the view automatically re-renders itself showing the new data. This 
+ *   means that in most cases one never has to write a callback function for the action methods. 
+ * 
+ *   The action methods on the class object or instance object can be invoked with the following 
+ *   parameters: 
+ * 
+ *   - &quot;class&quot; actions without a body: `Resource.action([parameters], [success], [error])` 
+ *   - &quot;class&quot; actions with a body: `Resource.action([parameters], postData, [success], [error])` 
+ *   - instance actions: `instance.$action([parameters], [success], [error])` 
+ * 
+ * 
+ *   When calling instance methods, the instance itself is used as the request body (if the action 
+ *   should have a body). By default, only actions using `POST`, `PUT` or `PATCH` have request 
+ *   bodies, but you can use the `hasBody` configuration option to specify whether an action 
+ *   should have a body or not (regardless of its HTTP method). 
+ * 
+ * 
+ *   Success callback is called with (value (Object|Array), responseHeaders (Function), 
+ *   status (number), statusText (string)) arguments, where the value is the populated resource 
+ *   instance or collection object. The error callback is called with (httpResponse) argument. 
+ * 
+ *   Class actions return empty instance (with additional properties below). 
+ *   Instance actions return promise of the action. 
+ * 
+ *   The Resource instances and collections have these additional properties: 
+ * 
+ *   - `$promise`: the {</span><span class="s1">@link </span><span class="s0">ng.$q promise} of the original server interaction that created this 
+ *     instance or collection. 
+ * 
+ *     On success, the promise is resolved with the same resource instance or collection object, 
+ *     updated with data from server. This makes it easy to use in 
+ *     {</span><span class="s1">@link </span><span class="s0">ngRoute.$routeProvider resolve section of $routeProvider.when()} to defer view 
+ *     rendering until the resource(s) are loaded. 
+ * 
+ *     On failure, the promise is rejected with the {</span><span class="s1">@link </span><span class="s0">ng.$http http response} object, without 
+ *     the `resource` property. 
+ * 
+ *     If an interceptor object was provided, the promise will instead be resolved with the value 
+ *     returned by the interceptor. 
+ * 
+ *   - `$resolved`: `true` after first server interaction is completed (either with success or 
+ *      rejection), `false` before that. Knowing if the Resource has been resolved is useful in 
+ *      data-binding. 
+ * 
+ *   The Resource instances and collections have these additional methods: 
+ * 
+ *   - `$cancelRequest`: If there is a cancellable, pending request related to the instance or 
+ *      collection, calling this method will abort the request. 
+ * 
+ *   The Resource instances have these additional methods: 
+ * 
+ *   - `toJSON`: It returns a simple object without any of the extra properties added as part of 
+ *     the Resource API. This object can be serialized through {</span><span class="s1">@link </span><span class="s0">angular.toJson} safely 
+ *     without attaching AngularJS-specific fields. Notice that `JSON.stringify` (and 
+ *     `angular.toJson`) automatically use this method when serializing a Resource instance 
+ *     (see [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON%28%29_behavior)). 
+ * 
+ * </span><span class="s1">@example</span><span class="s0"> 
+ * 
+ * # Credit card resource 
+ * 
+ * ```js 
+     // Define CreditCard class 
+     var CreditCard = $resource('/user/:userId/card/:cardId', 
+      {userId:123, cardId:'@id'}, { 
+       charge: {method:'POST', params:{charge:true}} 
+      }); 
+ 
+     // We can retrieve a collection from the server 
+     var cards = CreditCard.query(function() { 
+       // GET: /user/123/card 
+       // server returns: [ {id:456, number:'1234', name:'Smith'} ]; 
+ 
+       var card = cards[0]; 
+       // each item is an instance of CreditCard 
+       expect(card instanceof CreditCard).toEqual(true); 
+       card.name = &quot;J. Smith&quot;; 
+       // non GET methods are mapped onto the instances 
+       card.$save(); 
+       // POST: /user/123/card/456 {id:456, number:'1234', name:'J. Smith'} 
+       // server returns: {id:456, number:'1234', name: 'J. Smith'}; 
+ 
+       // our custom method is mapped as well. 
+       card.$charge({amount:9.99}); 
+       // POST: /user/123/card/456?amount=9.99&amp;charge=true {id:456, number:'1234', name:'J. Smith'} 
+     }); 
+ 
+     // we can create an instance as well 
+     var newCard = new CreditCard({number:'0123'}); 
+     newCard.name = &quot;Mike Smith&quot;; 
+     newCard.$save(); 
+     // POST: /user/123/card {number:'0123', name:'Mike Smith'} 
+     // server returns: {id:789, number:'0123', name: 'Mike Smith'}; 
+     expect(newCard.id).toEqual(789); 
+ * ``` 
+ * 
+ * The object returned from this function execution is a resource &quot;class&quot; which has &quot;static&quot; method 
+ * for each action in the definition. 
+ * 
+ * Calling these methods invoke `$http` on the `url` template with the given `method`, `params` and 
+ * `headers`. 
+ * 
+ * </span><span class="s1">@example</span><span class="s0"> 
+ * 
+ * # User resource 
+ * 
+ * When the data is returned from the server then the object is an instance of the resource type and 
+ * all of the non-GET methods are available with `$` prefix. This allows you to easily support CRUD 
+ * operations (create, read, update, delete) on server-side data. 
+ 
+   ```js 
+     var User = $resource('/user/:userId', {userId:'@id'}); 
+     User.get({userId:123}, function(user) { 
+       user.abc = true; 
+       user.$save(); 
+     }); 
+   ``` 
+ * 
+ * It's worth noting that the success callback for `get`, `query` and other methods gets passed 
+ * in the response that came from the server as well as $http header getter function, so one 
+ * could rewrite the above example and get access to http headers as: 
+ * 
+   ```js 
+     var User = $resource('/user/:userId', {userId:'@id'}); 
+     User.get({userId:123}, function(user, getResponseHeaders){ 
+       user.abc = true; 
+       user.$save(function(user, putResponseHeaders) { 
+         //user =&gt; saved user object 
+         //putResponseHeaders =&gt; $http header getter 
+       }); 
+     }); 
+   ``` 
+ * 
+ * You can also access the raw `$http` promise via the `$promise` property on the object returned 
+ * 
+   ``` 
+     var User = $resource('/user/:userId', {userId:'@id'}); 
+     User.get({userId:123}) 
+         .$promise.then(function(user) { 
+           $scope.user = user; 
+         }); 
+   ``` 
+ * 
+ * </span><span class="s1">@example</span><span class="s0"> 
+ * 
+ * # Creating a custom 'PUT' request 
+ * 
+ * In this example we create a custom method on our resource to make a PUT request 
+ * ```js 
+ *    var app = angular.module('app', ['ngResource', 'ngRoute']); 
+ * 
+ *    // Some APIs expect a PUT request in the format URL/object/ID 
+ *    // Here we are creating an 'update' method 
+ *    app.factory('Notes', ['$resource', function($resource) { 
+ *    return $resource('/notes/:id', null, 
+ *        { 
+ *            'update': { method:'PUT' } 
+ *        }); 
+ *    }]); 
+ * 
+ *    // In our controller we get the ID from the URL using ngRoute and $routeParams 
+ *    // We pass in $routeParams and our Notes factory along with $scope 
+ *    app.controller('NotesCtrl', ['$scope', '$routeParams', 'Notes', 
+                                      function($scope, $routeParams, Notes) { 
+ *    // First get a note object from the factory 
+ *    var note = Notes.get({ id:$routeParams.id }); 
+ *    $id = note.id; 
+ * 
+ *    // Now call update passing in the ID first then the object you are updating 
+ *    Notes.update({ id:$id }, note); 
+ * 
+ *    // This will PUT /notes/ID with the note object in the request payload 
+ *    }]); 
+ * ``` 
+ * 
+ * </span><span class="s1">@example</span><span class="s0"> 
+ * 
+ * # Cancelling requests 
+ * 
+ * If an action's configuration specifies that it is cancellable, you can cancel the request related 
+ * to an instance or collection (as long as it is a result of a &quot;non-instance&quot; call): 
+ * 
+   ```js 
+     // ...defining the `Hotel` resource... 
+     var Hotel = $resource('/api/hotel/:id', {id: '@id'}, { 
+       // Let's make the `query()` method cancellable 
+       query: {method: 'get', isArray: true, cancellable: true} 
+     }); 
+ 
+     // ...somewhere in the PlanVacationController... 
+     ... 
+     this.onDestinationChanged = function onDestinationChanged(destination) { 
+       // We don't care about any pending request for hotels 
+       // in a different destination any more 
+       this.availableHotels.$cancelRequest(); 
+ 
+       // Let's query for hotels in '&lt;destination&gt;' 
+       // (calls: /api/hotel?location=&lt;destination&gt;) 
+       this.availableHotels = Hotel.query({location: destination}); 
+     }; 
+   ``` 
+ * 
+ */</span><span class="s2"> 
+angular.module(</span><span class="s5">'ngResource'</span><span class="s4">, </span><span class="s2">[</span><span class="s5">'ng'</span><span class="s2">]). 
+  info({ angularVersion: </span><span class="s5">'1.6.5-build.5353+sha.136a42a' </span><span class="s2">}). 
+  provider(</span><span class="s5">'$resource'</span><span class="s4">, </span><span class="s3">function </span><span class="s2">ResourceProvider() { 
+    </span><span class="s3">var </span><span class="s2">PROTOCOL_AND_IPV6_REGEX = </span><span class="s5">/^https?:\/\/\[[^\]]*][^/]*/</span><span class="s4">;</span><span class="s2"> 
+ 
+    </span><span class="s3">var </span><span class="s2">provider = </span><span class="s3">this</span><span class="s4">;</span><span class="s2"> 
+ 
+    </span><span class="s0">/** 
+     * </span><span class="s1">@ngdoc </span><span class="s0">property 
+     * </span><span class="s1">@name </span><span class="s0">$resourceProvider#defaults 
+     * </span><span class="s1">@description</span><span class="s0"> 
+     * Object containing default options used when creating `$resource` instances. 
+     * 
+     * The default values satisfy a wide range of usecases, but you may choose to overwrite any of 
+     * them to further customize your instances. The available properties are: 
+     * 
+     * - **stripTrailingSlashes** – `{boolean}` – If true, then the trailing slashes from any 
+     *   calculated URL will be stripped.&lt;br /&gt; 
+     *   (Defaults to true.) 
+     * - **cancellable** – `{boolean}` – If true, the request made by a &quot;non-instance&quot; call will be 
+     *   cancelled (if not already completed) by calling `$cancelRequest()` on the call's return 
+     *   value. For more details, see {</span><span class="s1">@link </span><span class="s0">ngResource.$resource}. This can be overwritten per 
+     *   resource class or action.&lt;br /&gt; 
+     *   (Defaults to false.) 
+     * - **actions** - `{Object.&lt;Object&gt;}` - A hash with default actions declarations. Actions are 
+     *   high-level methods corresponding to RESTful actions/methods on resources. An action may 
+     *   specify what HTTP method to use, what URL to hit, if the return value will be a single 
+     *   object or a collection (array) of objects etc. For more details, see 
+     *   {</span><span class="s1">@link </span><span class="s0">ngResource.$resource}. The actions can also be enhanced or overwritten per resource 
+     *   class.&lt;br /&gt; 
+     *   The default actions are: 
+     *   ```js 
+     *   { 
+     *     get: {method: 'GET'}, 
+     *     save: {method: 'POST'}, 
+     *     query: {method: 'GET', isArray: true}, 
+     *     remove: {method: 'DELETE'}, 
+     *     delete: {method: 'DELETE'} 
+     *   } 
+     *   ``` 
+     * 
+     * #### Example 
+     * 
+     * For example, you can specify a new `update` action that uses the `PUT` HTTP verb: 
+     * 
+     * ```js 
+     *   angular. 
+     *     module('myApp'). 
+     *     config(['$resourceProvider', function ($resourceProvider) { 
+     *       $resourceProvider.defaults.actions.update = { 
+     *         method: 'PUT' 
+     *       }; 
+     *     }); 
+     * ``` 
+     * 
+     * Or you can even overwrite the whole `actions` list and specify your own: 
+     * 
+     * ```js 
+     *   angular. 
+     *     module('myApp'). 
+     *     config(['$resourceProvider', function ($resourceProvider) { 
+     *       $resourceProvider.defaults.actions = { 
+     *         create: {method: 'POST'}, 
+     *         get:    {method: 'GET'}, 
+     *         getAll: {method: 'GET', isArray:true}, 
+     *         update: {method: 'PUT'}, 
+     *         delete: {method: 'DELETE'} 
+     *       }; 
+     *     }); 
+     * ``` 
+     * 
+     */</span><span class="s2"> 
+    </span><span class="s3">this</span><span class="s2">.defaults = { 
+      </span><span class="s6">// Strip slashes by default</span><span class="s2"> 
+      stripTrailingSlashes: </span><span class="s3">true</span><span class="s4">,</span><span class="s2"> 
+ 
+      </span><span class="s6">// Make non-instance requests cancellable (via `$cancelRequest()`)</span><span class="s2"> 
+      cancellable: </span><span class="s3">false</span><span class="s4">,</span><span class="s2"> 
+ 
+      </span><span class="s6">// Default actions configuration</span><span class="s2"> 
+      actions: { 
+        </span><span class="s5">'get'</span><span class="s2">: {method: </span><span class="s5">'GET'</span><span class="s2">}</span><span class="s4">,</span><span class="s2"> 
+        </span><span class="s5">'save'</span><span class="s2">: {method: </span><span class="s5">'POST'</span><span class="s2">}</span><span class="s4">,</span><span class="s2"> 
+        </span><span class="s5">'query'</span><span class="s2">: {method: </span><span class="s5">'GET'</span><span class="s4">, </span><span class="s2">isArray: </span><span class="s3">true</span><span class="s2">}</span><span class="s4">,</span><span class="s2"> 
+        </span><span class="s5">'remove'</span><span class="s2">: {method: </span><span class="s5">'DELETE'</span><span class="s2">}</span><span class="s4">,</span><span class="s2"> 
+        </span><span class="s5">'delete'</span><span class="s2">: {method: </span><span class="s5">'DELETE'</span><span class="s2">} 
+      } 
+    }</span><span class="s4">;</span><span class="s2"> 
+ 
+    </span><span class="s3">this</span><span class="s2">.$get = [</span><span class="s5">'$http'</span><span class="s4">, </span><span class="s5">'$log'</span><span class="s4">, </span><span class="s5">'$q'</span><span class="s4">, </span><span class="s5">'$timeout'</span><span class="s4">, </span><span class="s3">function</span><span class="s2">($http</span><span class="s4">, </span><span class="s2">$log</span><span class="s4">, </span><span class="s2">$q</span><span class="s4">, </span><span class="s2">$timeout) { 
+ 
+      </span><span class="s3">var </span><span class="s2">noop = angular.noop</span><span class="s4">,</span><span class="s2"> 
+          forEach = angular.forEach</span><span class="s4">,</span><span class="s2"> 
+          extend = angular.extend</span><span class="s4">,</span><span class="s2"> 
+          copy = angular.copy</span><span class="s4">,</span><span class="s2"> 
+          isArray = angular.isArray</span><span class="s4">,</span><span class="s2"> 
+          isDefined = angular.isDefined</span><span class="s4">,</span><span class="s2"> 
+          isFunction = angular.isFunction</span><span class="s4">,</span><span class="s2"> 
+          isNumber = angular.isNumber</span><span class="s4">,</span><span class="s2"> 
+          encodeUriQuery = angular.$$encodeUriQuery</span><span class="s4">,</span><span class="s2"> 
+          encodeUriSegment = angular.$$encodeUriSegment</span><span class="s4">;</span><span class="s2"> 
+ 
+      </span><span class="s3">function </span><span class="s2">Route(template</span><span class="s4">, </span><span class="s2">defaults) { 
+        </span><span class="s3">this</span><span class="s2">.template = template</span><span class="s4">;</span><span class="s2"> 
+        </span><span class="s3">this</span><span class="s2">.defaults = extend({}</span><span class="s4">, </span><span class="s2">provider.defaults</span><span class="s4">, </span><span class="s2">defaults)</span><span class="s4">;</span><span class="s2"> 
+        </span><span class="s3">this</span><span class="s2">.urlParams = {}</span><span class="s4">;</span><span class="s2"> 
+      } 
+ 
+      Route.prototype = { 
+        setUrlParams: </span><span class="s3">function</span><span class="s2">(config</span><span class="s4">, </span><span class="s2">params</span><span class="s4">, </span><span class="s2">actionUrl) { 
+          </span><span class="s3">var </span><span class="s2">self = </span><span class="s3">this</span><span class="s4">,</span><span class="s2"> 
+            url = actionUrl || self.template</span><span class="s4">,</span><span class="s2"> 
+            val</span><span class="s4">,</span><span class="s2"> 
+            encodedVal</span><span class="s4">,</span><span class="s2"> 
+            protocolAndIpv6 = </span><span class="s5">''</span><span class="s4">;</span><span class="s2"> 
+ 
+          </span><span class="s3">var </span><span class="s2">urlParams = self.urlParams = Object.create(</span><span class="s3">null</span><span class="s2">)</span><span class="s4">;</span><span class="s2"> 
+          forEach(url.split(</span><span class="s5">/\W/</span><span class="s2">)</span><span class="s4">, </span><span class="s3">function</span><span class="s2">(param) { 
+            </span><span class="s3">if </span><span class="s2">(param === </span><span class="s5">'hasOwnProperty'</span><span class="s2">) { 
+              </span><span class="s3">throw </span><span class="s2">$resourceMinErr(</span><span class="s5">'badname'</span><span class="s4">, </span><span class="s5">'hasOwnProperty is not a valid parameter name.'</span><span class="s2">)</span><span class="s4">;</span><span class="s2"> 
+            } 
+            </span><span class="s3">if </span><span class="s2">(!(</span><span class="s3">new </span><span class="s2">RegExp(</span><span class="s5">'^</span><span class="s4">\\</span><span class="s5">d+$'</span><span class="s2">).test(param)) &amp;&amp; param &amp;&amp; 
+              (</span><span class="s3">new </span><span class="s2">RegExp(</span><span class="s5">'(^|[^</span><span class="s4">\\\\</span><span class="s5">]):' </span><span class="s2">+ param + </span><span class="s5">'(</span><span class="s4">\\</span><span class="s5">W|$)'</span><span class="s2">).test(url))) { 
+              urlParams[param] = { 
+                isQueryParamValue: (</span><span class="s3">new </span><span class="s2">RegExp(</span><span class="s5">'</span><span class="s4">\\</span><span class="s5">?.*=:' </span><span class="s2">+ param + </span><span class="s5">'(?:</span><span class="s4">\\</span><span class="s5">W|$)'</span><span class="s2">)).test(url) 
+              }</span><span class="s4">;</span><span class="s2"> 
+            } 
+          })</span><span class="s4">;</span><span class="s2"> 
+          url = url.replace(</span><span class="s5">/\\:/g</span><span class="s4">, </span><span class="s5">':'</span><span class="s2">)</span><span class="s4">;</span><span class="s2"> 
+          url = url.replace(PROTOCOL_AND_IPV6_REGEX</span><span class="s4">, </span><span class="s3">function</span><span class="s2">(match) { 
+            protocolAndIpv6 = match</span><span class="s4">;</span><span class="s2"> 
+            </span><span class="s3">return </span><span class="s5">''</span><span class="s4">;</span><span class="s2"> 
+          })</span><span class="s4">;</span><span class="s2"> 
+ 
+          params = params || {}</span><span class="s4">;</span><span class="s2"> 
+          forEach(self.urlParams</span><span class="s4">, </span><span class="s3">function</span><span class="s2">(paramInfo</span><span class="s4">, </span><span class="s2">urlParam) { 
+            val = params.hasOwnProperty(urlParam) ? params[urlParam] : self.defaults[urlParam]</span><span class="s4">;</span><span class="s2"> 
+            </span><span class="s3">if </span><span class="s2">(isDefined(val) &amp;&amp; val !== </span><span class="s3">null</span><span class="s2">) { 
+              </span><span class="s3">if </span><span class="s2">(paramInfo.isQueryParamValue) { 
+                encodedVal = encodeUriQuery(val</span><span class="s4">, </span><span class="s3">true</span><span class="s2">)</span><span class="s4">;</span><span class="s2"> 
+              } </span><span class="s3">else </span><span class="s2">{ 
+                encodedVal = encodeUriSegment(val)</span><span class="s4">;</span><span class="s2"> 
+              } 
+              url = url.replace(</span><span class="s3">new </span><span class="s2">RegExp(</span><span class="s5">':' </span><span class="s2">+ urlParam + </span><span class="s5">'(</span><span class="s4">\\</span><span class="s5">W|$)'</span><span class="s4">, </span><span class="s5">'g'</span><span class="s2">)</span><span class="s4">, </span><span class="s3">function</span><span class="s2">(match</span><span class="s4">, </span><span class="s2">p1) { 
+                </span><span class="s3">return </span><span class="s2">encodedVal + p1</span><span class="s4">;</span><span class="s2"> 
+              })</span><span class="s4">;</span><span class="s2"> 
+            } </span><span class="s3">else </span><span class="s2">{ 
+              url = url.replace(</span><span class="s3">new </span><span class="s2">RegExp(</span><span class="s5">'(/?):' </span><span class="s2">+ urlParam + </span><span class="s5">'(</span><span class="s4">\\</span><span class="s5">W|$)'</span><span class="s4">, </span><span class="s5">'g'</span><span class="s2">)</span><span class="s4">, </span><span class="s3">function</span><span class="s2">(match</span><span class="s4">,</span><span class="s2"> 
+                  leadingSlashes</span><span class="s4">, </span><span class="s2">tail) { 
+                </span><span class="s3">if </span><span class="s2">(tail.charAt(</span><span class="s7">0</span><span class="s2">) === </span><span class="s5">'/'</span><span class="s2">) { 
+                  </span><span class="s3">return </span><span class="s2">tail</span><span class="s4">;</span><span class="s2"> 
+                } </span><span class="s3">else </span><span class="s2">{ 
+                  </span><span class="s3">return </span><span class="s2">leadingSlashes + tail</span><span class="s4">;</span><span class="s2"> 
+                } 
+              })</span><span class="s4">;</span><span class="s2"> 
+            } 
+          })</span><span class="s4">;</span><span class="s2"> 
+ 
+          </span><span class="s6">// strip trailing slashes and set the url (unless this behavior is specifically disabled)</span><span class="s2"> 
+          </span><span class="s3">if </span><span class="s2">(self.defaults.stripTrailingSlashes) { 
+            url = url.replace(</span><span class="s5">/\/+$/</span><span class="s4">, </span><span class="s5">''</span><span class="s2">) || </span><span class="s5">'/'</span><span class="s4">;</span><span class="s2"> 
+          } 
+ 
+          </span><span class="s6">// Collapse `/.` if found in the last URL path segment before the query.</span><span class="s2"> 
+          </span><span class="s6">// E.g. `http://url.com/id/.format?q=x` becomes `http://url.com/id.format?q=x`.</span><span class="s2"> 
+          url = url.replace(</span><span class="s5">/\/\.(?=\w+($|\?))/</span><span class="s4">, </span><span class="s5">'.'</span><span class="s2">)</span><span class="s4">;</span><span class="s2"> 
+          </span><span class="s6">// Replace escaped `/\.` with `/.`.</span><span class="s2"> 
+          </span><span class="s6">// (If `\.` comes from a param value, it will be encoded as `%5C.`.)</span><span class="s2"> 
+          config.url = protocolAndIpv6 + url.replace(</span><span class="s5">/\/(\\|%5C)\./</span><span class="s4">, </span><span class="s5">'/.'</span><span class="s2">)</span><span class="s4">;</span><span class="s2"> 
+ 
+ 
+          </span><span class="s6">// set params - delegate param encoding to $http</span><span class="s2"> 
+          forEach(params</span><span class="s4">, </span><span class="s3">function</span><span class="s2">(value</span><span class="s4">, </span><span class="s2">key) { 
+            </span><span class="s3">if </span><span class="s2">(!self.urlParams[key]) { 
+              config.params = config.params || {}</span><span class="s4">;</span><span class="s2"> 
+              config.params[key] = value</span><span class="s4">;</span><span class="s2"> 
+            } 
+          })</span><span class="s4">;</span><span class="s2"> 
+        } 
+      }</span><span class="s4">;</span><span class="s2"> 
+ 
+ 
+      </span><span class="s3">function </span><span class="s2">resourceFactory(url</span><span class="s4">, </span><span class="s2">paramDefaults</span><span class="s4">, </span><span class="s2">actions</span><span class="s4">, </span><span class="s2">options) { 
+        </span><span class="s3">var </span><span class="s2">route = </span><span class="s3">new </span><span class="s2">Route(url</span><span class="s4">, </span><span class="s2">options)</span><span class="s4">;</span><span class="s2"> 
+ 
+        actions = extend({}</span><span class="s4">, </span><span class="s2">provider.defaults.actions</span><span class="s4">, </span><span class="s2">actions)</span><span class="s4">;</span><span class="s2"> 
+ 
+        </span><span class="s3">function </span><span class="s2">extractParams(data</span><span class="s4">, </span><span class="s2">actionParams) { 
+          </span><span class="s3">var </span><span class="s2">ids = {}</span><span class="s4">;</span><span class="s2"> 
+          actionParams = extend({}</span><span class="s4">, </span><span class="s2">paramDefaults</span><span class="s4">, </span><span class="s2">actionParams)</span><span class="s4">;</span><span class="s2"> 
+          forEach(actionParams</span><span class="s4">, </span><span class="s3">function</span><span class="s2">(value</span><span class="s4">, </span><span class="s2">key) { 
+            </span><span class="s3">if </span><span class="s2">(isFunction(value)) { value = value(data)</span><span class="s4">; </span><span class="s2">} 
+            ids[key] = value &amp;&amp; value.charAt &amp;&amp; value.charAt(</span><span class="s7">0</span><span class="s2">) === </span><span class="s5">'@' </span><span class="s2">? 
+              lookupDottedPath(data</span><span class="s4">, </span><span class="s2">value.substr(</span><span class="s7">1</span><span class="s2">)) : value</span><span class="s4">;</span><span class="s2"> 
+          })</span><span class="s4">;</span><span class="s2"> 
+          </span><span class="s3">return </span><span class="s2">ids</span><span class="s4">;</span><span class="s2"> 
+        } 
+ 
+        </span><span class="s3">function </span><span class="s2">defaultResponseInterceptor(response) { 
+          </span><span class="s3">return </span><span class="s2">response.resource</span><span class="s4">;</span><span class="s2"> 
+        } 
+ 
+        </span><span class="s3">function </span><span class="s2">Resource(value) { 
+          shallowClearAndCopy(value || {}</span><span class="s4">, </span><span class="s3">this</span><span class="s2">)</span><span class="s4">;</span><span class="s2"> 
+        } 
+ 
+        Resource.prototype.toJSON = </span><span class="s3">function</span><span class="s2">() { 
+          </span><span class="s3">var </span><span class="s2">data = extend({}</span><span class="s4">, </span><span class="s3">this</span><span class="s2">)</span><span class="s4">;</span><span class="s2"> 
+          </span><span class="s3">delete </span><span class="s2">data.$promise</span><span class="s4">;</span><span class="s2"> 
+          </span><span class="s3">delete </span><span class="s2">data.$resolved</span><span class="s4">;</span><span class="s2"> 
+          </span><span class="s3">delete </span><span class="s2">data.$cancelRequest</span><span class="s4">;</span><span class="s2"> 
+          </span><span class="s3">return </span><span class="s2">data</span><span class="s4">;</span><span class="s2"> 
+        }</span><span class="s4">;</span><span class="s2"> 
+ 
+        forEach(actions</span><span class="s4">, </span><span class="s3">function</span><span class="s2">(action</span><span class="s4">, </span><span class="s2">name) { 
+          </span><span class="s3">var </span><span class="s2">hasBody = action.hasBody === </span><span class="s3">true </span><span class="s2">|| (action.hasBody !== </span><span class="s3">false </span><span class="s2">&amp;&amp; </span><span class="s5">/^(POST|PUT|PATCH)$/i</span><span class="s2">.test(action.method))</span><span class="s4">;</span><span class="s2"> 
+          </span><span class="s3">var </span><span class="s2">numericTimeout = action.timeout</span><span class="s4">;</span><span class="s2"> 
+          </span><span class="s3">var </span><span class="s2">cancellable = isDefined(action.cancellable) ? 
+              action.cancellable : route.defaults.cancellable</span><span class="s4">;</span><span class="s2"> 
+ 
+          </span><span class="s3">if </span><span class="s2">(numericTimeout &amp;&amp; !isNumber(numericTimeout)) { 
+            $log.debug(</span><span class="s5">'ngResource:</span><span class="s4">\n</span><span class="s5">' </span><span class="s2">+ 
+                       </span><span class="s5">'  Only numeric values are allowed as `timeout`.</span><span class="s4">\n</span><span class="s5">' </span><span class="s2">+ 
+                       </span><span class="s5">'  Promises are not supported in $resource, because the same value would ' </span><span class="s2">+ 
+                       </span><span class="s5">'be used for multiple requests. If you are looking for a way to cancel ' </span><span class="s2">+ 
+                       </span><span class="s5">'requests, you should use the `cancellable` option.'</span><span class="s2">)</span><span class="s4">;</span><span class="s2"> 
+            </span><span class="s3">delete </span><span class="s2">action.timeout</span><span class="s4">;</span><span class="s2"> 
+            numericTimeout = </span><span class="s3">null</span><span class="s4">;</span><span class="s2"> 
+          } 
+ 
+          Resource[name] = </span><span class="s3">function</span><span class="s2">(a1</span><span class="s4">, </span><span class="s2">a2</span><span class="s4">, </span><span class="s2">a3</span><span class="s4">, </span><span class="s2">a4) { 
+            </span><span class="s3">var </span><span class="s2">params = {}</span><span class="s4">, </span><span class="s2">data</span><span class="s4">, </span><span class="s2">success</span><span class="s4">, </span><span class="s2">error</span><span class="s4">;</span><span class="s2"> 
+ 
+            </span><span class="s3">switch </span><span class="s2">(arguments.length) { 
+              </span><span class="s3">case </span><span class="s7">4</span><span class="s2">: 
+                error = a4</span><span class="s4">;</span><span class="s2"> 
+                success = a3</span><span class="s4">;</span><span class="s2"> 
+                </span><span class="s6">// falls through</span><span class="s2"> 
+              </span><span class="s3">case </span><span class="s7">3</span><span class="s2">: 
+              </span><span class="s3">case </span><span class="s7">2</span><span class="s2">: 
+                </span><span class="s3">if </span><span class="s2">(isFunction(a2)) { 
+                  </span><span class="s3">if </span><span class="s2">(isFunction(a1)) { 
+                    success = a1</span><span class="s4">;</span><span class="s2"> 
+                    error = a2</span><span class="s4">;</span><span class="s2"> 
+                    </span><span class="s3">break</span><span class="s4">;</span><span class="s2"> 
+                  } 
+ 
+                  success = a2</span><span class="s4">;</span><span class="s2"> 
+                  error = a3</span><span class="s4">;</span><span class="s2"> 
+                  </span><span class="s6">// falls through</span><span class="s2"> 
+                } </span><span class="s3">else </span><span class="s2">{ 
+                  params = a1</span><span class="s4">;</span><span class="s2"> 
+                  data = a2</span><span class="s4">;</span><span class="s2"> 
+                  success = a3</span><span class="s4">;</span><span class="s2"> 
+                  </span><span class="s3">break</span><span class="s4">;</span><span class="s2"> 
+                } 
+                </span><span class="s6">// falls through</span><span class="s2"> 
+              </span><span class="s3">case </span><span class="s7">1</span><span class="s2">: 
+                </span><span class="s3">if </span><span class="s2">(isFunction(a1)) success = a1</span><span class="s4">;</span><span class="s2"> 
+                </span><span class="s3">else if </span><span class="s2">(hasBody) data = a1</span><span class="s4">;</span><span class="s2"> 
+                </span><span class="s3">else </span><span class="s2">params = a1</span><span class="s4">;</span><span class="s2"> 
+                </span><span class="s3">break</span><span class="s4">;</span><span class="s2"> 
+              </span><span class="s3">case </span><span class="s7">0</span><span class="s2">: </span><span class="s3">break</span><span class="s4">;</span><span class="s2"> 
+              </span><span class="s3">default</span><span class="s2">: 
+                </span><span class="s3">throw </span><span class="s2">$resourceMinErr(</span><span class="s5">'badargs'</span><span class="s4">,</span><span class="s2"> 
+                  </span><span class="s5">'Expected up to 4 arguments [params, data, success, error], got {0} arguments'</span><span class="s4">,</span><span class="s2"> 
+                  arguments.length)</span><span class="s4">;</span><span class="s2"> 
+            } 
+ 
+            </span><span class="s3">var </span><span class="s2">isInstanceCall = </span><span class="s3">this instanceof </span><span class="s2">Resource</span><span class="s4">;</span><span class="s2"> 
+            </span><span class="s3">var </span><span class="s2">value = isInstanceCall ? data : (action.isArray ? [] : </span><span class="s3">new </span><span class="s2">Resource(data))</span><span class="s4">;</span><span class="s2"> 
+            </span><span class="s3">var </span><span class="s2">httpConfig = {}</span><span class="s4">;</span><span class="s2"> 
+            </span><span class="s3">var </span><span class="s2">responseInterceptor = action.interceptor &amp;&amp; action.interceptor.response || 
+              defaultResponseInterceptor</span><span class="s4">;</span><span class="s2"> 
+            </span><span class="s3">var </span><span class="s2">responseErrorInterceptor = action.interceptor &amp;&amp; action.interceptor.responseError || 
+              undefined</span><span class="s4">;</span><span class="s2"> 
+            </span><span class="s3">var </span><span class="s2">hasError = !!error</span><span class="s4">;</span><span class="s2"> 
+            </span><span class="s3">var </span><span class="s2">hasResponseErrorInterceptor = !!responseErrorInterceptor</span><span class="s4">;</span><span class="s2"> 
+            </span><span class="s3">var </span><span class="s2">timeoutDeferred</span><span class="s4">;</span><span class="s2"> 
+            </span><span class="s3">var </span><span class="s2">numericTimeoutPromise</span><span class="s4">;</span><span class="s2"> 
+ 
+            forEach(action</span><span class="s4">, </span><span class="s3">function</span><span class="s2">(value</span><span class="s4">, </span><span class="s2">key) { 
+              </span><span class="s3">switch </span><span class="s2">(key) { 
+                </span><span class="s3">default</span><span class="s2">: 
+                  httpConfig[key] = copy(value)</span><span class="s4">;</span><span class="s2"> 
+                  </span><span class="s3">break</span><span class="s4">;</span><span class="s2"> 
+                </span><span class="s3">case </span><span class="s5">'params'</span><span class="s2">: 
+                </span><span class="s3">case </span><span class="s5">'isArray'</span><span class="s2">: 
+                </span><span class="s3">case </span><span class="s5">'interceptor'</span><span class="s2">: 
+                </span><span class="s3">case </span><span class="s5">'cancellable'</span><span class="s2">: 
+                  </span><span class="s3">break</span><span class="s4">;</span><span class="s2"> 
+              } 
+            })</span><span class="s4">;</span><span class="s2"> 
+ 
+            </span><span class="s3">if </span><span class="s2">(!isInstanceCall &amp;&amp; cancellable) { 
+              timeoutDeferred = $q.defer()</span><span class="s4">;</span><span class="s2"> 
+              httpConfig.timeout = timeoutDeferred.promise</span><span class="s4">;</span><span class="s2"> 
+ 
+              </span><span class="s3">if </span><span class="s2">(numericTimeout) { 
+                numericTimeoutPromise = $timeout(timeoutDeferred.resolve</span><span class="s4">, </span><span class="s2">numericTimeout)</span><span class="s4">;</span><span class="s2"> 
+              } 
+            } 
+ 
+            </span><span class="s3">if </span><span class="s2">(hasBody) httpConfig.data = data</span><span class="s4">;</span><span class="s2"> 
+            route.setUrlParams(httpConfig</span><span class="s4">,</span><span class="s2"> 
+              extend({}</span><span class="s4">, </span><span class="s2">extractParams(data</span><span class="s4">, </span><span class="s2">action.params || {})</span><span class="s4">, </span><span class="s2">params)</span><span class="s4">,</span><span class="s2"> 
+              action.url)</span><span class="s4">;</span><span class="s2"> 
+ 
+            </span><span class="s3">var </span><span class="s2">promise = $http(httpConfig).then(</span><span class="s3">function</span><span class="s2">(response) { 
+              </span><span class="s3">var </span><span class="s2">data = response.data</span><span class="s4">;</span><span class="s2"> 
+ 
+              </span><span class="s3">if </span><span class="s2">(data) { 
+                </span><span class="s6">// Need to convert action.isArray to boolean in case it is undefined</span><span class="s2"> 
+                </span><span class="s3">if </span><span class="s2">(isArray(data) !== (!!action.isArray)) { 
+                  </span><span class="s3">throw </span><span class="s2">$resourceMinErr(</span><span class="s5">'badcfg'</span><span class="s4">,</span><span class="s2"> 
+                      </span><span class="s5">'Error in resource configuration for action `{0}`. Expected response to ' </span><span class="s2">+ 
+                      </span><span class="s5">'contain an {1} but got an {2} (Request: {3} {4})'</span><span class="s4">, </span><span class="s2">name</span><span class="s4">, </span><span class="s2">action.isArray ? </span><span class="s5">'array' </span><span class="s2">: </span><span class="s5">'object'</span><span class="s4">,</span><span class="s2"> 
+                    isArray(data) ? </span><span class="s5">'array' </span><span class="s2">: </span><span class="s5">'object'</span><span class="s4">, </span><span class="s2">httpConfig.method</span><span class="s4">, </span><span class="s2">httpConfig.url)</span><span class="s4">;</span><span class="s2"> 
+                } 
+                </span><span class="s3">if </span><span class="s2">(action.isArray) { 
+                  value.length = </span><span class="s7">0</span><span class="s4">;</span><span class="s2"> 
+                  forEach(data</span><span class="s4">, </span><span class="s3">function</span><span class="s2">(item) { 
+                    </span><span class="s3">if </span><span class="s2">(</span><span class="s3">typeof </span><span class="s2">item === </span><span class="s5">'object'</span><span class="s2">) { 
+                      value.push(</span><span class="s3">new </span><span class="s2">Resource(item))</span><span class="s4">;</span><span class="s2"> 
+                    } </span><span class="s3">else </span><span class="s2">{ 
+                      </span><span class="s6">// Valid JSON values may be string literals, and these should not be converted</span><span class="s2"> 
+                      </span><span class="s6">// into objects. These items will not have access to the Resource prototype</span><span class="s2"> 
+                      </span><span class="s6">// methods, but unfortunately there</span><span class="s2"> 
+                      value.push(item)</span><span class="s4">;</span><span class="s2"> 
+                    } 
+                  })</span><span class="s4">;</span><span class="s2"> 
+                } </span><span class="s3">else </span><span class="s2">{ 
+                  </span><span class="s3">var </span><span class="s2">promise = value.$promise</span><span class="s4">;     </span><span class="s6">// Save the promise</span><span class="s2"> 
+                  shallowClearAndCopy(data</span><span class="s4">, </span><span class="s2">value)</span><span class="s4">;</span><span class="s2"> 
+                  value.$promise = promise</span><span class="s4">;         </span><span class="s6">// Restore the promise</span><span class="s2"> 
+                } 
+              } 
+              response.resource = value</span><span class="s4">;</span><span class="s2"> 
+ 
+              </span><span class="s3">return </span><span class="s2">response</span><span class="s4">;</span><span class="s2"> 
+            })</span><span class="s4">;</span><span class="s2"> 
+ 
+            promise = promise[</span><span class="s5">'finally'</span><span class="s2">](</span><span class="s3">function</span><span class="s2">() { 
+              value.$resolved = </span><span class="s3">true</span><span class="s4">;</span><span class="s2"> 
+              </span><span class="s3">if </span><span class="s2">(!isInstanceCall &amp;&amp; cancellable) { 
+                value.$cancelRequest = noop</span><span class="s4">;</span><span class="s2"> 
+                $timeout.cancel(numericTimeoutPromise)</span><span class="s4">;</span><span class="s2"> 
+                timeoutDeferred = numericTimeoutPromise = httpConfig.timeout = </span><span class="s3">null</span><span class="s4">;</span><span class="s2"> 
+              } 
+            })</span><span class="s4">;</span><span class="s2"> 
+ 
+            promise = promise.then( 
+              </span><span class="s3">function</span><span class="s2">(response) { 
+                </span><span class="s3">var </span><span class="s2">value = responseInterceptor(response)</span><span class="s4">;</span><span class="s2"> 
+                (success || noop)(value</span><span class="s4">, </span><span class="s2">response.headers</span><span class="s4">, </span><span class="s2">response.status</span><span class="s4">, </span><span class="s2">response.statusText)</span><span class="s4">;</span><span class="s2"> 
+                </span><span class="s3">return </span><span class="s2">value</span><span class="s4">;</span><span class="s2"> 
+              }</span><span class="s4">,</span><span class="s2"> 
+              (hasError || hasResponseErrorInterceptor) ? 
+                </span><span class="s3">function</span><span class="s2">(response) { 
+                  </span><span class="s3">if </span><span class="s2">(hasError &amp;&amp; !hasResponseErrorInterceptor) { 
+                    </span><span class="s6">// Avoid `Possibly Unhandled Rejection` error,</span><span class="s2"> 
+                    </span><span class="s6">// but still fulfill the returned promise with a rejection</span><span class="s2"> 
+                    promise.catch(noop)</span><span class="s4">;</span><span class="s2"> 
+                  } 
+                  </span><span class="s3">if </span><span class="s2">(hasError) error(response)</span><span class="s4">;</span><span class="s2"> 
+                  </span><span class="s3">return </span><span class="s2">hasResponseErrorInterceptor ? 
+                    responseErrorInterceptor(response) : 
+                    $q.reject(response)</span><span class="s4">;</span><span class="s2"> 
+                } : 
+                undefined)</span><span class="s4">;</span><span class="s2"> 
+ 
+            </span><span class="s3">if </span><span class="s2">(!isInstanceCall) { 
+              </span><span class="s6">// we are creating instance / collection</span><span class="s2"> 
+              </span><span class="s6">// - set the initial promise</span><span class="s2"> 
+              </span><span class="s6">// - return the instance / collection</span><span class="s2"> 
+              value.$promise = promise</span><span class="s4">;</span><span class="s2"> 
+              value.$resolved = </span><span class="s3">false</span><span class="s4">;</span><span class="s2"> 
+              </span><span class="s3">if </span><span class="s2">(cancellable) value.$cancelRequest = cancelRequest</span><span class="s4">;</span><span class="s2"> 
+ 
+              </span><span class="s3">return </span><span class="s2">value</span><span class="s4">;</span><span class="s2"> 
+            } 
+ 
+            </span><span class="s6">// instance call</span><span class="s2"> 
+            </span><span class="s3">return </span><span class="s2">promise</span><span class="s4">;</span><span class="s2"> 
+ 
+            </span><span class="s3">function </span><span class="s2">cancelRequest(value) { 
+              promise.catch(noop)</span><span class="s4">;</span><span class="s2"> 
+              timeoutDeferred.resolve(value)</span><span class="s4">;</span><span class="s2"> 
+            } 
+          }</span><span class="s4">;</span><span class="s2"> 
+ 
+ 
+          Resource.prototype[</span><span class="s5">'$' </span><span class="s2">+ name] = </span><span class="s3">function</span><span class="s2">(params</span><span class="s4">, </span><span class="s2">success</span><span class="s4">, </span><span class="s2">error) { 
+            </span><span class="s3">if </span><span class="s2">(isFunction(params)) { 
+              error = success</span><span class="s4">; </span><span class="s2">success = params</span><span class="s4">; </span><span class="s2">params = {}</span><span class="s4">;</span><span class="s2"> 
+            } 
+            </span><span class="s3">var </span><span class="s2">result = Resource[name].call(</span><span class="s3">this</span><span class="s4">, </span><span class="s2">params</span><span class="s4">, </span><span class="s3">this</span><span class="s4">, </span><span class="s2">success</span><span class="s4">, </span><span class="s2">error)</span><span class="s4">;</span><span class="s2"> 
+            </span><span class="s3">return </span><span class="s2">result.$promise || result</span><span class="s4">;</span><span class="s2"> 
+          }</span><span class="s4">;</span><span class="s2"> 
+        })</span><span class="s4">;</span><span class="s2"> 
+ 
+        Resource.bind = </span><span class="s3">function</span><span class="s2">(additionalParamDefaults) { 
+          </span><span class="s3">var </span><span class="s2">extendedParamDefaults = extend({}</span><span class="s4">, </span><span class="s2">paramDefaults</span><span class="s4">, </span><span class="s2">additionalParamDefaults)</span><span class="s4">;</span><span class="s2"> 
+          </span><span class="s3">return </span><span class="s2">resourceFactory(url</span><span class="s4">, </span><span class="s2">extendedParamDefaults</span><span class="s4">, </span><span class="s2">actions</span><span class="s4">, </span><span class="s2">options)</span><span class="s4">;</span><span class="s2"> 
+        }</span><span class="s4">;</span><span class="s2"> 
+ 
+        </span><span class="s3">return </span><span class="s2">Resource</span><span class="s4">;</span><span class="s2"> 
+      } 
+ 
+      </span><span class="s3">return </span><span class="s2">resourceFactory</span><span class="s4">;</span><span class="s2"> 
+    }]</span><span class="s4">;</span><span class="s2"> 
+  })</span><span class="s4">;</span><span class="s2"> 
+ 
+ 
+})(window</span><span class="s4">, </span><span class="s2">window.angular)</span><span class="s4">;</span><span class="s2"> 
+</span></pre>
+</body>
+</html>

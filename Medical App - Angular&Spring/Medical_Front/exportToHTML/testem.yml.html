@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>testem.yml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); font-weight: bold; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(169,183,198); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+testem.yml</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">test_page: </span><span class="s2">test_harness.html</span><span class="s1"> 
+ 
+</span><span class="s0">on_start:</span><span class="s1"> 
+  </span><span class="s0">command: </span><span class="s2">/usr/bin/java -jar $HOME/.browserstack/BrowserStackTunnel.jar $BROWSERSTACK_KEY localhost,&lt;port&gt;,0 -force</span><span class="s1"> 
+  </span><span class="s0">wait_for_text: </span><span class="s2">Press Ctrl-C to exit</span><span class="s1"> 
+  </span><span class="s0">wait_for_text_timeout: </span><span class="s2">9000</span><span class="s1"> 
+ 
+</span><span class="s0">launchers:</span><span class="s1"> 
+ 
+  </span><span class="s0">bs_firefox:</span><span class="s1"> 
+    </span><span class="s0">command: </span><span class="s2">browserstack launch --timeout 120 --attach firefox:22.0 &lt;url&gt;/test_harness.html</span><span class="s1"> 
+    </span><span class="s0">protocol: </span><span class="s2">browser</span><span class="s1"> 
+ 
+  </span><span class="s0">bs_chrome:</span><span class="s1"> 
+    </span><span class="s0">command: </span><span class="s2">browserstack launch --timeout 120 --attach chrome:28.0 &lt;url&gt;/test_harness.html</span><span class="s1"> 
+    </span><span class="s0">protocol: </span><span class="s2">browser</span><span class="s1"> 
+ 
+  </span><span class="s0">bs_safari_51:</span><span class="s1"> 
+    </span><span class="s0">command: </span><span class="s2">browserstack launch --timeout 120 --attach safari:5.1 &lt;url&gt;/test_harness.html</span><span class="s1"> 
+    </span><span class="s0">protocol: </span><span class="s2">browser</span><span class="s1"> 
+ 
+  </span><span class="s0">bs_ie_8:</span><span class="s1"> 
+    </span><span class="s0">command: </span><span class="s2">browserstack launch --timeout 120 --attach ie:8.0 &lt;url&gt;/test_harness.html</span><span class="s1"> 
+    </span><span class="s0">protocol: </span><span class="s2">browser</span><span class="s1"> 
+ 
+  </span><span class="s0">bs_ie_9:</span><span class="s1"> 
+    </span><span class="s0">command: </span><span class="s2">browserstack launch --timeout 120 --attach ie:9.0 &lt;url&gt;/test_harness.html</span><span class="s1"> 
+    </span><span class="s0">protocol: </span><span class="s2">browser</span><span class="s1"> 
+ 
+  </span><span class="s0">bs_ie_10:</span><span class="s1"> 
+    </span><span class="s0">command: </span><span class="s2">browserstack launch --timeout 120 --attach ie:10.0 &lt;url&gt;/test_harness.html</span><span class="s1"> 
+    </span><span class="s0">protocol: </span><span class="s2">browser</span><span class="s1"> 
+ 
+  </span><span class="s0">bs_android_23:</span><span class="s1"> 
+    </span><span class="s0">command: </span><span class="s2">browserstack launch --timeout 240 --attach &quot;Motorola Photon 4G&quot; &lt;url&gt;/test_harness.html</span><span class="s1"> 
+    </span><span class="s0">protocol: </span><span class="s2">browser</span><span class="s1"> 
+ 
+  </span><span class="s0">bs_android_41:</span><span class="s1"> 
+    </span><span class="s0">command: </span><span class="s2">browserstack launch --timeout 240 --attach &quot;Samsung Galaxy S III&quot; &lt;url&gt;/test_harness.html</span><span class="s1"> 
+    </span><span class="s0">protocol: </span><span class="s2">browser</span><span class="s1"> 
+ 
+  </span><span class="s0">bs_iphone_5:</span><span class="s1"> 
+    </span><span class="s0">command: </span><span class="s2">browserstack launch --timeout 60 --attach &quot;iPhone 5&quot; &lt;url&gt;/test_harness.html</span><span class="s1"> 
+    </span><span class="s0">protocol: </span><span class="s2">browser</span><span class="s1"> 
+ 
+</span><span class="s0">launch_in_ci: </span><span class="s1">[</span><span class="s2">bs_chrome</span><span class="s1">, </span><span class="s2">bs_firefox</span><span class="s1">, </span><span class="s2">bs_ie_8</span><span class="s1">, </span><span class="s2">bs_ie_9</span><span class="s1">, </span><span class="s2">bs_ie_10</span><span class="s1">, </span><span class="s2">bs_iphone_5</span><span class="s1">, </span><span class="s2">bs_android_41</span><span class="s1">]</span></pre>
+</body>
+</html>

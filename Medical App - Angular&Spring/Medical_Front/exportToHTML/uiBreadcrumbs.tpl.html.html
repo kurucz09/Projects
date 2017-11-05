@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>uiBreadcrumbs.tpl.html</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(232,191,106); }
+.s1 { color: rgb(186,186,186); }
+.s2 { color: rgb(165,194,97); }
+.s3 { color: rgb(169,183,198); }
+.s4 { color: rgb(109,156,190); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+uiBreadcrumbs.tpl.html</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">&lt;ol </span><span class="s1">class=</span><span class="s2">&quot;breadcrumb&quot;</span><span class="s0">&gt;</span><span class="s3"> 
+  </span><span class="s0">&lt;li </span><span class="s1">ng-repeat=</span><span class="s2">&quot;crumb in breadcrumbs&quot;</span><span class="s0"> 
+      </span><span class="s1">ng-class=</span><span class="s2">&quot;{ active: $last }&quot;</span><span class="s0">&gt;&lt;a </span><span class="s1">ui-sref=</span><span class="s2">&quot;{{ crumb.route }}&quot; </span><span class="s1">ng-if=</span><span class="s2">&quot;!$last&quot;</span><span class="s0">&gt;</span><span class="s3">{{ crumb.displayName }}</span><span class="s4">&amp;nbsp;</span><span class="s0">&lt;/a&gt;&lt;span </span><span class="s1">ng-show=</span><span class="s2">&quot;$last&quot;</span><span class="s0">&gt;</span><span class="s3">{{ crumb.displayName }}</span><span class="s0">&lt;/span&gt;</span><span class="s3"> 
+  </span><span class="s0">&lt;/li&gt;</span><span class="s3"> 
+</span><span class="s0">&lt;/ol&gt;</span></pre>
+</body>
+</html>

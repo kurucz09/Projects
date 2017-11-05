@@ -1,0 +1,423 @@
+<html>
+<head>
+<title>angular-websocket.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); font-weight: bold; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(106,135,89); }
+.s3 { color: rgb(204,120,50); }
+.s4 { color: rgb(128,128,128); }
+.s5 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+angular-websocket.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">import </span><span class="s1">angular from </span><span class="s2">'angular'</span><span class="s3">;</span><span class="s1"> 
+ 
+</span><span class="s0">var </span><span class="s1">Socket</span><span class="s3">;</span><span class="s1"> 
+ 
+</span><span class="s0">if </span><span class="s1">(</span><span class="s0">typeof </span><span class="s1">window === </span><span class="s2">'undefined'</span><span class="s1">) { 
+  </span><span class="s0">try </span><span class="s1">{ 
+    </span><span class="s0">var </span><span class="s1">ws = require(</span><span class="s2">'ws'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+    Socket = (ws.Client || ws.client || ws)</span><span class="s3">;</span><span class="s1"> 
+  } </span><span class="s0">catch</span><span class="s1">(e) {} 
+} 
+ 
+</span><span class="s4">// Browser</span><span class="s1"> 
+Socket = (Socket || window.WebSocket || window.MozWebSocket)</span><span class="s3">;</span><span class="s1"> 
+ 
+</span><span class="s0">var </span><span class="s1">noop = angular.noop</span><span class="s3">;</span><span class="s1"> 
+</span><span class="s0">var </span><span class="s1">objectFreeze  = (Object.freeze) ? Object.freeze : noop</span><span class="s3">;</span><span class="s1"> 
+</span><span class="s0">var </span><span class="s1">objectDefineProperty = Object.defineProperty</span><span class="s3">;</span><span class="s1"> 
+</span><span class="s0">var </span><span class="s1">isString   = angular.isString</span><span class="s3">;</span><span class="s1"> 
+</span><span class="s0">var </span><span class="s1">isFunction = angular.isFunction</span><span class="s3">;</span><span class="s1"> 
+</span><span class="s0">var </span><span class="s1">isDefined  = angular.isDefined</span><span class="s3">;</span><span class="s1"> 
+</span><span class="s0">var </span><span class="s1">isObject   = angular.isObject</span><span class="s3">;</span><span class="s1"> 
+</span><span class="s0">var </span><span class="s1">isArray    = angular.isArray</span><span class="s3">;</span><span class="s1"> 
+</span><span class="s0">var </span><span class="s1">forEach    = angular.forEach</span><span class="s3">;</span><span class="s1"> 
+</span><span class="s0">var </span><span class="s1">arraySlice = Array.prototype.slice</span><span class="s3">;</span><span class="s1"> 
+</span><span class="s4">// ie8 wat</span><span class="s1"> 
+</span><span class="s0">if </span><span class="s1">(!Array.prototype.indexOf) { 
+  Array.prototype.indexOf = </span><span class="s0">function</span><span class="s1">(elt </span><span class="s4">/*, from*/</span><span class="s1">) { 
+    </span><span class="s0">var </span><span class="s1">len = </span><span class="s0">this</span><span class="s1">.length &gt;&gt;&gt; </span><span class="s5">0</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">var </span><span class="s1">from = Number(arguments[</span><span class="s5">1</span><span class="s1">]) || </span><span class="s5">0</span><span class="s3">;</span><span class="s1"> 
+    from = (from &lt; </span><span class="s5">0</span><span class="s1">) ? Math.ceil(from) : Math.floor(from)</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">if </span><span class="s1">(from &lt; </span><span class="s5">0</span><span class="s1">) { 
+      from += len</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">for </span><span class="s1">(</span><span class="s3">; </span><span class="s1">from &lt; len</span><span class="s3">; </span><span class="s1">from++) { 
+      </span><span class="s0">if </span><span class="s1">(from </span><span class="s0">in this </span><span class="s1">&amp;&amp; </span><span class="s0">this</span><span class="s1">[from] === elt) { </span><span class="s0">return </span><span class="s1">from</span><span class="s3">; </span><span class="s1">} 
+    } 
+    </span><span class="s0">return </span><span class="s1">-</span><span class="s5">1</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+} 
+ 
+</span><span class="s4">// $WebSocketProvider.$inject = ['$rootScope', '$q', '$timeout', '$websocketBackend'];</span><span class="s1"> 
+</span><span class="s0">function </span><span class="s1">$WebSocketProvider($rootScope</span><span class="s3">, </span><span class="s1">$q</span><span class="s3">, </span><span class="s1">$timeout</span><span class="s3">, </span><span class="s1">$websocketBackend) { 
+ 
+  </span><span class="s0">function </span><span class="s1">$WebSocket(url</span><span class="s3">, </span><span class="s1">protocols</span><span class="s3">, </span><span class="s1">options) { 
+    </span><span class="s0">if </span><span class="s1">(!options &amp;&amp; isObject(protocols) &amp;&amp; !isArray(protocols)) { 
+      options = protocols</span><span class="s3">;</span><span class="s1"> 
+      protocols = undefined</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">this</span><span class="s1">.protocols = protocols</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.url = url || </span><span class="s2">'Missing URL'</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.ssl = </span><span class="s2">/(wss)/i</span><span class="s1">.test(</span><span class="s0">this</span><span class="s1">.url)</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">// this.binaryType = '';</span><span class="s1"> 
+    </span><span class="s4">// this.extensions = '';</span><span class="s1"> 
+    </span><span class="s4">// this.bufferedAmount = 0;</span><span class="s1"> 
+    </span><span class="s4">// this.trasnmitting = false;</span><span class="s1"> 
+    </span><span class="s4">// this.buffer = [];</span><span class="s1"> 
+ 
+    </span><span class="s4">// TODO: refactor options to use isDefined</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.scope                       = options &amp;&amp; options.scope                      || $rootScope</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.rootScopeFailover           = options &amp;&amp; options.rootScopeFailover          &amp;&amp; </span><span class="s0">true</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.useApplyAsync               = options &amp;&amp; options.useApplyAsync              || </span><span class="s0">false</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.initialTimeout              = options &amp;&amp; options.initialTimeout             || </span><span class="s5">500</span><span class="s3">; </span><span class="s4">// 500ms</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.maxTimeout                  = options &amp;&amp; options.maxTimeout                 || </span><span class="s5">5 </span><span class="s1">* </span><span class="s5">60 </span><span class="s1">* </span><span class="s5">1000</span><span class="s3">; </span><span class="s4">// 5 minutes</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.reconnectIfNotNormalClose   = options &amp;&amp; options.reconnectIfNotNormalClose  || </span><span class="s0">false</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.binaryType                  = options &amp;&amp; options.binaryType                 || </span><span class="s2">'blob'</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s0">this</span><span class="s1">._reconnectAttempts = </span><span class="s5">0</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.sendQueue          = []</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.onOpenCallbacks    = []</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.onMessageCallbacks = []</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.onErrorCallbacks   = []</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.onCloseCallbacks   = []</span><span class="s3">;</span><span class="s1"> 
+ 
+    objectFreeze(</span><span class="s0">this</span><span class="s1">._readyStateConstants)</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s0">if </span><span class="s1">(url) { 
+      </span><span class="s0">this</span><span class="s1">._connect()</span><span class="s3">;</span><span class="s1"> 
+    } </span><span class="s0">else </span><span class="s1">{ 
+      </span><span class="s0">this</span><span class="s1">._setInternalState(</span><span class="s5">0</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+  } 
+ 
+ 
+  $WebSocket.prototype._readyStateConstants = { 
+    </span><span class="s2">'CONNECTING'</span><span class="s1">: </span><span class="s5">0</span><span class="s3">,</span><span class="s1"> 
+    </span><span class="s2">'OPEN'</span><span class="s1">: </span><span class="s5">1</span><span class="s3">,</span><span class="s1"> 
+    </span><span class="s2">'CLOSING'</span><span class="s1">: </span><span class="s5">2</span><span class="s3">,</span><span class="s1"> 
+    </span><span class="s2">'CLOSED'</span><span class="s1">: </span><span class="s5">3</span><span class="s3">,</span><span class="s1"> 
+    </span><span class="s2">'RECONNECT_ABORTED'</span><span class="s1">: </span><span class="s5">4</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype._normalCloseCode = </span><span class="s5">1000</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype._reconnectableStatusCodes = [ 
+    </span><span class="s5">4000</span><span class="s1"> 
+  ]</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype.safeDigest = </span><span class="s0">function </span><span class="s1">safeDigest(autoApply) { 
+    </span><span class="s0">if </span><span class="s1">(autoApply &amp;&amp; !</span><span class="s0">this</span><span class="s1">.scope.$$phase) { 
+      </span><span class="s0">this</span><span class="s1">.scope.$digest()</span><span class="s3">;</span><span class="s1"> 
+    } 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype.bindToScope = </span><span class="s0">function </span><span class="s1">bindToScope(scope) { 
+    </span><span class="s0">var </span><span class="s1">self = </span><span class="s0">this</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">if </span><span class="s1">(scope) { 
+      </span><span class="s0">this</span><span class="s1">.scope = scope</span><span class="s3">;</span><span class="s1"> 
+      </span><span class="s0">if </span><span class="s1">(</span><span class="s0">this</span><span class="s1">.rootScopeFailover) { 
+        </span><span class="s0">this</span><span class="s1">.scope.$on(</span><span class="s2">'$destroy'</span><span class="s3">, </span><span class="s0">function</span><span class="s1">() { 
+          self.scope = $rootScope</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+      } 
+    } 
+    </span><span class="s0">return </span><span class="s1">self</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype._connect = </span><span class="s0">function </span><span class="s1">_connect(force) { 
+    </span><span class="s0">if </span><span class="s1">(force || !</span><span class="s0">this</span><span class="s1">.socket || </span><span class="s0">this</span><span class="s1">.socket.readyState !== </span><span class="s0">this</span><span class="s1">._readyStateConstants.OPEN) { 
+      </span><span class="s0">this</span><span class="s1">.socket = $websocketBackend.create(</span><span class="s0">this</span><span class="s1">.url</span><span class="s3">, </span><span class="s0">this</span><span class="s1">.protocols)</span><span class="s3">;</span><span class="s1"> 
+      </span><span class="s0">this</span><span class="s1">.socket.onmessage = angular.bind(</span><span class="s0">this</span><span class="s3">, </span><span class="s0">this</span><span class="s1">._onMessageHandler)</span><span class="s3">;</span><span class="s1"> 
+      </span><span class="s0">this</span><span class="s1">.socket.onopen  = angular.bind(</span><span class="s0">this</span><span class="s3">, </span><span class="s0">this</span><span class="s1">._onOpenHandler)</span><span class="s3">;</span><span class="s1"> 
+      </span><span class="s0">this</span><span class="s1">.socket.onerror = angular.bind(</span><span class="s0">this</span><span class="s3">, </span><span class="s0">this</span><span class="s1">._onErrorHandler)</span><span class="s3">;</span><span class="s1"> 
+      </span><span class="s0">this</span><span class="s1">.socket.onclose = angular.bind(</span><span class="s0">this</span><span class="s3">, </span><span class="s0">this</span><span class="s1">._onCloseHandler)</span><span class="s3">;</span><span class="s1"> 
+      </span><span class="s0">this</span><span class="s1">.socket.binaryType = </span><span class="s0">this</span><span class="s1">.binaryType</span><span class="s3">;</span><span class="s1"> 
+    } 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype.fireQueue = </span><span class="s0">function </span><span class="s1">fireQueue() { 
+    </span><span class="s0">while </span><span class="s1">(</span><span class="s0">this</span><span class="s1">.sendQueue.length &amp;&amp; </span><span class="s0">this</span><span class="s1">.socket.readyState === </span><span class="s0">this</span><span class="s1">._readyStateConstants.OPEN) { 
+      </span><span class="s0">var </span><span class="s1">data = </span><span class="s0">this</span><span class="s1">.sendQueue.shift()</span><span class="s3">;</span><span class="s1"> 
+ 
+      </span><span class="s0">this</span><span class="s1">.socket.send( 
+        isString(data.message) || </span><span class="s0">this</span><span class="s1">.binaryType != </span><span class="s2">'blob' </span><span class="s1">? data.message : JSON.stringify(data.message) 
+      )</span><span class="s3">;</span><span class="s1"> 
+      data.deferred.resolve()</span><span class="s3">;</span><span class="s1"> 
+    } 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype.notifyOpenCallbacks = </span><span class="s0">function </span><span class="s1">notifyOpenCallbacks(event) { 
+    </span><span class="s0">for </span><span class="s1">(</span><span class="s0">var </span><span class="s1">i = </span><span class="s5">0</span><span class="s3">; </span><span class="s1">i &lt; </span><span class="s0">this</span><span class="s1">.onOpenCallbacks.length</span><span class="s3">; </span><span class="s1">i++) { 
+      </span><span class="s0">this</span><span class="s1">.onOpenCallbacks[i].call(</span><span class="s0">this</span><span class="s3">, </span><span class="s1">event)</span><span class="s3">;</span><span class="s1"> 
+    } 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype.notifyCloseCallbacks = </span><span class="s0">function </span><span class="s1">notifyCloseCallbacks(event) { 
+    </span><span class="s0">for </span><span class="s1">(</span><span class="s0">var </span><span class="s1">i = </span><span class="s5">0</span><span class="s3">; </span><span class="s1">i &lt; </span><span class="s0">this</span><span class="s1">.onCloseCallbacks.length</span><span class="s3">; </span><span class="s1">i++) { 
+      </span><span class="s0">this</span><span class="s1">.onCloseCallbacks[i].call(</span><span class="s0">this</span><span class="s3">, </span><span class="s1">event)</span><span class="s3">;</span><span class="s1"> 
+    } 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype.notifyErrorCallbacks = </span><span class="s0">function </span><span class="s1">notifyErrorCallbacks(event) { 
+    </span><span class="s0">for </span><span class="s1">(</span><span class="s0">var </span><span class="s1">i = </span><span class="s5">0</span><span class="s3">; </span><span class="s1">i &lt; </span><span class="s0">this</span><span class="s1">.onErrorCallbacks.length</span><span class="s3">; </span><span class="s1">i++) { 
+      </span><span class="s0">this</span><span class="s1">.onErrorCallbacks[i].call(</span><span class="s0">this</span><span class="s3">, </span><span class="s1">event)</span><span class="s3">;</span><span class="s1"> 
+    } 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype.onOpen = </span><span class="s0">function </span><span class="s1">onOpen(cb) { 
+    </span><span class="s0">this</span><span class="s1">.onOpenCallbacks.push(cb)</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">return this</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype.onClose = </span><span class="s0">function </span><span class="s1">onClose(cb) { 
+    </span><span class="s0">this</span><span class="s1">.onCloseCallbacks.push(cb)</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">return this</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype.onError = </span><span class="s0">function </span><span class="s1">onError(cb) { 
+    </span><span class="s0">this</span><span class="s1">.onErrorCallbacks.push(cb)</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">return this</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+ 
+  $WebSocket.prototype.onMessage = </span><span class="s0">function </span><span class="s1">onMessage(callback</span><span class="s3">, </span><span class="s1">options) { 
+    </span><span class="s0">if </span><span class="s1">(!isFunction(callback)) { 
+      </span><span class="s0">throw new </span><span class="s1">Error(</span><span class="s2">'Callback must be a function'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">if </span><span class="s1">(options &amp;&amp; isDefined(options.filter) &amp;&amp; !isString(options.filter) &amp;&amp; !(options.filter </span><span class="s0">instanceof </span><span class="s1">RegExp)) { 
+      </span><span class="s0">throw new </span><span class="s1">Error(</span><span class="s2">'Pattern must be a string or regular expression'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">this</span><span class="s1">.onMessageCallbacks.push({ 
+      fn: callback</span><span class="s3">,</span><span class="s1"> 
+      pattern: options ? options.filter : undefined</span><span class="s3">,</span><span class="s1"> 
+      autoApply: options ? options.autoApply : </span><span class="s0">true</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">return this</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype._onOpenHandler = </span><span class="s0">function </span><span class="s1">_onOpenHandler(event) { 
+    </span><span class="s0">this</span><span class="s1">._reconnectAttempts = </span><span class="s5">0</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.notifyOpenCallbacks(event)</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">this</span><span class="s1">.fireQueue()</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype._onCloseHandler = </span><span class="s0">function </span><span class="s1">_onCloseHandler(event) { 
+    </span><span class="s0">var </span><span class="s1">self = </span><span class="s0">this</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">if </span><span class="s1">(self.useApplyAsync) { 
+      self.scope.$applyAsync(</span><span class="s0">function</span><span class="s1">() { 
+        self.notifyCloseCallbacks(event)</span><span class="s3">;</span><span class="s1"> 
+      })</span><span class="s3">;</span><span class="s1"> 
+    } </span><span class="s0">else </span><span class="s1">{ 
+      self.notifyCloseCallbacks(event)</span><span class="s3">;</span><span class="s1"> 
+      self.safeDigest(</span><span class="s0">true</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    } 
+    </span><span class="s0">if </span><span class="s1">((</span><span class="s0">this</span><span class="s1">.reconnectIfNotNormalClose &amp;&amp; event.code !== </span><span class="s0">this</span><span class="s1">._normalCloseCode) || </span><span class="s0">this</span><span class="s1">._reconnectableStatusCodes.indexOf(event.code) &gt; -</span><span class="s5">1</span><span class="s1">) { 
+      </span><span class="s0">this</span><span class="s1">.reconnect()</span><span class="s3">;</span><span class="s1"> 
+    } 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype._onErrorHandler = </span><span class="s0">function </span><span class="s1">_onErrorHandler(event) { 
+    </span><span class="s0">var </span><span class="s1">self = </span><span class="s0">this</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">if </span><span class="s1">(self.useApplyAsync) { 
+      self.scope.$applyAsync(</span><span class="s0">function</span><span class="s1">() { 
+        self.notifyErrorCallbacks(event)</span><span class="s3">;</span><span class="s1"> 
+      })</span><span class="s3">;</span><span class="s1"> 
+    } </span><span class="s0">else </span><span class="s1">{ 
+      self.notifyErrorCallbacks(event)</span><span class="s3">;</span><span class="s1"> 
+      self.safeDigest(</span><span class="s0">true</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    } 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype._onMessageHandler = </span><span class="s0">function </span><span class="s1">_onMessageHandler(message) { 
+    </span><span class="s0">var </span><span class="s1">pattern</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">var </span><span class="s1">self = </span><span class="s0">this</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">var </span><span class="s1">currentCallback</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">for </span><span class="s1">(</span><span class="s0">var </span><span class="s1">i = </span><span class="s5">0</span><span class="s3">; </span><span class="s1">i &lt; self.onMessageCallbacks.length</span><span class="s3">; </span><span class="s1">i++) { 
+      currentCallback = self.onMessageCallbacks[i]</span><span class="s3">;</span><span class="s1"> 
+      pattern = currentCallback.pattern</span><span class="s3">;</span><span class="s1"> 
+      </span><span class="s0">if </span><span class="s1">(pattern) { 
+        </span><span class="s0">if </span><span class="s1">(isString(pattern) &amp;&amp; message.data === pattern) { 
+          applyAsyncOrDigest(currentCallback.fn</span><span class="s3">, </span><span class="s1">currentCallback.autoApply</span><span class="s3">, </span><span class="s1">message)</span><span class="s3">;</span><span class="s1"> 
+        } 
+        </span><span class="s0">else if </span><span class="s1">(pattern </span><span class="s0">instanceof </span><span class="s1">RegExp &amp;&amp; pattern.exec(message.data)) { 
+          applyAsyncOrDigest(currentCallback.fn</span><span class="s3">, </span><span class="s1">currentCallback.autoApply</span><span class="s3">, </span><span class="s1">message)</span><span class="s3">;</span><span class="s1"> 
+        } 
+      } 
+      </span><span class="s0">else </span><span class="s1">{ 
+        applyAsyncOrDigest(currentCallback.fn</span><span class="s3">, </span><span class="s1">currentCallback.autoApply</span><span class="s3">, </span><span class="s1">message)</span><span class="s3">;</span><span class="s1"> 
+      } 
+    } 
+ 
+    </span><span class="s0">function </span><span class="s1">applyAsyncOrDigest(callback</span><span class="s3">, </span><span class="s1">autoApply</span><span class="s3">, </span><span class="s1">args) { 
+      args = arraySlice.call(arguments</span><span class="s3">, </span><span class="s5">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+      </span><span class="s0">if </span><span class="s1">(self.useApplyAsync) { 
+        self.scope.$applyAsync(</span><span class="s0">function</span><span class="s1">() { 
+          callback.apply(self</span><span class="s3">, </span><span class="s1">args)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+      } </span><span class="s0">else </span><span class="s1">{ 
+        callback.apply(self</span><span class="s3">, </span><span class="s1">args)</span><span class="s3">;</span><span class="s1"> 
+        self.safeDigest(autoApply)</span><span class="s3">;</span><span class="s1"> 
+      } 
+    } 
+ 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype.close = </span><span class="s0">function </span><span class="s1">close(force) { 
+    </span><span class="s0">if </span><span class="s1">(force || !</span><span class="s0">this</span><span class="s1">.socket.bufferedAmount) { 
+      </span><span class="s0">this</span><span class="s1">.socket.close()</span><span class="s3">;</span><span class="s1"> 
+    } 
+    </span><span class="s0">return this</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype.send = </span><span class="s0">function </span><span class="s1">send(data) { 
+    </span><span class="s0">var </span><span class="s1">deferred = $q.defer()</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">var </span><span class="s1">self = </span><span class="s0">this</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">var </span><span class="s1">promise = cancelableify(deferred.promise)</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s0">if </span><span class="s1">(self.readyState === self._readyStateConstants.RECONNECT_ABORTED) { 
+      deferred.reject(</span><span class="s2">'Socket connection has been closed'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    } 
+    </span><span class="s0">else </span><span class="s1">{ 
+      self.sendQueue.push({ 
+        message: data</span><span class="s3">,</span><span class="s1"> 
+        deferred: deferred 
+      })</span><span class="s3">;</span><span class="s1"> 
+      self.fireQueue()</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s4">// Credit goes to @btford</span><span class="s1"> 
+    </span><span class="s0">function </span><span class="s1">cancelableify(promise) { 
+      promise.cancel = cancel</span><span class="s3">;</span><span class="s1"> 
+      </span><span class="s0">var </span><span class="s1">then = promise.then</span><span class="s3">;</span><span class="s1"> 
+      promise.then = </span><span class="s0">function</span><span class="s1">() { 
+        </span><span class="s0">var </span><span class="s1">newPromise = then.apply(</span><span class="s0">this</span><span class="s3">, </span><span class="s1">arguments)</span><span class="s3">;</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">cancelableify(newPromise)</span><span class="s3">;</span><span class="s1"> 
+      }</span><span class="s3">;</span><span class="s1"> 
+      </span><span class="s0">return </span><span class="s1">promise</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">function </span><span class="s1">cancel(reason) { 
+      self.sendQueue.splice(self.sendQueue.indexOf(data)</span><span class="s3">, </span><span class="s5">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+      deferred.reject(reason)</span><span class="s3">;</span><span class="s1"> 
+      </span><span class="s0">return </span><span class="s1">self</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">if </span><span class="s1">($websocketBackend.isMocked &amp;&amp; $websocketBackend.isMocked() &amp;&amp; 
+            $websocketBackend.isConnected(</span><span class="s0">this</span><span class="s1">.url)) { 
+      </span><span class="s0">this</span><span class="s1">._onMessageHandler($websocketBackend.mockSend())</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">return </span><span class="s1">promise</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype.reconnect = </span><span class="s0">function </span><span class="s1">reconnect() { 
+    </span><span class="s0">this</span><span class="s1">.close()</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s0">var </span><span class="s1">backoffDelay = </span><span class="s0">this</span><span class="s1">._getBackoffDelay(++</span><span class="s0">this</span><span class="s1">._reconnectAttempts)</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s0">var </span><span class="s1">backoffDelaySeconds = backoffDelay / </span><span class="s5">1000</span><span class="s3">;</span><span class="s1"> 
+    console.log(</span><span class="s2">'Reconnecting in ' </span><span class="s1">+ backoffDelaySeconds + </span><span class="s2">' seconds'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+    $timeout(angular.bind(</span><span class="s0">this</span><span class="s3">, </span><span class="s0">this</span><span class="s1">._connect)</span><span class="s3">, </span><span class="s1">backoffDelay)</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s0">return this</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+  </span><span class="s4">// Exponential Backoff Formula by Prof. Douglas Thain</span><span class="s1"> 
+  </span><span class="s4">// http://dthain.blogspot.co.uk/2009/02/exponential-backoff-in-distributed.html</span><span class="s1"> 
+  $WebSocket.prototype._getBackoffDelay = </span><span class="s0">function </span><span class="s1">_getBackoffDelay(attempt) { 
+    </span><span class="s0">var </span><span class="s1">R = Math.random() + </span><span class="s5">1</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">var </span><span class="s1">T = </span><span class="s0">this</span><span class="s1">.initialTimeout</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">var </span><span class="s1">F = </span><span class="s5">2</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">var </span><span class="s1">N = attempt</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">var </span><span class="s1">M = </span><span class="s0">this</span><span class="s1">.maxTimeout</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s0">return </span><span class="s1">Math.floor(Math.min(R * T * Math.pow(F</span><span class="s3">, </span><span class="s1">N)</span><span class="s3">, </span><span class="s1">M))</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  $WebSocket.prototype._setInternalState = </span><span class="s0">function </span><span class="s1">_setInternalState(state) { 
+    </span><span class="s0">if </span><span class="s1">(Math.floor(state) !== state || state &lt; </span><span class="s5">0 </span><span class="s1">|| state &gt; </span><span class="s5">4</span><span class="s1">) { 
+      </span><span class="s0">throw new </span><span class="s1">Error(</span><span class="s2">'state must be an integer between 0 and 4, got: ' </span><span class="s1">+ state)</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s4">// ie8 wat</span><span class="s1"> 
+    </span><span class="s0">if </span><span class="s1">(!objectDefineProperty) { 
+      </span><span class="s0">this</span><span class="s1">.readyState = state || </span><span class="s0">this</span><span class="s1">.socket.readyState</span><span class="s3">;</span><span class="s1"> 
+    } 
+    </span><span class="s0">this</span><span class="s1">._internalConnectionState = state</span><span class="s3">;</span><span class="s1"> 
+ 
+ 
+    forEach(</span><span class="s0">this</span><span class="s1">.sendQueue</span><span class="s3">, </span><span class="s0">function</span><span class="s1">(pending) { 
+      pending.deferred.reject(</span><span class="s2">'Message cancelled due to closed socket connection'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  </span><span class="s4">// Read only .readyState</span><span class="s1"> 
+  </span><span class="s0">if </span><span class="s1">(objectDefineProperty) { 
+    objectDefineProperty($WebSocket.prototype</span><span class="s3">, </span><span class="s2">'readyState'</span><span class="s3">, </span><span class="s1">{ 
+      get: </span><span class="s0">function</span><span class="s1">() { 
+        </span><span class="s0">return this</span><span class="s1">._internalConnectionState || </span><span class="s0">this</span><span class="s1">.socket.readyState</span><span class="s3">;</span><span class="s1"> 
+      }</span><span class="s3">,</span><span class="s1"> 
+      set: </span><span class="s0">function</span><span class="s1">() { 
+        </span><span class="s0">throw new </span><span class="s1">Error(</span><span class="s2">'The readyState property is read-only'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+      } 
+    })</span><span class="s3">;</span><span class="s1"> 
+  } 
+ 
+  </span><span class="s0">return function</span><span class="s1">(url</span><span class="s3">, </span><span class="s1">protocols</span><span class="s3">, </span><span class="s1">options) { 
+    </span><span class="s0">return new </span><span class="s1">$WebSocket(url</span><span class="s3">, </span><span class="s1">protocols</span><span class="s3">, </span><span class="s1">options)</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+} 
+ 
+</span><span class="s4">// $WebSocketBackendProvider.$inject = ['$log'];</span><span class="s1"> 
+</span><span class="s0">function </span><span class="s1">$WebSocketBackendProvider($log) { 
+  </span><span class="s0">this</span><span class="s1">.create = </span><span class="s0">function </span><span class="s1">create(url</span><span class="s3">, </span><span class="s1">protocols) { 
+    </span><span class="s0">var </span><span class="s1">match = </span><span class="s2">/wss?:\/\//</span><span class="s1">.exec(url)</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s0">if </span><span class="s1">(!match) { 
+      </span><span class="s0">throw new </span><span class="s1">Error(</span><span class="s2">'Invalid url provided'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">if </span><span class="s1">(protocols) { 
+      </span><span class="s0">return new </span><span class="s1">Socket(url</span><span class="s3">, </span><span class="s1">protocols)</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">return new </span><span class="s1">Socket(url)</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+ 
+  </span><span class="s0">this</span><span class="s1">.createWebSocketBackend = </span><span class="s0">function </span><span class="s1">createWebSocketBackend(url</span><span class="s3">, </span><span class="s1">protocols) { 
+    $log.warn(</span><span class="s2">'Deprecated: Please use .create(url, protocols)'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s0">return this</span><span class="s1">.create(url</span><span class="s3">, </span><span class="s1">protocols)</span><span class="s3">;</span><span class="s1"> 
+  }</span><span class="s3">;</span><span class="s1"> 
+} 
+ 
+angular.module(</span><span class="s2">'ngWebSocket'</span><span class="s3">, </span><span class="s1">[]) 
+.factory(</span><span class="s2">'$websocket'</span><span class="s3">, </span><span class="s1">[</span><span class="s2">'$rootScope'</span><span class="s3">, </span><span class="s2">'$q'</span><span class="s3">, </span><span class="s2">'$timeout'</span><span class="s3">, </span><span class="s2">'$websocketBackend'</span><span class="s3">, </span><span class="s1">$WebSocketProvider]) 
+.factory(</span><span class="s2">'WebSocket'</span><span class="s3">,  </span><span class="s1">[</span><span class="s2">'$rootScope'</span><span class="s3">, </span><span class="s2">'$q'</span><span class="s3">, </span><span class="s2">'$timeout'</span><span class="s3">, </span><span class="s2">'WebsocketBackend'</span><span class="s3">,  </span><span class="s1">$WebSocketProvider]) 
+.service(</span><span class="s2">'$websocketBackend'</span><span class="s3">, </span><span class="s1">[</span><span class="s2">'$log'</span><span class="s3">, </span><span class="s1">$WebSocketBackendProvider]) 
+.service(</span><span class="s2">'WebSocketBackend'</span><span class="s3">,  </span><span class="s1">[</span><span class="s2">'$log'</span><span class="s3">, </span><span class="s1">$WebSocketBackendProvider])</span><span class="s3">;</span><span class="s1"> 
+ 
+ 
+angular.module(</span><span class="s2">'angular-websocket'</span><span class="s3">, </span><span class="s1">[</span><span class="s2">'ngWebSocket'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+ 
+</span><span class="s0">export default </span><span class="s1">angular.module(</span><span class="s2">'ngWebSocket'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+</span></pre>
+</body>
+</html>

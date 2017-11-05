@@ -1,0 +1,665 @@
+<html>
+<head>
+<title>dirPagination.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(98,151,85); font-style: italic; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(204,120,50); font-weight: bold; }
+.s3 { color: rgb(106,135,89); }
+.s4 { color: rgb(204,120,50); }
+.s5 { color: rgb(104,151,187); }
+.s6 { color: rgb(128,128,128); }
+.s7 { color: rgb(98,151,85); font-weight: bold; font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+dirPagination.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/** 
+ * dirPagination - AngularJS module for paginating (almost) anything. 
+ * 
+ * 
+ * Credits 
+ * ======= 
+ * 
+ * Daniel Tabuenca: https://groups.google.com/d/msg/angular/an9QpzqIYiM/r8v-3W1X5vcJ 
+ * for the idea on how to dynamically invoke the ng-repeat directive. 
+ * 
+ * I borrowed a couple of lines and a few attribute names from the AngularUI Bootstrap project: 
+ * https://github.com/angular-ui/bootstrap/blob/master/src/pagination/pagination.js 
+ * 
+ * Copyright 2014 Michael Bromley &lt;michael@michaelbromley.co.uk&gt; 
+ */</span><span class="s1"> 
+ 
+(</span><span class="s2">function</span><span class="s1">() { 
+ 
+    </span><span class="s0">/** 
+     * Config 
+     */</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">moduleName = </span><span class="s3">'angularUtils.directives.dirPagination'</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">DEFAULT_ID = </span><span class="s3">'__default'</span><span class="s4">;</span><span class="s1"> 
+ 
+    </span><span class="s0">/** 
+     * Module 
+     */</span><span class="s1"> 
+    angular.module(moduleName</span><span class="s4">, </span><span class="s1">[]) 
+        .directive(</span><span class="s3">'dirPaginate'</span><span class="s4">, </span><span class="s1">[</span><span class="s3">'$compile'</span><span class="s4">, </span><span class="s3">'$parse'</span><span class="s4">, </span><span class="s3">'paginationService'</span><span class="s4">, </span><span class="s1">dirPaginateDirective]) 
+        .directive(</span><span class="s3">'dirPaginateNoCompile'</span><span class="s4">, </span><span class="s1">noCompileDirective) 
+        .directive(</span><span class="s3">'dirPaginationControls'</span><span class="s4">, </span><span class="s1">[</span><span class="s3">'paginationService'</span><span class="s4">, </span><span class="s3">'paginationTemplate'</span><span class="s4">, </span><span class="s1">dirPaginationControlsDirective]) 
+        .filter(</span><span class="s3">'itemsPerPage'</span><span class="s4">, </span><span class="s1">[</span><span class="s3">'paginationService'</span><span class="s4">, </span><span class="s1">itemsPerPageFilter]) 
+        .service(</span><span class="s3">'paginationService'</span><span class="s4">, </span><span class="s1">paginationService) 
+        .provider(</span><span class="s3">'paginationTemplate'</span><span class="s4">, </span><span class="s1">paginationTemplateProvider) 
+        .run([</span><span class="s3">'$templateCache'</span><span class="s4">,</span><span class="s1">dirPaginationControlsTemplateInstaller])</span><span class="s4">;</span><span class="s1"> 
+ 
+    </span><span class="s2">function </span><span class="s1">dirPaginateDirective($compile</span><span class="s4">, </span><span class="s1">$parse</span><span class="s4">, </span><span class="s1">paginationService) { 
+ 
+        </span><span class="s2">return  </span><span class="s1">{ 
+            terminal: </span><span class="s2">true</span><span class="s4">,</span><span class="s1"> 
+            multiElement: </span><span class="s2">true</span><span class="s4">,</span><span class="s1"> 
+            priority: </span><span class="s5">100</span><span class="s4">,</span><span class="s1"> 
+            compile: dirPaginationCompileFn 
+        }</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">function </span><span class="s1">dirPaginationCompileFn(tElement</span><span class="s4">, </span><span class="s1">tAttrs){ 
+ 
+            </span><span class="s2">var </span><span class="s1">expression = tAttrs.dirPaginate</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s6">// regex taken directly from https://github.com/angular/angular.js/blob/v1.4.x/src/ng/directive/ngRepeat.js#L339</span><span class="s1"> 
+            </span><span class="s2">var </span><span class="s1">match = expression.match(</span><span class="s3">/^\s*([\s\S]+?)\s+in\s+([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+track\s+by\s+([\s\S]+?))?\s*$/</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s2">var </span><span class="s1">filterPattern = </span><span class="s3">/\|\s*itemsPerPage\s*:\s*(.*\(\s*\w*\)|([^\)]*?(?=\s+as\s+))|[^\)]*)/</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">if </span><span class="s1">(match[</span><span class="s5">2</span><span class="s1">].match(filterPattern) === </span><span class="s2">null</span><span class="s1">) { 
+                </span><span class="s2">throw </span><span class="s3">'pagination directive: the </span><span class="s4">\'</span><span class="s3">itemsPerPage</span><span class="s4">\'</span><span class="s3"> filter must be set.'</span><span class="s4">;</span><span class="s1"> 
+            } 
+            </span><span class="s2">var </span><span class="s1">itemsPerPageFilterRemoved = match[</span><span class="s5">2</span><span class="s1">].replace(filterPattern</span><span class="s4">, </span><span class="s3">''</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">var </span><span class="s1">collectionGetter = $parse(itemsPerPageFilterRemoved)</span><span class="s4">;</span><span class="s1"> 
+ 
+            addNoCompileAttributes(tElement)</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s6">// If any value is specified for paginationId, we register the un-evaluated expression at this stage for the benefit of any</span><span class="s1"> 
+            </span><span class="s6">// dir-pagination-controls directives that may be looking for this ID.</span><span class="s1"> 
+            </span><span class="s2">var </span><span class="s1">rawId = tAttrs.paginationId || DEFAULT_ID</span><span class="s4">;</span><span class="s1"> 
+            paginationService.registerInstance(rawId)</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s2">return function </span><span class="s1">dirPaginationLinkFn(scope</span><span class="s4">, </span><span class="s1">element</span><span class="s4">, </span><span class="s1">attrs){ 
+ 
+                </span><span class="s6">// Now that we have access to the `scope` we can interpolate any expression given in the paginationId attribute and</span><span class="s1"> 
+                </span><span class="s6">// potentially register a new ID if it evaluates to a different value than the rawId.</span><span class="s1"> 
+                </span><span class="s2">var </span><span class="s1">paginationId = $parse(attrs.paginationId)(scope) || attrs.paginationId || DEFAULT_ID</span><span class="s4">;</span><span class="s1"> 
+                 
+                </span><span class="s6">// (TODO: this seems sound, but I'm reverting as many bug reports followed it's introduction in 0.11.0.</span><span class="s1"> 
+                </span><span class="s6">// Needs more investigation.)</span><span class="s1"> 
+                </span><span class="s6">// In case rawId != paginationId we deregister using rawId for the sake of general cleanliness</span><span class="s1"> 
+                </span><span class="s6">// before registering using paginationId</span><span class="s1"> 
+                </span><span class="s6">// paginationService.deregisterInstance(rawId);</span><span class="s1"> 
+                paginationService.registerInstance(paginationId)</span><span class="s4">;</span><span class="s1"> 
+ 
+                </span><span class="s2">var </span><span class="s1">repeatExpression = getRepeatExpression(expression</span><span class="s4">, </span><span class="s1">paginationId)</span><span class="s4">;</span><span class="s1"> 
+                addNgRepeatToElement(element</span><span class="s4">, </span><span class="s1">attrs</span><span class="s4">, </span><span class="s1">repeatExpression)</span><span class="s4">;</span><span class="s1"> 
+ 
+                removeTemporaryAttributes(element)</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">var </span><span class="s1">compiled =  $compile(element)</span><span class="s4">;</span><span class="s1"> 
+ 
+                </span><span class="s2">var </span><span class="s1">currentPageGetter = makeCurrentPageGetterFn(scope</span><span class="s4">, </span><span class="s1">attrs</span><span class="s4">, </span><span class="s1">paginationId)</span><span class="s4">;</span><span class="s1"> 
+                paginationService.setCurrentPageParser(paginationId</span><span class="s4">, </span><span class="s1">currentPageGetter</span><span class="s4">, </span><span class="s1">scope)</span><span class="s4">;</span><span class="s1"> 
+ 
+                </span><span class="s2">if </span><span class="s1">(</span><span class="s2">typeof </span><span class="s1">attrs.totalItems !== </span><span class="s3">'undefined'</span><span class="s1">) { 
+                    paginationService.setAsyncModeTrue(paginationId)</span><span class="s4">;</span><span class="s1"> 
+                    scope.$watch(</span><span class="s2">function</span><span class="s1">() { 
+                        </span><span class="s2">return </span><span class="s1">$parse(attrs.totalItems)(scope)</span><span class="s4">;</span><span class="s1"> 
+                    }</span><span class="s4">, </span><span class="s2">function </span><span class="s1">(result) { 
+                        </span><span class="s2">if </span><span class="s1">(</span><span class="s5">0 </span><span class="s1">&lt;= result) { 
+                            paginationService.setCollectionLength(paginationId</span><span class="s4">, </span><span class="s1">result)</span><span class="s4">;</span><span class="s1"> 
+                        } 
+                    })</span><span class="s4">;</span><span class="s1"> 
+                } </span><span class="s2">else </span><span class="s1">{ 
+                    paginationService.setAsyncModeFalse(paginationId)</span><span class="s4">;</span><span class="s1"> 
+                    scope.$watchCollection(</span><span class="s2">function</span><span class="s1">() { 
+                        </span><span class="s2">return </span><span class="s1">collectionGetter(scope)</span><span class="s4">;</span><span class="s1"> 
+                    }</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(collection) { 
+                        </span><span class="s2">if </span><span class="s1">(collection) { 
+                            </span><span class="s2">var </span><span class="s1">collectionLength = (collection </span><span class="s2">instanceof </span><span class="s1">Array) ? collection.length : Object.keys(collection).length</span><span class="s4">;</span><span class="s1"> 
+                            paginationService.setCollectionLength(paginationId</span><span class="s4">, </span><span class="s1">collectionLength)</span><span class="s4">;</span><span class="s1"> 
+                        } 
+                    })</span><span class="s4">;</span><span class="s1"> 
+                } 
+ 
+                </span><span class="s6">// Delegate to the link function returned by the new compilation of the ng-repeat</span><span class="s1"> 
+                compiled(scope)</span><span class="s4">;</span><span class="s1"> 
+                  
+                </span><span class="s6">// (TODO: Reverting this due to many bug reports in v 0.11.0. Needs investigation as the</span><span class="s1"> 
+                </span><span class="s6">// principle is sound)</span><span class="s1"> 
+                </span><span class="s6">// When the scope is destroyed, we make sure to remove the reference to it in paginationService</span><span class="s1"> 
+                </span><span class="s6">// so that it can be properly garbage collected</span><span class="s1"> 
+                </span><span class="s6">// scope.$on('$destroy', function destroyDirPagination() {</span><span class="s1"> 
+                </span><span class="s6">//     paginationService.deregisterInstance(paginationId);</span><span class="s1"> 
+                </span><span class="s6">// });</span><span class="s1"> 
+            }</span><span class="s4">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s0">/** 
+         * If a pagination id has been specified, we need to check that it is present as the second argument passed to 
+         * the itemsPerPage filter. If it is not there, we add it and return the modified expression. 
+         * 
+         * </span><span class="s7">@param </span><span class="s0">expression 
+         * </span><span class="s7">@param </span><span class="s0">paginationId 
+         * </span><span class="s7">@returns </span><span class="s0">{*} 
+         */</span><span class="s1"> 
+        </span><span class="s2">function </span><span class="s1">getRepeatExpression(expression</span><span class="s4">, </span><span class="s1">paginationId) { 
+            </span><span class="s2">var </span><span class="s1">repeatExpression</span><span class="s4">,</span><span class="s1"> 
+                idDefinedInFilter = !!expression.match(</span><span class="s3">/(\|\s*itemsPerPage\s*:[^|]*:[^|]*)/</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s2">if </span><span class="s1">(paginationId !== DEFAULT_ID &amp;&amp; !idDefinedInFilter) { 
+                repeatExpression = expression.replace(</span><span class="s3">/(\|\s*itemsPerPage\s*:\s*[^|\s]*)/</span><span class="s4">, </span><span class="s3">&quot;$1 : '&quot; </span><span class="s1">+ paginationId + </span><span class="s3">&quot;'&quot;</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+            } </span><span class="s2">else </span><span class="s1">{ 
+                repeatExpression = expression</span><span class="s4">;</span><span class="s1"> 
+            } 
+ 
+            </span><span class="s2">return </span><span class="s1">repeatExpression</span><span class="s4">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s0">/** 
+         * Adds the ng-repeat directive to the element. In the case of multi-element (-start, -end) it adds the 
+         * appropriate multi-element ng-repeat to the first and last element in the range. 
+         * </span><span class="s7">@param </span><span class="s0">element 
+         * </span><span class="s7">@param </span><span class="s0">attrs 
+         * </span><span class="s7">@param </span><span class="s0">repeatExpression 
+         */</span><span class="s1"> 
+        </span><span class="s2">function </span><span class="s1">addNgRepeatToElement(element</span><span class="s4">, </span><span class="s1">attrs</span><span class="s4">, </span><span class="s1">repeatExpression) { 
+            </span><span class="s2">if </span><span class="s1">(element[</span><span class="s5">0</span><span class="s1">].hasAttribute(</span><span class="s3">'dir-paginate-start'</span><span class="s1">) || element[</span><span class="s5">0</span><span class="s1">].hasAttribute(</span><span class="s3">'data-dir-paginate-start'</span><span class="s1">)) { 
+                </span><span class="s6">// using multiElement mode (dir-paginate-start, dir-paginate-end)</span><span class="s1"> 
+                attrs.$set(</span><span class="s3">'ngRepeatStart'</span><span class="s4">, </span><span class="s1">repeatExpression)</span><span class="s4">;</span><span class="s1"> 
+                element.eq(element.length - </span><span class="s5">1</span><span class="s1">).attr(</span><span class="s3">'ng-repeat-end'</span><span class="s4">, </span><span class="s2">true</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+            } </span><span class="s2">else </span><span class="s1">{ 
+                attrs.$set(</span><span class="s3">'ngRepeat'</span><span class="s4">, </span><span class="s1">repeatExpression)</span><span class="s4">;</span><span class="s1"> 
+            } 
+        } 
+ 
+        </span><span class="s0">/** 
+         * Adds the dir-paginate-no-compile directive to each element in the tElement range. 
+         * </span><span class="s7">@param </span><span class="s0">tElement 
+         */</span><span class="s1"> 
+        </span><span class="s2">function </span><span class="s1">addNoCompileAttributes(tElement) { 
+            angular.forEach(tElement</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(el) { 
+                </span><span class="s2">if </span><span class="s1">(el.nodeType === </span><span class="s5">1</span><span class="s1">) { 
+                    angular.element(el).attr(</span><span class="s3">'dir-paginate-no-compile'</span><span class="s4">, </span><span class="s2">true</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                } 
+            })</span><span class="s4">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s0">/** 
+         * Removes the variations on dir-paginate (data-, -start, -end) and the dir-paginate-no-compile directives. 
+         * </span><span class="s7">@param </span><span class="s0">element 
+         */</span><span class="s1"> 
+        </span><span class="s2">function </span><span class="s1">removeTemporaryAttributes(element) { 
+            angular.forEach(element</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(el) { 
+                </span><span class="s2">if </span><span class="s1">(el.nodeType === </span><span class="s5">1</span><span class="s1">) { 
+                    angular.element(el).removeAttr(</span><span class="s3">'dir-paginate-no-compile'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                } 
+            })</span><span class="s4">;</span><span class="s1"> 
+            element.eq(</span><span class="s5">0</span><span class="s1">).removeAttr(</span><span class="s3">'dir-paginate-start'</span><span class="s1">).removeAttr(</span><span class="s3">'dir-paginate'</span><span class="s1">).removeAttr(</span><span class="s3">'data-dir-paginate-start'</span><span class="s1">).removeAttr(</span><span class="s3">'data-dir-paginate'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+            element.eq(element.length - </span><span class="s5">1</span><span class="s1">).removeAttr(</span><span class="s3">'dir-paginate-end'</span><span class="s1">).removeAttr(</span><span class="s3">'data-dir-paginate-end'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s0">/** 
+         * Creates a getter function for the current-page attribute, using the expression provided or a default value if 
+         * no current-page expression was specified. 
+         * 
+         * </span><span class="s7">@param </span><span class="s0">scope 
+         * </span><span class="s7">@param </span><span class="s0">attrs 
+         * </span><span class="s7">@param </span><span class="s0">paginationId 
+         * </span><span class="s7">@returns </span><span class="s0">{*} 
+         */</span><span class="s1"> 
+        </span><span class="s2">function </span><span class="s1">makeCurrentPageGetterFn(scope</span><span class="s4">, </span><span class="s1">attrs</span><span class="s4">, </span><span class="s1">paginationId) { 
+            </span><span class="s2">var </span><span class="s1">currentPageGetter</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">if </span><span class="s1">(attrs.currentPage) { 
+                currentPageGetter = $parse(attrs.currentPage)</span><span class="s4">;</span><span class="s1"> 
+            } </span><span class="s2">else </span><span class="s1">{ 
+                </span><span class="s6">// If the current-page attribute was not set, we'll make our own.</span><span class="s1"> 
+                </span><span class="s6">// Replace any non-alphanumeric characters which might confuse</span><span class="s1"> 
+                </span><span class="s6">// the $parse service and give unexpected results.</span><span class="s1"> 
+                </span><span class="s6">// See https://github.com/michaelbromley/angularUtils/issues/233</span><span class="s1"> 
+                </span><span class="s2">var </span><span class="s1">defaultCurrentPage = (paginationId + </span><span class="s3">'__currentPage'</span><span class="s1">).replace(</span><span class="s3">/\W/g</span><span class="s4">, </span><span class="s3">'_'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                scope[defaultCurrentPage] = </span><span class="s5">1</span><span class="s4">;</span><span class="s1"> 
+                currentPageGetter = $parse(defaultCurrentPage)</span><span class="s4">;</span><span class="s1"> 
+            } 
+            </span><span class="s2">return </span><span class="s1">currentPageGetter</span><span class="s4">;</span><span class="s1"> 
+        } 
+    } 
+ 
+    </span><span class="s0">/** 
+     * This is a helper directive that allows correct compilation when in multi-element mode (ie dir-paginate-start, dir-paginate-end). 
+     * It is dynamically added to all elements in the dir-paginate compile function, and it prevents further compilation of 
+     * any inner directives. It is then removed in the link function, and all inner directives are then manually compiled. 
+     */</span><span class="s1"> 
+    </span><span class="s2">function </span><span class="s1">noCompileDirective() { 
+        </span><span class="s2">return </span><span class="s1">{ 
+            priority: </span><span class="s5">5000</span><span class="s4">,</span><span class="s1"> 
+            terminal: </span><span class="s2">true</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">function </span><span class="s1">dirPaginationControlsTemplateInstaller($templateCache) { 
+        $templateCache.put(</span><span class="s3">'angularUtils.directives.dirPagination.template'</span><span class="s4">, </span><span class="s3">'&lt;ul class=&quot;pagination&quot; ng-if=&quot;1 &lt; pages.length || !autoHide&quot;&gt;&lt;li ng-if=&quot;boundaryLinks&quot; ng-class=&quot;{ disabled : pagination.current == 1 }&quot;&gt;&lt;a href=&quot;&quot; ng-click=&quot;setCurrent(1)&quot;&gt;&amp;laquo;&lt;/a&gt;&lt;/li&gt;&lt;li ng-if=&quot;directionLinks&quot; ng-class=&quot;{ disabled : pagination.current == 1 }&quot;&gt;&lt;a href=&quot;&quot; ng-click=&quot;setCurrent(pagination.current - 1)&quot;&gt;&amp;lsaquo;&lt;/a&gt;&lt;/li&gt;&lt;li ng-repeat=&quot;pageNumber in pages track by tracker(pageNumber, $index)&quot; ng-class=&quot;{ active : pagination.current == pageNumber, disabled : pageNumber == </span><span class="s4">\'</span><span class="s3">...</span><span class="s4">\'</span><span class="s3"> || ( ! autoHide &amp;&amp; pages.length === 1 ) }&quot;&gt;&lt;a href=&quot;&quot; ng-click=&quot;setCurrent(pageNumber)&quot;&gt;{{ pageNumber }}&lt;/a&gt;&lt;/li&gt;&lt;li ng-if=&quot;directionLinks&quot; ng-class=&quot;{ disabled : pagination.current == pagination.last }&quot;&gt;&lt;a href=&quot;&quot; ng-click=&quot;setCurrent(pagination.current + 1)&quot;&gt;&amp;rsaquo;&lt;/a&gt;&lt;/li&gt;&lt;li ng-if=&quot;boundaryLinks&quot;  ng-class=&quot;{ disabled : pagination.current == pagination.last }&quot;&gt;&lt;a href=&quot;&quot; ng-click=&quot;setCurrent(pagination.last)&quot;&gt;&amp;raquo;&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">function </span><span class="s1">dirPaginationControlsDirective(paginationService</span><span class="s4">, </span><span class="s1">paginationTemplate) { 
+ 
+        </span><span class="s2">var </span><span class="s1">numberRegex = </span><span class="s3">/^\d+$/</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">var </span><span class="s1">DDO = { 
+            restrict: </span><span class="s3">'AE'</span><span class="s4">,</span><span class="s1"> 
+            scope: { 
+                maxSize: </span><span class="s3">'=?'</span><span class="s4">,</span><span class="s1"> 
+                onPageChange: </span><span class="s3">'&amp;?'</span><span class="s4">,</span><span class="s1"> 
+                paginationId: </span><span class="s3">'=?'</span><span class="s4">,</span><span class="s1"> 
+                autoHide: </span><span class="s3">'=?'</span><span class="s1"> 
+            }</span><span class="s4">,</span><span class="s1"> 
+            link: dirPaginationControlsLinkFn 
+        }</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s6">// We need to check the paginationTemplate service to see whether a template path or</span><span class="s1"> 
+        </span><span class="s6">// string has been specified, and add the `template` or `templateUrl` property to</span><span class="s1"> 
+        </span><span class="s6">// the DDO as appropriate. The order of priority to decide which template to use is</span><span class="s1"> 
+        </span><span class="s6">// (highest priority first):</span><span class="s1"> 
+        </span><span class="s6">// 1. paginationTemplate.getString()</span><span class="s1"> 
+        </span><span class="s6">// 2. attrs.templateUrl</span><span class="s1"> 
+        </span><span class="s6">// 3. paginationTemplate.getPath()</span><span class="s1"> 
+        </span><span class="s2">var </span><span class="s1">templateString = paginationTemplate.getString()</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">if </span><span class="s1">(templateString !== undefined) { 
+            DDO.template = templateString</span><span class="s4">;</span><span class="s1"> 
+        } </span><span class="s2">else </span><span class="s1">{ 
+            DDO.templateUrl = </span><span class="s2">function</span><span class="s1">(elem</span><span class="s4">, </span><span class="s1">attrs) { 
+                </span><span class="s2">return </span><span class="s1">attrs.templateUrl || paginationTemplate.getPath()</span><span class="s4">;</span><span class="s1"> 
+            }</span><span class="s4">;</span><span class="s1"> 
+        } 
+        </span><span class="s2">return </span><span class="s1">DDO</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">function </span><span class="s1">dirPaginationControlsLinkFn(scope</span><span class="s4">, </span><span class="s1">element</span><span class="s4">, </span><span class="s1">attrs) { 
+ 
+            </span><span class="s6">// rawId is the un-interpolated value of the pagination-id attribute. This is only important when the corresponding dir-paginate directive has</span><span class="s1"> 
+            </span><span class="s6">// not yet been linked (e.g. if it is inside an ng-if block), and in that case it prevents this controls directive from assuming that there is</span><span class="s1"> 
+            </span><span class="s6">// no corresponding dir-paginate directive and wrongly throwing an exception.</span><span class="s1"> 
+            </span><span class="s2">var </span><span class="s1">rawId = attrs.paginationId ||  DEFAULT_ID</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">var </span><span class="s1">paginationId = scope.paginationId || attrs.paginationId ||  DEFAULT_ID</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s2">if </span><span class="s1">(!paginationService.isRegistered(paginationId) &amp;&amp; !paginationService.isRegistered(rawId)) { 
+                </span><span class="s2">var </span><span class="s1">idMessage = (paginationId !== DEFAULT_ID) ? </span><span class="s3">' (id: ' </span><span class="s1">+ paginationId + </span><span class="s3">') ' </span><span class="s1">: </span><span class="s3">' '</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">if </span><span class="s1">(window.console) { 
+                    console.warn(</span><span class="s3">'Pagination directive: the pagination controls' </span><span class="s1">+ idMessage + </span><span class="s3">'cannot be used without the corresponding pagination directive, which was not found at link time.'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                } 
+            } 
+ 
+            </span><span class="s2">if </span><span class="s1">(!scope.maxSize) { scope.maxSize = </span><span class="s5">9</span><span class="s4">; </span><span class="s1">} 
+            scope.autoHide = scope.autoHide === undefined ? </span><span class="s2">true </span><span class="s1">: scope.autoHide</span><span class="s4">;</span><span class="s1"> 
+            scope.directionLinks = angular.isDefined(attrs.directionLinks) ? scope.$parent.$eval(attrs.directionLinks) : </span><span class="s2">true</span><span class="s4">;</span><span class="s1"> 
+            scope.boundaryLinks = angular.isDefined(attrs.boundaryLinks) ? scope.$parent.$eval(attrs.boundaryLinks) : </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s2">var </span><span class="s1">paginationRange = Math.max(scope.maxSize</span><span class="s4">, </span><span class="s5">5</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+            scope.pages = []</span><span class="s4">;</span><span class="s1"> 
+            scope.pagination = { 
+                last: </span><span class="s5">1</span><span class="s4">,</span><span class="s1"> 
+                current: </span><span class="s5">1</span><span class="s1"> 
+            }</span><span class="s4">;</span><span class="s1"> 
+            scope.range = { 
+                lower: </span><span class="s5">1</span><span class="s4">,</span><span class="s1"> 
+                upper: </span><span class="s5">1</span><span class="s4">,</span><span class="s1"> 
+                total: </span><span class="s5">1</span><span class="s1"> 
+            }</span><span class="s4">;</span><span class="s1"> 
+ 
+            scope.$watch(</span><span class="s3">'maxSize'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(val) { 
+                </span><span class="s2">if </span><span class="s1">(val) { 
+                    paginationRange = Math.max(scope.maxSize</span><span class="s4">, </span><span class="s5">5</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                    generatePagination()</span><span class="s4">;</span><span class="s1"> 
+                } 
+            })</span><span class="s4">;</span><span class="s1"> 
+ 
+            scope.$watch(</span><span class="s2">function</span><span class="s1">() { 
+                </span><span class="s2">if </span><span class="s1">(paginationService.isRegistered(paginationId)) { 
+                    </span><span class="s2">return </span><span class="s1">(paginationService.getCollectionLength(paginationId) + </span><span class="s5">1</span><span class="s1">) * paginationService.getItemsPerPage(paginationId)</span><span class="s4">;</span><span class="s1"> 
+                } 
+            }</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(length) { 
+                </span><span class="s2">if </span><span class="s1">(</span><span class="s5">0 </span><span class="s1">&lt; length) { 
+                    generatePagination()</span><span class="s4">;</span><span class="s1"> 
+                } 
+            })</span><span class="s4">;</span><span class="s1"> 
+ 
+            scope.$watch(</span><span class="s2">function</span><span class="s1">() { 
+                </span><span class="s2">if </span><span class="s1">(paginationService.isRegistered(paginationId)) { 
+                    </span><span class="s2">return </span><span class="s1">(paginationService.getItemsPerPage(paginationId))</span><span class="s4">;</span><span class="s1"> 
+                } 
+            }</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(current</span><span class="s4">, </span><span class="s1">previous) { 
+                </span><span class="s2">if </span><span class="s1">(current != previous &amp;&amp; </span><span class="s2">typeof </span><span class="s1">previous !== </span><span class="s3">'undefined'</span><span class="s1">) { 
+                    goToPage(scope.pagination.current)</span><span class="s4">;</span><span class="s1"> 
+                } 
+            })</span><span class="s4">;</span><span class="s1"> 
+ 
+            scope.$watch(</span><span class="s2">function</span><span class="s1">() { 
+                </span><span class="s2">if </span><span class="s1">(paginationService.isRegistered(paginationId)) { 
+                    </span><span class="s2">return </span><span class="s1">paginationService.getCurrentPage(paginationId)</span><span class="s4">;</span><span class="s1"> 
+                } 
+            }</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(currentPage</span><span class="s4">, </span><span class="s1">previousPage) { 
+                </span><span class="s2">if </span><span class="s1">(currentPage != previousPage) { 
+                    goToPage(currentPage)</span><span class="s4">;</span><span class="s1"> 
+                } 
+            })</span><span class="s4">;</span><span class="s1"> 
+ 
+            scope.setCurrent = </span><span class="s2">function</span><span class="s1">(num) { 
+                </span><span class="s2">if </span><span class="s1">(paginationService.isRegistered(paginationId) &amp;&amp; isValidPageNumber(num)) { 
+                    num = parseInt(num</span><span class="s4">, </span><span class="s5">10</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                    paginationService.setCurrentPage(paginationId</span><span class="s4">, </span><span class="s1">num)</span><span class="s4">;</span><span class="s1"> 
+                } 
+            }</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s0">/** 
+             * Custom &quot;track by&quot; function which allows for duplicate &quot;...&quot; entries on long lists, 
+             * yet fixes the problem of wrongly-highlighted links which happens when using 
+             * &quot;track by $index&quot; - see https://github.com/michaelbromley/angularUtils/issues/153 
+             * </span><span class="s7">@param </span><span class="s0">id 
+             * </span><span class="s7">@param </span><span class="s0">index 
+             * </span><span class="s7">@returns </span><span class="s0">{string} 
+             */</span><span class="s1"> 
+            scope.tracker = </span><span class="s2">function</span><span class="s1">(id</span><span class="s4">, </span><span class="s1">index) { 
+                </span><span class="s2">return </span><span class="s1">id + </span><span class="s3">'_' </span><span class="s1">+ index</span><span class="s4">;</span><span class="s1"> 
+            }</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s2">function </span><span class="s1">goToPage(num) { 
+                </span><span class="s2">if </span><span class="s1">(paginationService.isRegistered(paginationId) &amp;&amp; isValidPageNumber(num)) { 
+                    </span><span class="s2">var </span><span class="s1">oldPageNumber = scope.pagination.current</span><span class="s4">;</span><span class="s1"> 
+ 
+                    scope.pages = generatePagesArray(num</span><span class="s4">, </span><span class="s1">paginationService.getCollectionLength(paginationId)</span><span class="s4">, </span><span class="s1">paginationService.getItemsPerPage(paginationId)</span><span class="s4">, </span><span class="s1">paginationRange)</span><span class="s4">;</span><span class="s1"> 
+                    scope.pagination.current = num</span><span class="s4">;</span><span class="s1"> 
+                    updateRangeValues()</span><span class="s4">;</span><span class="s1"> 
+ 
+                    </span><span class="s6">// if a callback has been set, then call it with the page number as the first argument</span><span class="s1"> 
+                    </span><span class="s6">// and the previous page number as a second argument</span><span class="s1"> 
+                    </span><span class="s2">if </span><span class="s1">(scope.onPageChange) { 
+                        scope.onPageChange({ 
+                            newPageNumber : num</span><span class="s4">,</span><span class="s1"> 
+                            oldPageNumber : oldPageNumber 
+                        })</span><span class="s4">;</span><span class="s1"> 
+                    } 
+                } 
+            } 
+ 
+            </span><span class="s2">function </span><span class="s1">generatePagination() { 
+                </span><span class="s2">if </span><span class="s1">(paginationService.isRegistered(paginationId)) { 
+                    </span><span class="s2">var </span><span class="s1">page = parseInt(paginationService.getCurrentPage(paginationId)) || </span><span class="s5">1</span><span class="s4">;</span><span class="s1"> 
+                    scope.pages = generatePagesArray(page</span><span class="s4">, </span><span class="s1">paginationService.getCollectionLength(paginationId)</span><span class="s4">, </span><span class="s1">paginationService.getItemsPerPage(paginationId)</span><span class="s4">, </span><span class="s1">paginationRange)</span><span class="s4">;</span><span class="s1"> 
+                    scope.pagination.current = page</span><span class="s4">;</span><span class="s1"> 
+                    scope.pagination.last = scope.pages[scope.pages.length - </span><span class="s5">1</span><span class="s1">]</span><span class="s4">;</span><span class="s1"> 
+                    </span><span class="s2">if </span><span class="s1">(scope.pagination.last &lt; scope.pagination.current) { 
+                        scope.setCurrent(scope.pagination.last)</span><span class="s4">;</span><span class="s1"> 
+                    } </span><span class="s2">else </span><span class="s1">{ 
+                        updateRangeValues()</span><span class="s4">;</span><span class="s1"> 
+                    } 
+                } 
+            } 
+ 
+            </span><span class="s0">/** 
+             * This function updates the values (lower, upper, total) of the `scope.range` object, which can be used in the pagination 
+             * template to display the current page range, e.g. &quot;showing 21 - 40 of 144 results&quot;; 
+             */</span><span class="s1"> 
+            </span><span class="s2">function </span><span class="s1">updateRangeValues() { 
+                </span><span class="s2">if </span><span class="s1">(paginationService.isRegistered(paginationId)) { 
+                    </span><span class="s2">var </span><span class="s1">currentPage = paginationService.getCurrentPage(paginationId)</span><span class="s4">,</span><span class="s1"> 
+                        itemsPerPage = paginationService.getItemsPerPage(paginationId)</span><span class="s4">,</span><span class="s1"> 
+                        totalItems = paginationService.getCollectionLength(paginationId)</span><span class="s4">;</span><span class="s1"> 
+ 
+                    scope.range.lower = (currentPage - </span><span class="s5">1</span><span class="s1">) * itemsPerPage + </span><span class="s5">1</span><span class="s4">;</span><span class="s1"> 
+                    scope.range.upper = Math.min(currentPage * itemsPerPage</span><span class="s4">, </span><span class="s1">totalItems)</span><span class="s4">;</span><span class="s1"> 
+                    scope.range.total = totalItems</span><span class="s4">;</span><span class="s1"> 
+                } 
+            } 
+            </span><span class="s2">function </span><span class="s1">isValidPageNumber(num) { 
+                </span><span class="s2">return </span><span class="s1">(numberRegex.test(num) &amp;&amp; (</span><span class="s5">0 </span><span class="s1">&lt; num &amp;&amp; num &lt;= scope.pagination.last))</span><span class="s4">;</span><span class="s1"> 
+            } 
+        } 
+ 
+        </span><span class="s0">/** 
+         * Generate an array of page numbers (or the '...' string) which is used in an ng-repeat to generate the 
+         * links used in pagination 
+         * 
+         * </span><span class="s7">@param </span><span class="s0">currentPage 
+         * </span><span class="s7">@param </span><span class="s0">rowsPerPage 
+         * </span><span class="s7">@param </span><span class="s0">paginationRange 
+         * </span><span class="s7">@param </span><span class="s0">collectionLength 
+         * </span><span class="s7">@returns </span><span class="s0">{Array} 
+         */</span><span class="s1"> 
+        </span><span class="s2">function </span><span class="s1">generatePagesArray(currentPage</span><span class="s4">, </span><span class="s1">collectionLength</span><span class="s4">, </span><span class="s1">rowsPerPage</span><span class="s4">, </span><span class="s1">paginationRange) { 
+            </span><span class="s2">var </span><span class="s1">pages = []</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">var </span><span class="s1">totalPages = Math.ceil(collectionLength / rowsPerPage)</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">var </span><span class="s1">halfWay = Math.ceil(paginationRange / </span><span class="s5">2</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">var </span><span class="s1">position</span><span class="s4">;</span><span class="s1"> 
+ 
+            </span><span class="s2">if </span><span class="s1">(currentPage &lt;= halfWay) { 
+                position = </span><span class="s3">'start'</span><span class="s4">;</span><span class="s1"> 
+            } </span><span class="s2">else if </span><span class="s1">(totalPages - halfWay &lt; currentPage) { 
+                position = </span><span class="s3">'end'</span><span class="s4">;</span><span class="s1"> 
+            } </span><span class="s2">else </span><span class="s1">{ 
+                position = </span><span class="s3">'middle'</span><span class="s4">;</span><span class="s1"> 
+            } 
+ 
+            </span><span class="s2">var </span><span class="s1">ellipsesNeeded = paginationRange &lt; totalPages</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">var </span><span class="s1">i = </span><span class="s5">1</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">while </span><span class="s1">(i &lt;= totalPages &amp;&amp; i &lt;= paginationRange) { 
+                </span><span class="s2">var </span><span class="s1">pageNumber = calculatePageNumber(i</span><span class="s4">, </span><span class="s1">currentPage</span><span class="s4">, </span><span class="s1">paginationRange</span><span class="s4">, </span><span class="s1">totalPages)</span><span class="s4">;</span><span class="s1"> 
+ 
+                </span><span class="s2">var </span><span class="s1">openingEllipsesNeeded = (i === </span><span class="s5">2 </span><span class="s1">&amp;&amp; (position === </span><span class="s3">'middle' </span><span class="s1">|| position === </span><span class="s3">'end'</span><span class="s1">))</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">var </span><span class="s1">closingEllipsesNeeded = (i === paginationRange - </span><span class="s5">1 </span><span class="s1">&amp;&amp; (position === </span><span class="s3">'middle' </span><span class="s1">|| position === </span><span class="s3">'start'</span><span class="s1">))</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">if </span><span class="s1">(ellipsesNeeded &amp;&amp; (openingEllipsesNeeded || closingEllipsesNeeded)) { 
+                    pages.push(</span><span class="s3">'...'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                } </span><span class="s2">else </span><span class="s1">{ 
+                    pages.push(pageNumber)</span><span class="s4">;</span><span class="s1"> 
+                } 
+                i ++</span><span class="s4">;</span><span class="s1"> 
+            } 
+            </span><span class="s2">return </span><span class="s1">pages</span><span class="s4">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s0">/** 
+         * Given the position in the sequence of pagination links [i], figure out what page number corresponds to that position. 
+         * 
+         * </span><span class="s7">@param </span><span class="s0">i 
+         * </span><span class="s7">@param </span><span class="s0">currentPage 
+         * </span><span class="s7">@param </span><span class="s0">paginationRange 
+         * </span><span class="s7">@param </span><span class="s0">totalPages 
+         * </span><span class="s7">@returns </span><span class="s0">{*} 
+         */</span><span class="s1"> 
+        </span><span class="s2">function </span><span class="s1">calculatePageNumber(i</span><span class="s4">, </span><span class="s1">currentPage</span><span class="s4">, </span><span class="s1">paginationRange</span><span class="s4">, </span><span class="s1">totalPages) { 
+            </span><span class="s2">var </span><span class="s1">halfWay = Math.ceil(paginationRange/</span><span class="s5">2</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">if </span><span class="s1">(i === paginationRange) { 
+                </span><span class="s2">return </span><span class="s1">totalPages</span><span class="s4">;</span><span class="s1"> 
+            } </span><span class="s2">else if </span><span class="s1">(i === </span><span class="s5">1</span><span class="s1">) { 
+                </span><span class="s2">return </span><span class="s1">i</span><span class="s4">;</span><span class="s1"> 
+            } </span><span class="s2">else if </span><span class="s1">(paginationRange &lt; totalPages) { 
+                </span><span class="s2">if </span><span class="s1">(totalPages - halfWay &lt; currentPage) { 
+                    </span><span class="s2">return </span><span class="s1">totalPages - paginationRange + i</span><span class="s4">;</span><span class="s1"> 
+                } </span><span class="s2">else if </span><span class="s1">(halfWay &lt; currentPage) { 
+                    </span><span class="s2">return </span><span class="s1">currentPage - halfWay + i</span><span class="s4">;</span><span class="s1"> 
+                } </span><span class="s2">else </span><span class="s1">{ 
+                    </span><span class="s2">return </span><span class="s1">i</span><span class="s4">;</span><span class="s1"> 
+                } 
+            } </span><span class="s2">else </span><span class="s1">{ 
+                </span><span class="s2">return </span><span class="s1">i</span><span class="s4">;</span><span class="s1"> 
+            } 
+        } 
+    } 
+ 
+    </span><span class="s0">/** 
+     * This filter slices the collection into pages based on the current page number and number of items per page. 
+     * </span><span class="s7">@param </span><span class="s0">paginationService 
+     * </span><span class="s7">@returns </span><span class="s0">{Function} 
+     */</span><span class="s1"> 
+    </span><span class="s2">function </span><span class="s1">itemsPerPageFilter(paginationService) { 
+ 
+        </span><span class="s2">return function</span><span class="s1">(collection</span><span class="s4">, </span><span class="s1">itemsPerPage</span><span class="s4">, </span><span class="s1">paginationId) { 
+            </span><span class="s2">if </span><span class="s1">(</span><span class="s2">typeof </span><span class="s1">(paginationId) === </span><span class="s3">'undefined'</span><span class="s1">) { 
+                paginationId = DEFAULT_ID</span><span class="s4">;</span><span class="s1"> 
+            } 
+            </span><span class="s2">if </span><span class="s1">(!paginationService.isRegistered(paginationId)) { 
+                </span><span class="s2">throw </span><span class="s3">'pagination directive: the itemsPerPage id argument (id: ' </span><span class="s1">+ paginationId + </span><span class="s3">') does not match a registered pagination-id.'</span><span class="s4">;</span><span class="s1"> 
+            } 
+            </span><span class="s2">var </span><span class="s1">end</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">var </span><span class="s1">start</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">if </span><span class="s1">(angular.isObject(collection)) { 
+                itemsPerPage = parseInt(itemsPerPage) || </span><span class="s5">9999999999</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">if </span><span class="s1">(paginationService.isAsyncMode(paginationId)) { 
+                    start = </span><span class="s5">0</span><span class="s4">;</span><span class="s1"> 
+                } </span><span class="s2">else </span><span class="s1">{ 
+                    start = (paginationService.getCurrentPage(paginationId) - </span><span class="s5">1</span><span class="s1">) * itemsPerPage</span><span class="s4">;</span><span class="s1"> 
+                } 
+                end = start + itemsPerPage</span><span class="s4">;</span><span class="s1"> 
+                paginationService.setItemsPerPage(paginationId</span><span class="s4">, </span><span class="s1">itemsPerPage)</span><span class="s4">;</span><span class="s1"> 
+ 
+                </span><span class="s2">if </span><span class="s1">(collection </span><span class="s2">instanceof </span><span class="s1">Array) { 
+                    </span><span class="s6">// the array just needs to be sliced</span><span class="s1"> 
+                    </span><span class="s2">return </span><span class="s1">collection.slice(start</span><span class="s4">, </span><span class="s1">end)</span><span class="s4">;</span><span class="s1"> 
+                } </span><span class="s2">else </span><span class="s1">{ 
+                    </span><span class="s6">// in the case of an object, we need to get an array of keys, slice that, then map back to</span><span class="s1"> 
+                    </span><span class="s6">// the original object.</span><span class="s1"> 
+                    </span><span class="s2">var </span><span class="s1">slicedObject = {}</span><span class="s4">;</span><span class="s1"> 
+                    angular.forEach(keys(collection).slice(start</span><span class="s4">, </span><span class="s1">end)</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(key) { 
+                        slicedObject[key] = collection[key]</span><span class="s4">;</span><span class="s1"> 
+                    })</span><span class="s4">;</span><span class="s1"> 
+                    </span><span class="s2">return </span><span class="s1">slicedObject</span><span class="s4">;</span><span class="s1"> 
+                } 
+            } </span><span class="s2">else </span><span class="s1">{ 
+                </span><span class="s2">return </span><span class="s1">collection</span><span class="s4">;</span><span class="s1"> 
+            } 
+        }</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">/** 
+     * Shim for the Object.keys() method which does not exist in IE &lt; 9 
+     * </span><span class="s7">@param </span><span class="s0">obj 
+     * </span><span class="s7">@returns </span><span class="s0">{Array} 
+     */</span><span class="s1"> 
+    </span><span class="s2">function </span><span class="s1">keys(obj) { 
+        </span><span class="s2">if </span><span class="s1">(!Object.keys) { 
+            </span><span class="s2">var </span><span class="s1">objKeys = []</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">for </span><span class="s1">(</span><span class="s2">var </span><span class="s1">i </span><span class="s2">in </span><span class="s1">obj) { 
+                </span><span class="s2">if </span><span class="s1">(obj.hasOwnProperty(i)) { 
+                    objKeys.push(i)</span><span class="s4">;</span><span class="s1"> 
+                } 
+            } 
+            </span><span class="s2">return </span><span class="s1">objKeys</span><span class="s4">;</span><span class="s1"> 
+        } </span><span class="s2">else </span><span class="s1">{ 
+            </span><span class="s2">return </span><span class="s1">Object.keys(obj)</span><span class="s4">;</span><span class="s1"> 
+        } 
+    } 
+ 
+    </span><span class="s0">/** 
+     * This service allows the various parts of the module to communicate and stay in sync. 
+     */</span><span class="s1"> 
+    </span><span class="s2">function </span><span class="s1">paginationService() { 
+ 
+        </span><span class="s2">var </span><span class="s1">instances = {}</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">var </span><span class="s1">lastRegisteredInstance</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">this</span><span class="s1">.registerInstance = </span><span class="s2">function</span><span class="s1">(instanceId) { 
+            </span><span class="s2">if </span><span class="s1">(</span><span class="s2">typeof </span><span class="s1">instances[instanceId] === </span><span class="s3">'undefined'</span><span class="s1">) { 
+                instances[instanceId] = { 
+                    asyncMode: </span><span class="s2">false</span><span class="s1"> 
+                }</span><span class="s4">;</span><span class="s1"> 
+                lastRegisteredInstance = instanceId</span><span class="s4">;</span><span class="s1"> 
+            } 
+        }</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">this</span><span class="s1">.deregisterInstance = </span><span class="s2">function</span><span class="s1">(instanceId) { 
+            </span><span class="s2">delete </span><span class="s1">instances[instanceId]</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+         
+        </span><span class="s2">this</span><span class="s1">.isRegistered = </span><span class="s2">function</span><span class="s1">(instanceId) { 
+            </span><span class="s2">return </span><span class="s1">(</span><span class="s2">typeof </span><span class="s1">instances[instanceId] !== </span><span class="s3">'undefined'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">this</span><span class="s1">.getLastInstanceId = </span><span class="s2">function</span><span class="s1">() { 
+            </span><span class="s2">return </span><span class="s1">lastRegisteredInstance</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">this</span><span class="s1">.setCurrentPageParser = </span><span class="s2">function</span><span class="s1">(instanceId</span><span class="s4">, </span><span class="s1">val</span><span class="s4">, </span><span class="s1">scope) { 
+            instances[instanceId].currentPageParser = val</span><span class="s4">;</span><span class="s1"> 
+            instances[instanceId].context = scope</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">this</span><span class="s1">.setCurrentPage = </span><span class="s2">function</span><span class="s1">(instanceId</span><span class="s4">, </span><span class="s1">val) { 
+            instances[instanceId].currentPageParser.assign(instances[instanceId].context</span><span class="s4">, </span><span class="s1">val)</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">this</span><span class="s1">.getCurrentPage = </span><span class="s2">function</span><span class="s1">(instanceId) { 
+            </span><span class="s2">var </span><span class="s1">parser = instances[instanceId].currentPageParser</span><span class="s4">;</span><span class="s1"> 
+            </span><span class="s2">return </span><span class="s1">parser ? parser(instances[instanceId].context) : </span><span class="s5">1</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">this</span><span class="s1">.setItemsPerPage = </span><span class="s2">function</span><span class="s1">(instanceId</span><span class="s4">, </span><span class="s1">val) { 
+            instances[instanceId].itemsPerPage = val</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">this</span><span class="s1">.getItemsPerPage = </span><span class="s2">function</span><span class="s1">(instanceId) { 
+            </span><span class="s2">return </span><span class="s1">instances[instanceId].itemsPerPage</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">this</span><span class="s1">.setCollectionLength = </span><span class="s2">function</span><span class="s1">(instanceId</span><span class="s4">, </span><span class="s1">val) { 
+            instances[instanceId].collectionLength = val</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">this</span><span class="s1">.getCollectionLength = </span><span class="s2">function</span><span class="s1">(instanceId) { 
+            </span><span class="s2">return </span><span class="s1">instances[instanceId].collectionLength</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">this</span><span class="s1">.setAsyncModeTrue = </span><span class="s2">function</span><span class="s1">(instanceId) { 
+            instances[instanceId].asyncMode = </span><span class="s2">true</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">this</span><span class="s1">.setAsyncModeFalse = </span><span class="s2">function</span><span class="s1">(instanceId) { 
+            instances[instanceId].asyncMode = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">this</span><span class="s1">.isAsyncMode = </span><span class="s2">function</span><span class="s1">(instanceId) { 
+            </span><span class="s2">return </span><span class="s1">instances[instanceId].asyncMode</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">/** 
+     * This provider allows global configuration of the template path used by the dir-pagination-controls directive. 
+     */</span><span class="s1"> 
+    </span><span class="s2">function </span><span class="s1">paginationTemplateProvider() { 
+ 
+        </span><span class="s2">var </span><span class="s1">templatePath = </span><span class="s3">'angularUtils.directives.dirPagination.template'</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">var </span><span class="s1">templateString</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s0">/** 
+         * Set a templateUrl to be used by all instances of &lt;dir-pagination-controls&gt; 
+         * </span><span class="s7">@param </span><span class="s0">{String} path 
+         */</span><span class="s1"> 
+        </span><span class="s2">this</span><span class="s1">.setPath = </span><span class="s2">function</span><span class="s1">(path) { 
+            templatePath = path</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s0">/** 
+         * Set a string of HTML to be used as a template by all instances 
+         * of &lt;dir-pagination-controls&gt;. If both a path *and* a string have been set, 
+         * the string takes precedence. 
+         * </span><span class="s7">@param </span><span class="s0">{String} str 
+         */</span><span class="s1"> 
+        </span><span class="s2">this</span><span class="s1">.setString = </span><span class="s2">function</span><span class="s1">(str) { 
+            templateString = str</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">this</span><span class="s1">.$get = </span><span class="s2">function</span><span class="s1">() { 
+            </span><span class="s2">return </span><span class="s1">{ 
+                getPath: </span><span class="s2">function</span><span class="s1">() { 
+                    </span><span class="s2">return </span><span class="s1">templatePath</span><span class="s4">;</span><span class="s1"> 
+                }</span><span class="s4">,</span><span class="s1"> 
+                getString: </span><span class="s2">function</span><span class="s1">() { 
+                    </span><span class="s2">return </span><span class="s1">templateString</span><span class="s4">;</span><span class="s1"> 
+                } 
+            }</span><span class="s4">;</span><span class="s1"> 
+        }</span><span class="s4">;</span><span class="s1"> 
+    } 
+})()</span><span class="s4">;</span><span class="s1"> 
+</span></pre>
+</body>
+</html>

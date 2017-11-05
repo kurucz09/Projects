@@ -1,0 +1,481 @@
+<html>
+<head>
+<title>bootstrap-confirmation.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(128,128,128); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(204,120,50); font-weight: bold; }
+.s3 { color: rgb(106,135,89); }
+.s4 { color: rgb(204,120,50); }
+.s5 { color: rgb(98,151,85); font-style: italic; }
+.s6 { color: rgb(104,151,187); }
+.s7 { color: rgb(98,151,85); font-weight: bold; font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+bootstrap-confirmation.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/*! 
+ * Bootstrap Confirmation 
+ * Copyright 2013 Nimit Suwannagate &lt;ethaizone@hotmail.com&gt; 
+ * Copyright 2014-2016 Damien &quot;Mistic&quot; Sorel &lt;contact@git.strangeplanet.fr&gt; 
+ * Licensed under the Apache License, Version 2.0 
+ */</span><span class="s1"> 
+ 
+(</span><span class="s2">function</span><span class="s1">($) { 
+  </span><span class="s3">'use strict'</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s2">var </span><span class="s1">activeConfirmation</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s0">// Confirmation extends popover.js</span><span class="s1"> 
+  </span><span class="s2">if </span><span class="s1">(!$.fn.popover) </span><span class="s2">throw new </span><span class="s1">Error(</span><span class="s3">'Confirmation requires popover.js'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s0">// CONFIRMATION PUBLIC CLASS DEFINITION</span><span class="s1"> 
+  </span><span class="s0">// ===============================</span><span class="s1"> 
+  </span><span class="s2">var </span><span class="s1">Confirmation = </span><span class="s2">function</span><span class="s1">(element</span><span class="s4">, </span><span class="s1">options) { 
+    options.trigger = </span><span class="s3">'click'</span><span class="s4">;</span><span class="s1"> 
+ 
+    </span><span class="s2">this</span><span class="s1">.init(element</span><span class="s4">, </span><span class="s1">options)</span><span class="s4">;</span><span class="s1"> 
+  }</span><span class="s4">;</span><span class="s1"> 
+ 
+  Confirmation.VERSION = </span><span class="s3">'2.4.0'</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s5">/** 
+   * Map between keyboard events &quot;keyCode|which&quot; and &quot;key&quot; 
+   */</span><span class="s1"> 
+  Confirmation.KEYMAP = { 
+    </span><span class="s6">13</span><span class="s1">: </span><span class="s3">'Enter'</span><span class="s4">,</span><span class="s1"> 
+    </span><span class="s6">27</span><span class="s1">: </span><span class="s3">'Escape'</span><span class="s4">,</span><span class="s1"> 
+    </span><span class="s6">39</span><span class="s1">: </span><span class="s3">'ArrowRight'</span><span class="s4">,</span><span class="s1"> 
+    </span><span class="s6">40</span><span class="s1">: </span><span class="s3">'ArrowDown'</span><span class="s1"> 
+  }</span><span class="s4">;</span><span class="s1"> 
+ 
+  Confirmation.DEFAULTS = $.extend({}</span><span class="s4">, </span><span class="s1">$.fn.popover.Constructor.DEFAULTS</span><span class="s4">, </span><span class="s1">{ 
+    placement: </span><span class="s3">'top'</span><span class="s4">,</span><span class="s1"> 
+    title: </span><span class="s3">'Are you sure?'</span><span class="s4">,</span><span class="s1"> 
+    popout: </span><span class="s2">false</span><span class="s4">,</span><span class="s1"> 
+    singleton: </span><span class="s2">false</span><span class="s4">,</span><span class="s1"> 
+    copyAttributes: </span><span class="s3">'href target'</span><span class="s4">,</span><span class="s1"> 
+    buttons: </span><span class="s2">null</span><span class="s4">,</span><span class="s1"> 
+    onConfirm: $.noop</span><span class="s4">,</span><span class="s1"> 
+    onCancel: $.noop</span><span class="s4">,</span><span class="s1"> 
+    btnOkClass: </span><span class="s3">'btn-xs btn-primary'</span><span class="s4">,</span><span class="s1"> 
+    btnOkIcon: </span><span class="s3">'glyphicon glyphicon-ok'</span><span class="s4">,</span><span class="s1"> 
+    btnOkLabel: </span><span class="s3">'Yes'</span><span class="s4">,</span><span class="s1"> 
+    btnCancelClass: </span><span class="s3">'btn-xs btn-default'</span><span class="s4">,</span><span class="s1"> 
+    btnCancelIcon: </span><span class="s3">'glyphicon glyphicon-remove'</span><span class="s4">,</span><span class="s1"> 
+    btnCancelLabel: </span><span class="s3">'No'</span><span class="s4">,</span><span class="s1"> 
+    </span><span class="s0">// @formatter:off</span><span class="s1"> 
+    </span><span class="s0">// href=&quot;#&quot; allows the buttons to be focused</span><span class="s1"> 
+    template: </span><span class="s3">'&lt;div class=&quot;popover confirmation&quot;&gt;' </span><span class="s1">+ 
+      </span><span class="s3">'&lt;div class=&quot;arrow&quot;&gt;&lt;/div&gt;' </span><span class="s1">+ 
+      </span><span class="s3">'&lt;h3 class=&quot;popover-title&quot;&gt;&lt;/h3&gt;' </span><span class="s1">+ 
+      </span><span class="s3">'&lt;div class=&quot;popover-content&quot;&gt;' </span><span class="s1">+ 
+        </span><span class="s3">'&lt;p class=&quot;confirmation-content&quot;&gt;&lt;/p&gt;' </span><span class="s1">+ 
+        </span><span class="s3">'&lt;div class=&quot;confirmation-buttons text-center&quot;&gt;' </span><span class="s1">+ 
+          </span><span class="s3">'&lt;div class=&quot;btn-group&quot;&gt;' </span><span class="s1">+ 
+            </span><span class="s3">'&lt;a href=&quot;#&quot; class=&quot;btn&quot; data-apply=&quot;confirmation&quot;&gt;&lt;/a&gt;' </span><span class="s1">+ 
+            </span><span class="s3">'&lt;a href=&quot;#&quot; class=&quot;btn&quot; data-dismiss=&quot;confirmation&quot;&gt;&lt;/a&gt;' </span><span class="s1">+ 
+          </span><span class="s3">'&lt;/div&gt;' </span><span class="s1">+ 
+        </span><span class="s3">'&lt;/div&gt;' </span><span class="s1">+ 
+      </span><span class="s3">'&lt;/div&gt;' </span><span class="s1">+ 
+    </span><span class="s3">'&lt;/div&gt;'</span><span class="s1"> 
+    </span><span class="s0">// @formatter:on</span><span class="s1"> 
+  })</span><span class="s4">;</span><span class="s1"> 
+ 
+  Confirmation.prototype = $.extend({}</span><span class="s4">, </span><span class="s1">$.fn.popover.Constructor.prototype)</span><span class="s4">;</span><span class="s1"> 
+  Confirmation.prototype.constructor = Confirmation</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s5">/** 
+   * Expose defaults 
+   * </span><span class="s7">@returns </span><span class="s5">{object} 
+   */</span><span class="s1"> 
+  Confirmation.prototype.getDefaults = </span><span class="s2">function</span><span class="s1">() { 
+    </span><span class="s2">return </span><span class="s1">Confirmation.DEFAULTS</span><span class="s4">;</span><span class="s1"> 
+  }</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s5">/** 
+   * Init the component 
+   * </span><span class="s7">@param </span><span class="s5">element {jQuery} 
+   * </span><span class="s7">@param </span><span class="s5">options {object} 
+   */</span><span class="s1"> 
+  Confirmation.prototype.init = </span><span class="s2">function</span><span class="s1">(element</span><span class="s4">, </span><span class="s1">options) { 
+    $.fn.popover.Constructor.prototype.init.call(</span><span class="s2">this</span><span class="s4">, </span><span class="s3">'confirmation'</span><span class="s4">, </span><span class="s1">element</span><span class="s4">, </span><span class="s1">options)</span><span class="s4">;</span><span class="s1"> 
+ 
+    </span><span class="s2">if </span><span class="s1">((</span><span class="s2">this</span><span class="s1">.options.popout || </span><span class="s2">this</span><span class="s1">.options.singleton) &amp;&amp; !options.rootSelector) { 
+      </span><span class="s2">throw new </span><span class="s1">Error(</span><span class="s3">'The rootSelector option is required to use popout and singleton features since jQuery 3.'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">// keep trace of selectors</span><span class="s1"> 
+    </span><span class="s2">this</span><span class="s1">.options._isDelegate = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s2">if </span><span class="s1">(options.selector) { </span><span class="s0">// container of buttons</span><span class="s1"> 
+      </span><span class="s2">this</span><span class="s1">.options._selector = </span><span class="s2">this</span><span class="s1">._options._selector = options.rootSelector + </span><span class="s3">' ' </span><span class="s1">+ options.selector</span><span class="s4">;</span><span class="s1"> 
+    } 
+    </span><span class="s2">else if </span><span class="s1">(options._selector) { </span><span class="s0">// children of container</span><span class="s1"> 
+      </span><span class="s2">this</span><span class="s1">.options._selector = options._selector</span><span class="s4">;</span><span class="s1"> 
+      </span><span class="s2">this</span><span class="s1">.options._isDelegate = </span><span class="s2">true</span><span class="s4">;</span><span class="s1"> 
+    } 
+    </span><span class="s2">else </span><span class="s1">{ </span><span class="s0">// standalone</span><span class="s1"> 
+      </span><span class="s2">this</span><span class="s1">.options._selector = options.rootSelector</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">var </span><span class="s1">self = </span><span class="s2">this</span><span class="s4">;</span><span class="s1"> 
+ 
+    </span><span class="s2">if </span><span class="s1">(!</span><span class="s2">this</span><span class="s1">.options.selector) { 
+      </span><span class="s0">// store copied attributes</span><span class="s1"> 
+      </span><span class="s2">this</span><span class="s1">.options._attributes = {}</span><span class="s4">;</span><span class="s1"> 
+      </span><span class="s2">if </span><span class="s1">(</span><span class="s2">this</span><span class="s1">.options.copyAttributes) { 
+        </span><span class="s2">if </span><span class="s1">(</span><span class="s2">typeof this</span><span class="s1">.options.copyAttributes === </span><span class="s3">'string'</span><span class="s1">) { 
+          </span><span class="s2">this</span><span class="s1">.options.copyAttributes = </span><span class="s2">this</span><span class="s1">.options.copyAttributes.split(</span><span class="s3">' '</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+        } 
+      } 
+      </span><span class="s2">else </span><span class="s1">{ 
+        </span><span class="s2">this</span><span class="s1">.options.copyAttributes = []</span><span class="s4">;</span><span class="s1"> 
+      } 
+ 
+      </span><span class="s2">this</span><span class="s1">.options.copyAttributes.forEach(</span><span class="s2">function</span><span class="s1">(attr) { 
+        </span><span class="s2">this</span><span class="s1">.options._attributes[attr] = </span><span class="s2">this</span><span class="s1">.$element.attr(attr)</span><span class="s4">;</span><span class="s1"> 
+      }</span><span class="s4">, </span><span class="s2">this</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+ 
+      </span><span class="s0">// cancel original event</span><span class="s1"> 
+      </span><span class="s2">this</span><span class="s1">.$element.on(</span><span class="s2">this</span><span class="s1">.options.trigger</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(e</span><span class="s4">, </span><span class="s1">ack) { 
+        </span><span class="s2">if </span><span class="s1">(!ack) { 
+          e.preventDefault()</span><span class="s4">;</span><span class="s1"> 
+          e.stopPropagation()</span><span class="s4">;</span><span class="s1"> 
+          e.stopImmediatePropagation()</span><span class="s4">;</span><span class="s1"> 
+        } 
+      })</span><span class="s4">;</span><span class="s1"> 
+ 
+      </span><span class="s0">// manage singleton</span><span class="s1"> 
+      </span><span class="s2">this</span><span class="s1">.$element.on(</span><span class="s3">'show.bs.confirmation'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(e) { 
+        </span><span class="s2">if </span><span class="s1">(self.options.singleton) { 
+          </span><span class="s0">// close all other popover already initialized</span><span class="s1"> 
+          $(self.options._selector).not($(</span><span class="s2">this</span><span class="s1">)).filter(</span><span class="s2">function</span><span class="s1">() { 
+            </span><span class="s2">return </span><span class="s1">$(</span><span class="s2">this</span><span class="s1">).data(</span><span class="s3">'bs.confirmation'</span><span class="s1">) !== undefined</span><span class="s4">;</span><span class="s1"> 
+          }).confirmation(</span><span class="s3">'hide'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+        } 
+      })</span><span class="s4">;</span><span class="s1"> 
+    } 
+    </span><span class="s2">else </span><span class="s1">{ 
+      </span><span class="s0">// cancel original event</span><span class="s1"> 
+      </span><span class="s2">this</span><span class="s1">.$element.on(</span><span class="s2">this</span><span class="s1">.options.trigger</span><span class="s4">, </span><span class="s2">this</span><span class="s1">.options.selector</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(e</span><span class="s4">, </span><span class="s1">ack) { 
+        </span><span class="s2">if </span><span class="s1">(!ack) { 
+          e.preventDefault()</span><span class="s4">;</span><span class="s1"> 
+          e.stopPropagation()</span><span class="s4">;</span><span class="s1"> 
+          e.stopImmediatePropagation()</span><span class="s4">;</span><span class="s1"> 
+        } 
+      })</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">if </span><span class="s1">(!</span><span class="s2">this</span><span class="s1">.options._isDelegate) { 
+      </span><span class="s0">// manage popout</span><span class="s1"> 
+      </span><span class="s2">this</span><span class="s1">.eventBody = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+      </span><span class="s2">this</span><span class="s1">.uid = </span><span class="s2">this</span><span class="s1">.$element[</span><span class="s6">0</span><span class="s1">].id || </span><span class="s2">this</span><span class="s1">.getUID(</span><span class="s3">'group_'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+ 
+      </span><span class="s2">this</span><span class="s1">.$element.on(</span><span class="s3">'shown.bs.confirmation'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(e) { 
+        </span><span class="s2">if </span><span class="s1">(self.options.popout &amp;&amp; !self.eventBody) { 
+          self.eventBody = $(</span><span class="s3">'body'</span><span class="s1">).on(</span><span class="s3">'click.bs.confirmation.' </span><span class="s1">+ self.uid</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(e) { 
+            </span><span class="s2">if </span><span class="s1">($(self.options._selector).is(e.target)) { 
+              </span><span class="s2">return</span><span class="s4">;</span><span class="s1"> 
+            } 
+ 
+            </span><span class="s0">// close all popover already initialized</span><span class="s1"> 
+            $(self.options._selector).filter(</span><span class="s2">function</span><span class="s1">() { 
+              </span><span class="s2">return </span><span class="s1">$(</span><span class="s2">this</span><span class="s1">).data(</span><span class="s3">'bs.confirmation'</span><span class="s1">) !== undefined</span><span class="s4">;</span><span class="s1"> 
+            }).confirmation(</span><span class="s3">'hide'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+ 
+            $(</span><span class="s3">'body'</span><span class="s1">).off(</span><span class="s3">'click.bs.' </span><span class="s1">+ self.uid)</span><span class="s4">;</span><span class="s1"> 
+            self.eventBody = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+          })</span><span class="s4">;</span><span class="s1"> 
+        } 
+      })</span><span class="s4">;</span><span class="s1"> 
+    } 
+  }</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s5">/** 
+   * Overrides, always show 
+   * </span><span class="s7">@returns </span><span class="s5">{boolean} 
+   */</span><span class="s1"> 
+  Confirmation.prototype.hasContent = </span><span class="s2">function</span><span class="s1">() { 
+    </span><span class="s2">return true</span><span class="s4">;</span><span class="s1"> 
+  }</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s5">/** 
+   * Sets the popover content 
+   */</span><span class="s1"> 
+  Confirmation.prototype.setContent = </span><span class="s2">function</span><span class="s1">() { 
+    </span><span class="s2">var </span><span class="s1">self = </span><span class="s2">this</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">$tip = </span><span class="s2">this</span><span class="s1">.tip()</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">title = </span><span class="s2">this</span><span class="s1">.getTitle()</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">content = </span><span class="s2">this</span><span class="s1">.getContent()</span><span class="s4">;</span><span class="s1"> 
+ 
+    $tip.find(</span><span class="s3">'.popover-title'</span><span class="s1">)[</span><span class="s2">this</span><span class="s1">.options.html ? </span><span class="s3">'html' </span><span class="s1">: </span><span class="s3">'text'</span><span class="s1">](title)</span><span class="s4">;</span><span class="s1"> 
+ 
+    $tip.find(</span><span class="s3">'.confirmation-content'</span><span class="s1">).toggle(!!content).children().detach().end()[ 
+      </span><span class="s0">// we use append for html objects to maintain js events</span><span class="s1"> 
+      </span><span class="s2">this</span><span class="s1">.options.html ? (</span><span class="s2">typeof </span><span class="s1">content == </span><span class="s3">'string' </span><span class="s1">? </span><span class="s3">'html' </span><span class="s1">: </span><span class="s3">'append'</span><span class="s1">) : </span><span class="s3">'text'</span><span class="s1"> 
+      ](content)</span><span class="s4">;</span><span class="s1"> 
+ 
+    $tip.on(</span><span class="s3">'click'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(e) { 
+      e.stopPropagation()</span><span class="s4">;</span><span class="s1"> 
+    })</span><span class="s4">;</span><span class="s1"> 
+ 
+    </span><span class="s2">if </span><span class="s1">(</span><span class="s2">this</span><span class="s1">.options.buttons) { 
+      </span><span class="s0">// configure custom buttons</span><span class="s1"> 
+      </span><span class="s2">var </span><span class="s1">$group = $tip.find(</span><span class="s3">'.confirmation-buttons .btn-group'</span><span class="s1">).empty()</span><span class="s4">;</span><span class="s1"> 
+ 
+      </span><span class="s2">this</span><span class="s1">.options.buttons.forEach(</span><span class="s2">function</span><span class="s1">(button) { 
+        $group.append( 
+          $(</span><span class="s3">'&lt;a href=&quot;#&quot;&gt;&lt;/a&gt;'</span><span class="s1">) 
+            .addClass(button.class || </span><span class="s3">'btn btn-xs btn-default'</span><span class="s1">) 
+            .html(button.label || </span><span class="s3">''</span><span class="s1">) 
+            .attr(button.attr || {}) 
+            .prepend($(</span><span class="s3">'&lt;i&gt;&lt;/i&gt;'</span><span class="s1">).addClass(button.icon)</span><span class="s4">, </span><span class="s3">' '</span><span class="s1">) 
+            .one(</span><span class="s3">'click'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(e) { 
+              </span><span class="s2">if </span><span class="s1">($(</span><span class="s2">this</span><span class="s1">).attr(</span><span class="s3">'href'</span><span class="s1">) === </span><span class="s3">'#'</span><span class="s1">) { 
+                e.preventDefault()</span><span class="s4">;</span><span class="s1"> 
+              } 
+ 
+              </span><span class="s2">if </span><span class="s1">(button.onClick) { 
+                button.onClick.call(self.$element)</span><span class="s4">;</span><span class="s1"> 
+              } 
+ 
+              </span><span class="s2">if </span><span class="s1">(button.cancel) { 
+                self.getOnCancel.call(self).call(self.$element)</span><span class="s4">;</span><span class="s1"> 
+                self.$element.trigger(</span><span class="s3">'canceled.bs.confirmation'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+              } 
+              </span><span class="s2">else </span><span class="s1">{ 
+                self.getOnConfirm.call(self).call(self.$element)</span><span class="s4">;</span><span class="s1"> 
+                self.$element.trigger(</span><span class="s3">'confirmed.bs.confirmation'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+              } 
+ 
+              </span><span class="s2">if </span><span class="s1">(self.inState) { </span><span class="s0">// Bootstrap 3.3.5</span><span class="s1"> 
+                self.inState.click = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+              } 
+ 
+              self.hide()</span><span class="s4">;</span><span class="s1"> 
+            }) 
+        )</span><span class="s4">;</span><span class="s1"> 
+      }</span><span class="s4">, </span><span class="s2">this</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+    } 
+    </span><span class="s2">else </span><span class="s1">{ 
+      </span><span class="s0">// configure 'ok' button</span><span class="s1"> 
+      $tip.find(</span><span class="s3">'[data-apply=&quot;confirmation&quot;]'</span><span class="s1">) 
+        .addClass(</span><span class="s2">this</span><span class="s1">.options.btnOkClass) 
+        .html(</span><span class="s2">this</span><span class="s1">.options.btnOkLabel) 
+        .attr(</span><span class="s2">this</span><span class="s1">.options._attributes) 
+        .prepend($(</span><span class="s3">'&lt;i&gt;&lt;/i&gt;'</span><span class="s1">).addClass(</span><span class="s2">this</span><span class="s1">.options.btnOkIcon)</span><span class="s4">, </span><span class="s3">' '</span><span class="s1">) 
+        .off(</span><span class="s3">'click'</span><span class="s1">) 
+        .one(</span><span class="s3">'click'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(e) { 
+          </span><span class="s2">if </span><span class="s1">($(</span><span class="s2">this</span><span class="s1">).attr(</span><span class="s3">'href'</span><span class="s1">) === </span><span class="s3">'#'</span><span class="s1">) { 
+            e.preventDefault()</span><span class="s4">;</span><span class="s1"> 
+          } 
+ 
+          self.getOnConfirm.call(self).call(self.$element)</span><span class="s4">;</span><span class="s1"> 
+          self.$element.trigger(</span><span class="s3">'confirmed.bs.confirmation'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+ 
+          self.$element.trigger(self.options.trigger</span><span class="s4">, </span><span class="s1">[</span><span class="s2">true</span><span class="s1">])</span><span class="s4">;</span><span class="s1"> 
+ 
+          self.hide()</span><span class="s4">;</span><span class="s1"> 
+        })</span><span class="s4">;</span><span class="s1"> 
+ 
+      </span><span class="s0">// configure 'cancel' button</span><span class="s1"> 
+      $tip.find(</span><span class="s3">'[data-dismiss=&quot;confirmation&quot;]'</span><span class="s1">) 
+        .addClass(</span><span class="s2">this</span><span class="s1">.options.btnCancelClass) 
+        .html(</span><span class="s2">this</span><span class="s1">.options.btnCancelLabel) 
+        .prepend($(</span><span class="s3">'&lt;i&gt;&lt;/i&gt;'</span><span class="s1">).addClass(</span><span class="s2">this</span><span class="s1">.options.btnCancelIcon)</span><span class="s4">, </span><span class="s3">' '</span><span class="s1">) 
+        .off(</span><span class="s3">'click'</span><span class="s1">) 
+        .one(</span><span class="s3">'click'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(e) { 
+          e.preventDefault()</span><span class="s4">;</span><span class="s1"> 
+ 
+          self.getOnCancel.call(self).call(self.$element)</span><span class="s4">;</span><span class="s1"> 
+          self.$element.trigger(</span><span class="s3">'canceled.bs.confirmation'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+ 
+          </span><span class="s2">if </span><span class="s1">(self.inState) { </span><span class="s0">// Bootstrap 3.3.5</span><span class="s1"> 
+            self.inState.click = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+          } 
+ 
+          self.hide()</span><span class="s4">;</span><span class="s1"> 
+        })</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    $tip.removeClass(</span><span class="s3">'fade top bottom left right in'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+ 
+    </span><span class="s0">// IE8 doesn't accept hiding via the `:empty` pseudo selector, we have to do</span><span class="s1"> 
+    </span><span class="s0">// this manually by checking the contents.</span><span class="s1"> 
+    </span><span class="s2">if </span><span class="s1">(!$tip.find(</span><span class="s3">'.popover-title'</span><span class="s1">).html()) { 
+      $tip.find(</span><span class="s3">'.popover-title'</span><span class="s1">).hide()</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">// bind key navigation</span><span class="s1"> 
+    activeConfirmation = </span><span class="s2">this</span><span class="s4">;</span><span class="s1"> 
+    $(window) 
+      .off(</span><span class="s3">'keyup.bs.confirmation'</span><span class="s1">) 
+      .on(</span><span class="s3">'keyup.bs.confirmation'</span><span class="s4">, </span><span class="s2">this</span><span class="s1">._onKeyup.bind(</span><span class="s2">this</span><span class="s1">))</span><span class="s4">;</span><span class="s1"> 
+  }</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s5">/** 
+   * Remove key binding on destroy 
+   */</span><span class="s1"> 
+  Confirmation.prototype.destroy = </span><span class="s2">function</span><span class="s1">() { 
+    </span><span class="s2">if </span><span class="s1">(activeConfirmation === </span><span class="s2">this</span><span class="s1">) { 
+      activeConfirmation = undefined</span><span class="s4">;</span><span class="s1"> 
+      $(window).off(</span><span class="s3">'keyup.bs.confirmation'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+    } 
+    $.fn.popover.Constructor.prototype.destroy.call(</span><span class="s2">this</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+  }</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s5">/** 
+   * Remove key binding on hide 
+   */</span><span class="s1"> 
+  Confirmation.prototype.hide = </span><span class="s2">function</span><span class="s1">() { 
+    </span><span class="s2">if </span><span class="s1">(activeConfirmation === </span><span class="s2">this</span><span class="s1">) { 
+      activeConfirmation = undefined</span><span class="s4">;</span><span class="s1"> 
+      $(window).off(</span><span class="s3">'keyup.bs.confirmation'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+    } 
+    $.fn.popover.Constructor.prototype.hide.call(</span><span class="s2">this</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+  }</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s5">/** 
+   * Navigate through buttons with keyboard 
+   * </span><span class="s7">@param </span><span class="s5">event 
+   * </span><span class="s7">@private</span><span class="s5"> 
+   */</span><span class="s1"> 
+  Confirmation.prototype._onKeyup = </span><span class="s2">function</span><span class="s1">(event) { 
+    </span><span class="s2">if </span><span class="s1">(!</span><span class="s2">this</span><span class="s1">.$tip) { 
+      activeConfirmation = undefined</span><span class="s4">;</span><span class="s1"> 
+      $(window).off(</span><span class="s3">'keyup.bs.confirmation'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+      </span><span class="s2">return</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">var </span><span class="s1">key = event.key || Confirmation.KEYMAP[event.keyCode || event.which]</span><span class="s4">;</span><span class="s1"> 
+ 
+    </span><span class="s2">var </span><span class="s1">$group = </span><span class="s2">this</span><span class="s1">.$tip.find(</span><span class="s3">'.confirmation-buttons .btn-group'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">$active = $group.find(</span><span class="s3">'.active'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">$next</span><span class="s4">;</span><span class="s1"> 
+ 
+    </span><span class="s2">switch </span><span class="s1">(key) { 
+      </span><span class="s2">case </span><span class="s3">'Escape'</span><span class="s1">: 
+        </span><span class="s2">this</span><span class="s1">.hide()</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">break</span><span class="s4">;</span><span class="s1"> 
+ 
+      </span><span class="s2">case </span><span class="s3">'ArrowRight'</span><span class="s1">: 
+        </span><span class="s2">if </span><span class="s1">($active.length &amp;&amp; $active.next().length) { 
+          $next = $active.next()</span><span class="s4">;</span><span class="s1"> 
+        } 
+        </span><span class="s2">else </span><span class="s1">{ 
+          $next = $group.children().first()</span><span class="s4">;</span><span class="s1"> 
+        } 
+        $active.removeClass(</span><span class="s3">'active'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+        $next.addClass(</span><span class="s3">'active'</span><span class="s1">).focus()</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">break</span><span class="s4">;</span><span class="s1"> 
+ 
+      </span><span class="s2">case </span><span class="s3">'ArrowLeft'</span><span class="s1">: 
+        </span><span class="s2">if </span><span class="s1">($active.length &amp;&amp; $active.prev().length) { 
+          $next = $active.prev()</span><span class="s4">;</span><span class="s1"> 
+        } 
+        </span><span class="s2">else </span><span class="s1">{ 
+          $next = $group.children().last()</span><span class="s4">;</span><span class="s1"> 
+        } 
+        $active.removeClass(</span><span class="s3">'active'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+        $next.addClass(</span><span class="s3">'active'</span><span class="s1">).focus()</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">break</span><span class="s4">;</span><span class="s1"> 
+    } 
+  }</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s5">/** 
+   * Gets the on-confirm callback 
+   * </span><span class="s7">@returns </span><span class="s5">{function} 
+   */</span><span class="s1"> 
+  Confirmation.prototype.getOnConfirm = </span><span class="s2">function</span><span class="s1">() { 
+    </span><span class="s2">if </span><span class="s1">(</span><span class="s2">this</span><span class="s1">.$element.attr(</span><span class="s3">'data-on-confirm'</span><span class="s1">)) { 
+      </span><span class="s2">return </span><span class="s1">getFunctionFromString(</span><span class="s2">this</span><span class="s1">.$element.attr(</span><span class="s3">'data-on-confirm'</span><span class="s1">))</span><span class="s4">;</span><span class="s1"> 
+    } 
+    </span><span class="s2">else </span><span class="s1">{ 
+      </span><span class="s2">return this</span><span class="s1">.options.onConfirm</span><span class="s4">;</span><span class="s1"> 
+    } 
+  }</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s5">/** 
+   * Gets the on-cancel callback 
+   * </span><span class="s7">@returns </span><span class="s5">{function} 
+   */</span><span class="s1"> 
+  Confirmation.prototype.getOnCancel = </span><span class="s2">function</span><span class="s1">() { 
+    </span><span class="s2">if </span><span class="s1">(</span><span class="s2">this</span><span class="s1">.$element.attr(</span><span class="s3">'data-on-cancel'</span><span class="s1">)) { 
+      </span><span class="s2">return </span><span class="s1">getFunctionFromString(</span><span class="s2">this</span><span class="s1">.$element.attr(</span><span class="s3">'data-on-cancel'</span><span class="s1">))</span><span class="s4">;</span><span class="s1"> 
+    } 
+    </span><span class="s2">else </span><span class="s1">{ 
+      </span><span class="s2">return this</span><span class="s1">.options.onCancel</span><span class="s4">;</span><span class="s1"> 
+    } 
+  }</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s5">/** 
+   * Generates an anonymous function from a function name 
+   * function name may contain dots (.) to navigate through objects 
+   * root context is window 
+   */</span><span class="s1"> 
+  </span><span class="s2">function </span><span class="s1">getFunctionFromString(functionName) { 
+    </span><span class="s2">var </span><span class="s1">context = window</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">namespaces = functionName.split(</span><span class="s3">'.'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">func = namespaces.pop()</span><span class="s4">;</span><span class="s1"> 
+ 
+    </span><span class="s2">for </span><span class="s1">(</span><span class="s2">var </span><span class="s1">i = </span><span class="s6">0</span><span class="s4">, </span><span class="s1">l = namespaces.length</span><span class="s4">; </span><span class="s1">i &lt; l</span><span class="s4">; </span><span class="s1">i++) { 
+      context = context[namespaces[i]]</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">return function</span><span class="s1">() { 
+      context[func].call(</span><span class="s2">this</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+    }</span><span class="s4">;</span><span class="s1"> 
+  } 
+ 
+ 
+  </span><span class="s0">// CONFIRMATION PLUGIN DEFINITION</span><span class="s1"> 
+  </span><span class="s0">// =========================</span><span class="s1"> 
+ 
+  </span><span class="s2">var </span><span class="s1">old = $.fn.confirmation</span><span class="s4">;</span><span class="s1"> 
+ 
+  $.fn.confirmation = </span><span class="s2">function</span><span class="s1">(option) { 
+    </span><span class="s2">var </span><span class="s1">options = (</span><span class="s2">typeof </span><span class="s1">option == </span><span class="s3">'object' </span><span class="s1">&amp;&amp; option) || {}</span><span class="s4">;</span><span class="s1"> 
+    options.rootSelector = </span><span class="s2">this</span><span class="s1">.selector || options.rootSelector</span><span class="s4">; </span><span class="s0">// this.selector removed in jQuery &gt; 3</span><span class="s1"> 
+ 
+    </span><span class="s2">return this</span><span class="s1">.each(</span><span class="s2">function</span><span class="s1">() { 
+      </span><span class="s2">var </span><span class="s1">$this = $(</span><span class="s2">this</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+      </span><span class="s2">var </span><span class="s1">data = $this.data(</span><span class="s3">'bs.confirmation'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+ 
+      </span><span class="s2">if </span><span class="s1">(!data &amp;&amp; option == </span><span class="s3">'destroy'</span><span class="s1">) { 
+        </span><span class="s2">return</span><span class="s4">;</span><span class="s1"> 
+      } 
+      </span><span class="s2">if </span><span class="s1">(!data) { 
+        $this.data(</span><span class="s3">'bs.confirmation'</span><span class="s4">, </span><span class="s1">(data = </span><span class="s2">new </span><span class="s1">Confirmation(</span><span class="s2">this</span><span class="s4">, </span><span class="s1">options)))</span><span class="s4">;</span><span class="s1"> 
+      } 
+      </span><span class="s2">if </span><span class="s1">(</span><span class="s2">typeof </span><span class="s1">option == </span><span class="s3">'string'</span><span class="s1">) { 
+        data[option]()</span><span class="s4">;</span><span class="s1"> 
+ 
+        </span><span class="s2">if </span><span class="s1">(option == </span><span class="s3">'hide' </span><span class="s1">&amp;&amp; data.inState) { </span><span class="s0">//data.inState doesn't exist in Bootstrap &lt; 3.3.5</span><span class="s1"> 
+          data.inState.click = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+        } 
+      } 
+    })</span><span class="s4">;</span><span class="s1"> 
+  }</span><span class="s4">;</span><span class="s1"> 
+ 
+  $.fn.confirmation.Constructor = Confirmation</span><span class="s4">;</span><span class="s1"> 
+ 
+ 
+  </span><span class="s0">// CONFIRMATION NO CONFLICT</span><span class="s1"> 
+  </span><span class="s0">// ===================</span><span class="s1"> 
+ 
+  $.fn.confirmation.noConflict = </span><span class="s2">function</span><span class="s1">() { 
+    $.fn.confirmation = old</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s2">return this</span><span class="s4">;</span><span class="s1"> 
+  }</span><span class="s4">;</span><span class="s1"> 
+ 
+}(jQuery))</span><span class="s4">;</span><span class="s1"> 
+</span></pre>
+</body>
+</html>

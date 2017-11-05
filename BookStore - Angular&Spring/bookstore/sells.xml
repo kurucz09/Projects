@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SellsList>
+    <Sell>
+        <book>
+            <ISBN>0-596-01681-4</ISBN>
+            <title>THE Another Book</title>
+            <authors>Yolonescu, Varinceanu, Boboleascu</authors>
+            <year>2017</year>
+            <genres>
+                <genres>Adventure</genres>
+                <genres>Mystery</genres>
+            </genres>
+            <image>http://images.veerle.duoh.com/uploads/design-article-images/adaptive-web-bookcover-final-design.jpg</image>
+            <review>4</review>
+            <nrOfItems>0</nrOfItems>
+            <price>24.0</price>
+        </book>
+        <date>2017-1-21</date>
+        <quantity>1</quantity>
+        <user>Bogdan</user>
+    </Sell>
+    <Sell>
+        <book>
+            <ISBN>0-566-06681-4</ISBN>
+            <title>THE TITLE</title>
+            <authors>Yolonescu</authors>
+            <year>2002</year>
+            <genres>
+                <genres>Adventure</genres>
+                <genres>Mystery</genres>
+            </genres>
+            <image>https://craigmod.com/images/journal/coccyx/aba-04.png</image>
+            <review>5</review>
+            <nrOfItems>0</nrOfItems>
+            <price>78.0</price>
+        </book>
+        <date>2017-3-12</date>
+        <quantity>1</quantity>
+        <user>Bogdan</user>
+    </Sell>
+    <Sell>
+        <book>
+            <ISBN>0-596-00681-4</ISBN>
+            <title>The Jungle Book</title>
+            <authors>Ronyard Kiplyng</authors>
+            <year>1894</year>
+            <genres>
+                <genres>ScienceFiction</genres>
+                <genres>Adventure</genres>
+            </genres>
+            <image>https://about.canva.com/wp-content/uploads/sites/3/2015/01/art_bookcover.png</image>
+            <review>3</review>
+            <nrOfItems>0</nrOfItems>
+            <price>25.0</price>
+        </book>
+        <date>2017-3-11</date>
+        <quantity>1</quantity>
+        <user>Bogdan</user>
+    </Sell>
+    <Sell>
+        <book>
+            <ISBN>0-566-06681-4</ISBN>
+            <title>THE TITLE</title>
+            <authors>Yolonescu</authors>
+            <year>2002</year>
+            <genres>
+                <genres>Adventure</genres>
+                <genres>Mystery</genres>
+            </genres>
+            <image>https://craigmod.com/images/journal/coccyx/aba-04.png</image>
+            <review>5</review>
+            <nrOfItems>40</nrOfItems>
+            <price>78.0</price>
+        </book>
+        <date>2017-3-10</date>
+        <quantity>4</quantity>
+        <user>Bogdan</user>
+    </Sell>
+    <Sell>
+        <book>
+            <ISBN>0-566-06681-4</ISBN>
+            <title>THE TITLE</title>
+            <authors>Yolonescu</authors>
+            <year>2002</year>
+            <genres>
+                <genres>Adventure</genres>
+                <genres>Mystery</genres>
+            </genres>
+            <image>https://craigmod.com/images/journal/coccyx/aba-04.png</image>
+            <review>5</review>
+            <nrOfItems>36</nrOfItems>
+            <price>78.0</price>
+        </book>
+        <date>2017-3-10</date>
+        <quantity>4</quantity>
+        <user>Bogdan</user>
+    </Sell>
+    <Sell>
+        <book>
+            <ISBN>0-566-06681-4</ISBN>
+            <title>THE TITLE</title>
+            <authors>Yolonescu</authors>
+            <year>2002</year>
+            <genres>
+                <genres>Adventure</genres>
+                <genres>Mystery</genres>
+            </genres>
+            <image>https://craigmod.com/images/journal/coccyx/aba-04.png</image>
+            <review>5</review>
+            <nrOfItems>35</nrOfItems>
+            <price>78.0</price>
+        </book>
+        <date>2017-3-4</date>
+        <quantity>1</quantity>
+        <user>user</user>
+    </Sell>
+    <Sell>
+        <book>
+            <ISBN>0-566-06681-4</ISBN>
+            <title>THE TITLE</title>
+            <authors>Yolonescu</authors>
+            <year>2002</year>
+            <genres>
+                <genres>Adventure</genres>
+                <genres>Mystery</genres>
+            </genres>
+            <image>https://craigmod.com/images/journal/coccyx/aba-04.png</image>
+            <review>5</review>
+            <nrOfItems>34</nrOfItems>
+            <price>78.0</price>
+        </book>
+        <date>2017-3-4</date>
+        <quantity>1</quantity>
+        <user>user</user>
+    </Sell>
+</SellsList>

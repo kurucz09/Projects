@@ -1,0 +1,60 @@
+﻿/* navigator styles */
+
+.navigator_green_main 
+{
+    background-color: white;
+    color: #000000;
+}
+
+.navigator_green_month {
+    font-family: Tahoma;
+    font-size: 8pt;
+    /*border: 1px solid black;*/
+}
+.navigator_green_day {
+    color: black;
+    text-align: center;
+    /*background-color: white;*/
+}
+.navigator_green_weekend {
+    background-color: #f0f0f0;
+
+}
+.navigator_green_dayheader {
+    color: black;
+    text-align: center;
+}
+
+.navigator_green_weeknumber {
+	text-align: center;
+}
+
+.navigator_green_line 
+{
+	border-bottom: 2px solid #1c5792;
+}
+
+.navigator_green_dayother {
+    color: gray;
+}
+.navigator_green_todaybox
+{
+	border: 2px solid #1c5792;
+}
+
+.navigator_green_select 
+{
+    background-color: #1c5792;
+	color: #ffffff;
+	font-weight: 500;
+}
+.navigator_green_title, .navigator_green_titleleft, .navigator_green_titleright {
+	text-align: center;
+	border-top: 1px solid #A0A0A0;
+
+	color: #ffffff;
+	background: #1c5792;
+}
+.navigator_green_busy {
+	font-weight: bold;
+}

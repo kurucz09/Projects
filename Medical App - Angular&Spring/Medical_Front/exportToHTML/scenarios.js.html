@@ -1,0 +1,65 @@
+<html>
+<head>
+<title>scenarios.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(106,135,89); }
+.s1 { color: rgb(204,120,50); }
+.s2 { color: rgb(169,183,198); }
+.s3 { color: rgb(128,128,128); }
+.s4 { color: rgb(204,120,50); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+scenarios.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">'use strict'</span><span class="s1">;</span><span class="s2"> 
+ 
+</span><span class="s3">/* https://github.com/angular/protractor/blob/master/docs/toc.md */</span><span class="s2"> 
+ 
+describe(</span><span class="s0">'my app'</span><span class="s1">, </span><span class="s4">function</span><span class="s2">() { 
+ 
+ 
+  it(</span><span class="s0">'should automatically redirect to /view1 when location hash/fragment is empty'</span><span class="s1">, </span><span class="s4">function</span><span class="s2">() { 
+    browser.get(</span><span class="s0">'index.html'</span><span class="s2">)</span><span class="s1">;</span><span class="s2"> 
+    expect(browser.getLocationAbsUrl()).toMatch(</span><span class="s0">&quot;/view1&quot;</span><span class="s2">)</span><span class="s1">;</span><span class="s2"> 
+  })</span><span class="s1">;</span><span class="s2"> 
+ 
+ 
+  describe(</span><span class="s0">'view1'</span><span class="s1">, </span><span class="s4">function</span><span class="s2">() { 
+ 
+    beforeEach(</span><span class="s4">function</span><span class="s2">() { 
+      browser.get(</span><span class="s0">'index.html#!/view1'</span><span class="s2">)</span><span class="s1">;</span><span class="s2"> 
+    })</span><span class="s1">;</span><span class="s2"> 
+ 
+ 
+    it(</span><span class="s0">'should render view1 when user navigates to /view1'</span><span class="s1">, </span><span class="s4">function</span><span class="s2">() { 
+      expect(element.all(by.css(</span><span class="s0">'[ng-view] p'</span><span class="s2">)).first().getText()). 
+        toMatch(</span><span class="s0">/partial for view 1/</span><span class="s2">)</span><span class="s1">;</span><span class="s2"> 
+    })</span><span class="s1">;</span><span class="s2"> 
+ 
+  })</span><span class="s1">;</span><span class="s2"> 
+ 
+ 
+  describe(</span><span class="s0">'view2'</span><span class="s1">, </span><span class="s4">function</span><span class="s2">() { 
+ 
+    beforeEach(</span><span class="s4">function</span><span class="s2">() { 
+      browser.get(</span><span class="s0">'index.html#!/view2'</span><span class="s2">)</span><span class="s1">;</span><span class="s2"> 
+    })</span><span class="s1">;</span><span class="s2"> 
+ 
+ 
+    it(</span><span class="s0">'should render view2 when user navigates to /view2'</span><span class="s1">, </span><span class="s4">function</span><span class="s2">() { 
+      expect(element.all(by.css(</span><span class="s0">'[ng-view] p'</span><span class="s2">)).first().getText()). 
+        toMatch(</span><span class="s0">/partial for view 2/</span><span class="s2">)</span><span class="s1">;</span><span class="s2"> 
+    })</span><span class="s1">;</span><span class="s2"> 
+ 
+  })</span><span class="s1">;</span><span class="s2"> 
+})</span><span class="s1">;</span><span class="s2"> 
+</span></pre>
+</body>
+</html>

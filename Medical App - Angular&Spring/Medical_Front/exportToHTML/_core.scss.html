@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>_core.scss</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(188,148,85); font-style: italic; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(232,191,106); }
+.s3 { color: rgb(109,156,190); }
+.s4 { color: rgb(169,183,198); }
+.s5 { color: rgb(186,186,186); }
+.s6 { color: rgb(165,194,97); }
+.s7 { color: rgb(204,120,50); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+_core.scss</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">// Base Class Definition</span><span class="s1"> 
+</span><span class="s0">// -------------------------</span><span class="s1"> 
+ 
+.</span><span class="s2">#{</span><span class="s3">$fa-css-prefix</span><span class="s4">} </span><span class="s1">{ 
+  </span><span class="s5">display</span><span class="s4">: </span><span class="s6">inline-block</span><span class="s7">;</span><span class="s1"> 
+  </span><span class="s5">font</span><span class="s4">: </span><span class="s6">normal normal normal </span><span class="s4">#{</span><span class="s3">$fa-font-size-base</span><span class="s4">}</span><span class="s1">/</span><span class="s4">#{</span><span class="s3">$fa-line-height-base</span><span class="s4">} </span><span class="s2">FontAwesome</span><span class="s7">; </span><span class="s0">// shortening font declaration</span><span class="s1"> 
+  </span><span class="s5">font-size</span><span class="s4">: </span><span class="s6">inherit</span><span class="s7">; </span><span class="s0">// can't have font-size inherit on line above, so need to override</span><span class="s1"> 
+  </span><span class="s5">text-rendering</span><span class="s4">: </span><span class="s6">auto</span><span class="s7">; </span><span class="s0">// optimizelegibility throws things off #1094</span><span class="s1"> 
+  </span><span class="s5">-webkit-font-smoothing</span><span class="s4">: </span><span class="s6">antialiased</span><span class="s7">;</span><span class="s1"> 
+  </span><span class="s5">-moz-osx-font-smoothing</span><span class="s4">: </span><span class="s6">grayscale</span><span class="s7">;</span><span class="s1"> 
+ 
+} 
+</span></pre>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<html>
+<head>
+<title>dirTerminalType.spec.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(169,183,198); }
+.s1 { color: rgb(106,135,89); }
+.s2 { color: rgb(204,120,50); }
+.s3 { color: rgb(204,120,50); font-weight: bold; }
+.s4 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+dirTerminalType.spec.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0"> 
+xdescribe(</span><span class="s1">'dirTerminalType directive'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">() { 
+ 
+    </span><span class="s3">var </span><span class="s0">$compile</span><span class="s2">;</span><span class="s0"> 
+    </span><span class="s3">var </span><span class="s0">$scope</span><span class="s2">;</span><span class="s0"> 
+    </span><span class="s3">var </span><span class="s0">$timeout</span><span class="s2">;</span><span class="s0"> 
+    </span><span class="s3">var </span><span class="s0">containingElement</span><span class="s2">;</span><span class="s0"> 
+ 
+    beforeEach(module(</span><span class="s1">'angularUtils.directives.dirTerminalType'</span><span class="s0">))</span><span class="s2">;</span><span class="s0"> 
+ 
+    beforeEach(inject(</span><span class="s3">function</span><span class="s0">($rootScope</span><span class="s2">, </span><span class="s0">_$compile_</span><span class="s2">, </span><span class="s0">_$timeout_) { 
+        $compile = _$compile_</span><span class="s2">;</span><span class="s0"> 
+        $timeout = _$timeout_</span><span class="s2">;</span><span class="s0"> 
+        $scope = $rootScope.$new()</span><span class="s2">;</span><span class="s0"> 
+        containingElement = angular.element(</span><span class="s1">'&lt;div&gt;&lt;/div&gt;'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    }))</span><span class="s2">;</span><span class="s0"> 
+ 
+    </span><span class="s3">function </span><span class="s0">compile(text</span><span class="s2">, </span><span class="s0">duration</span><span class="s2">, </span><span class="s0">removeCaret</span><span class="s2">, </span><span class="s0">startTyping) { 
+        </span><span class="s3">var </span><span class="s0">html</span><span class="s2">;</span><span class="s0"> 
+ 
+        duration = duration ? </span><span class="s1">'duration=&quot;' </span><span class="s0">+ duration + </span><span class="s1">'&quot;' </span><span class="s0">: </span><span class="s1">''</span><span class="s2">;</span><span class="s0"> 
+        removeCaret = removeCaret ? </span><span class="s1">'remove-caret=&quot;' </span><span class="s0">+ removeCaret + </span><span class="s1">'&quot;' </span><span class="s0">: </span><span class="s1">''</span><span class="s2">;</span><span class="s0"> 
+        startTyping = startTyping ? </span><span class="s1">'start-typing=&quot;' </span><span class="s0">+ startTyping + </span><span class="s1">'&quot;' </span><span class="s0">: </span><span class="s1">''</span><span class="s2">;</span><span class="s0"> 
+ 
+        html = </span><span class="s1">'&lt;p dir-terminal-type ' </span><span class="s0">+ duration + </span><span class="s1">' ' </span><span class="s0">+ removeCaret + </span><span class="s1">' ' </span><span class="s0">+ startTyping + </span><span class="s1">' &gt;' </span><span class="s0">+ text + </span><span class="s1">'&lt;/p&gt;'</span><span class="s2">;</span><span class="s0"> 
+        containingElement.append($compile(html)($scope))</span><span class="s2">;</span><span class="s0"> 
+        $scope.$apply()</span><span class="s2">;</span><span class="s0"> 
+    } 
+ 
+    it(</span><span class="s1">'should initially remove the contents'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">() { 
+        </span><span class="s3">var </span><span class="s0">text = </span><span class="s1">'Hello, this is some text!'</span><span class="s2">;</span><span class="s0"> 
+        compile(text</span><span class="s2">, </span><span class="s4">200</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+        expect(containingElement.text()).toEqual(</span><span class="s1">''</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should type complete text of simple element'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">(done) { 
+        </span><span class="s3">var </span><span class="s0">text = </span><span class="s1">'Hello, this is some text!'</span><span class="s2">;</span><span class="s0"> 
+        compile(text</span><span class="s2">, </span><span class="s4">200</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+        setTimeout(</span><span class="s3">function</span><span class="s0">() { 
+            expect(containingElement.html()).toContain(text)</span><span class="s2">;</span><span class="s0"> 
+            done()</span><span class="s2">;</span><span class="s0"> 
+        }</span><span class="s2">, </span><span class="s4">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should type half the text at halfway through duration'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">(done) { 
+        </span><span class="s3">var </span><span class="s0">text = </span><span class="s1">'Hello, this is some text!'</span><span class="s2">;</span><span class="s0"> 
+        compile(text</span><span class="s2">, </span><span class="s4">200</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+        setTimeout(</span><span class="s3">function</span><span class="s0">() { 
+            expect(containingElement.html()).toContain(text.substring(</span><span class="s4">0</span><span class="s2">, </span><span class="s0">Math.floor(text.length / </span><span class="s4">2</span><span class="s0">) - </span><span class="s4">2</span><span class="s0">))</span><span class="s2">;</span><span class="s0"> 
+            expect(containingElement.html()).not.toContain(text)</span><span class="s2">;</span><span class="s0"> 
+            done()</span><span class="s2">;</span><span class="s0"> 
+        }</span><span class="s2">, </span><span class="s4">100</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should add a caret to the element'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">(done) { 
+        </span><span class="s3">var </span><span class="s0">text = </span><span class="s1">'Hello, this is some text!'</span><span class="s2">;</span><span class="s0"> 
+        compile(text)</span><span class="s2">;</span><span class="s0"> 
+ 
+        setTimeout(</span><span class="s3">function</span><span class="s0">() { 
+            expect(containingElement.find(</span><span class="s1">'.caret'</span><span class="s0">).length).toEqual(</span><span class="s4">1</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+            done()</span><span class="s2">;</span><span class="s0"> 
+        }</span><span class="s2">, </span><span class="s4">50</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should hide the caret until typing begins by default if typing has not started'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">() { 
+        compile(</span><span class="s1">'hello'</span><span class="s2">, </span><span class="s4">100</span><span class="s2">, </span><span class="s4">100</span><span class="s2">, </span><span class="s1">'false'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+        expect(containingElement.find(</span><span class="s1">'.caret'</span><span class="s0">).length).toEqual(</span><span class="s4">0</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should show the caret when force-caret is used, even if typing has not started'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">() { 
+        </span><span class="s3">var </span><span class="s0">html = </span><span class="s1">'&lt;p dir-terminal-type duration=&quot;100&quot; start-typing=&quot;false&quot; force-caret&gt;message: {{ myText }}&lt;/p&gt;'</span><span class="s2">;</span><span class="s0"> 
+        containingElement.append($compile(html)($scope))</span><span class="s2">;</span><span class="s0"> 
+        $scope.$apply()</span><span class="s2">;</span><span class="s0"> 
+ 
+        expect(containingElement.find(</span><span class="s1">'.caret'</span><span class="s0">).length).toEqual(</span><span class="s4">1</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should remove the caret after the specified time'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">(done) { 
+        </span><span class="s3">var </span><span class="s0">text = </span><span class="s1">'Hello, this is some text!'</span><span class="s2">;</span><span class="s0"> 
+        compile(text</span><span class="s2">, </span><span class="s4">100</span><span class="s2">, </span><span class="s4">100</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+        setTimeout(</span><span class="s3">function</span><span class="s0">() { 
+            $timeout.flush()</span><span class="s2">;</span><span class="s0"> 
+            expect(containingElement.find(</span><span class="s1">'.caret'</span><span class="s0">).length).toEqual(</span><span class="s4">0</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+            done()</span><span class="s2">;</span><span class="s0"> 
+        }</span><span class="s2">, </span><span class="s4">200</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should handle child elements with text content'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">(done) { 
+        </span><span class="s3">var </span><span class="s0">text = </span><span class="s1">'No! I &lt;em&gt;don</span><span class="s2">\'</span><span class="s1">t&lt;/em&gt; want to visit &lt;a href=&quot;www.google.com&quot;&gt;google.com&lt;/a&gt;'</span><span class="s2">;</span><span class="s0"> 
+        compile(text</span><span class="s2">, </span><span class="s4">200</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+        setTimeout(</span><span class="s3">function</span><span class="s0">() { 
+            expect(containingElement.html()).toContain(text)</span><span class="s2">;</span><span class="s0"> 
+            done()</span><span class="s2">;</span><span class="s0"> 
+        }</span><span class="s2">, </span><span class="s4">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should interpolate simple text content'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">(done) { 
+        $scope.myValue = </span><span class="s1">&quot;This is an interpolated string!&quot;</span><span class="s2">;</span><span class="s0"> 
+        compile(</span><span class="s1">'{{ myValue }}'</span><span class="s2">, </span><span class="s4">200</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+        setTimeout(</span><span class="s3">function</span><span class="s0">() { 
+            expect(containingElement.html()).toContain($scope.myValue)</span><span class="s2">;</span><span class="s0"> 
+            done()</span><span class="s2">;</span><span class="s0"> 
+        }</span><span class="s2">, </span><span class="s4">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should interpolate complex nested content'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">(done) { 
+        $scope.rap = { 
+            location: </span><span class="s1">'West Philadelphia'</span><span class="s2">,</span><span class="s0"> 
+            action1: </span><span class="s1">'born'</span><span class="s2">,</span><span class="s0"> 
+            action2: </span><span class="s1">'raised'</span><span class="s0"> 
+        }</span><span class="s2">;</span><span class="s0"> 
+ 
+        compile(</span><span class="s1">'In &lt;em&gt;{{ rap.location }}&lt;/em&gt; &lt;ul&gt;&lt;li&gt;{{ rap.action1 }}&lt;/li&gt;&lt;li&gt; and {{ rap.action2 }}&lt;/li&gt;&lt;/ul&gt;'</span><span class="s2">, </span><span class="s4">200</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+        setTimeout(</span><span class="s3">function</span><span class="s0">() { 
+            expect(containingElement.text()).toContain(</span><span class="s1">'In West Philadelphia born and raised'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+            done()</span><span class="s2">;</span><span class="s0"> 
+        }</span><span class="s2">, </span><span class="s4">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should not start typing if the start-typing attribute is set and evals to false'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">(done) { 
+        compile(</span><span class="s1">'hello'</span><span class="s2">, </span><span class="s4">100</span><span class="s2">, </span><span class="s4">100</span><span class="s2">, </span><span class="s1">'false'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+        setTimeout(</span><span class="s3">function</span><span class="s0">() { 
+            expect(containingElement.text()).toEqual(</span><span class="s1">''</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+            done()</span><span class="s2">;</span><span class="s0"> 
+        }</span><span class="s2">, </span><span class="s4">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should start typing when the start-typing attribute is set and evals to true'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">(done) { 
+        compile(</span><span class="s1">'hello'</span><span class="s2">, </span><span class="s4">100</span><span class="s2">, </span><span class="s4">100</span><span class="s2">, </span><span class="s1">'myVal'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        $scope.$apply(</span><span class="s3">function</span><span class="s0">() { 
+            $scope.myVal = </span><span class="s3">true</span><span class="s2">;</span><span class="s0"> 
+        })</span><span class="s2">;</span><span class="s0"> 
+ 
+        setTimeout(</span><span class="s3">function</span><span class="s0">() { 
+            expect(containingElement.text()).toEqual(</span><span class="s1">'hello'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+            done()</span><span class="s2">;</span><span class="s0"> 
+        }</span><span class="s2">, </span><span class="s4">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should work when the element starts off hidden'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">(done) { 
+        </span><span class="s3">var </span><span class="s0">html = </span><span class="s1">'&lt;p dir-terminal-type duration=&quot;100&quot; ng-show=&quot;myText&quot; start-typing=&quot;myText&quot; &gt;message: {{ myText }}&lt;/p&gt;'</span><span class="s2">;</span><span class="s0"> 
+        containingElement.append($compile(html)($scope))</span><span class="s2">;</span><span class="s0"> 
+        $scope.$apply()</span><span class="s2">;</span><span class="s0"> 
+ 
+        expect(containingElement.text()).toEqual(</span><span class="s1">''</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+        $scope.$apply(</span><span class="s3">function</span><span class="s0">() { 
+            $scope.myText = </span><span class="s1">'hello'</span><span class="s2">;</span><span class="s0"> 
+        })</span><span class="s2">;</span><span class="s0"> 
+ 
+        expect(containingElement.text()).toEqual(</span><span class="s1">''</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+        setTimeout(</span><span class="s3">function</span><span class="s0">() { 
+            expect(containingElement.text()).toEqual(</span><span class="s1">'message: hello'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+            done()</span><span class="s2">;</span><span class="s0"> 
+        }</span><span class="s2">, </span><span class="s4">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should fire a callback if specified by on-completion'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">(done) { 
+        $scope.myMethod = </span><span class="s3">function</span><span class="s0">() {}</span><span class="s2">;</span><span class="s0"> 
+ 
+        </span><span class="s3">var </span><span class="s0">html = </span><span class="s1">'&lt;p dir-terminal-type duration=&quot;100&quot; on-completion=&quot;myMethod()&quot;&gt;message: {{ myText }}&lt;/p&gt;'</span><span class="s2">;</span><span class="s0"> 
+        containingElement.append($compile(html)($scope))</span><span class="s2">;</span><span class="s0"> 
+        $scope.$apply()</span><span class="s2">;</span><span class="s0"> 
+ 
+        spyOn($scope</span><span class="s2">, </span><span class="s1">'myMethod'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+        setTimeout(</span><span class="s3">function</span><span class="s0">() { 
+            expect($scope.myMethod).toHaveBeenCalled()</span><span class="s2">;</span><span class="s0"> 
+            done()</span><span class="s2">;</span><span class="s0"> 
+        }</span><span class="s2">, </span><span class="s4">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should execute an expression if specified by on-completion'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">(done) { 
+        </span><span class="s3">var </span><span class="s0">html = </span><span class="s1">'&lt;p dir-terminal-type duration=&quot;100&quot; on-completion=&quot;myVal = </span><span class="s2">\'</span><span class="s1">foo</span><span class="s2">\'</span><span class="s1">&quot;&gt;message: {{ myText }}&lt;/p&gt;'</span><span class="s2">;</span><span class="s0"> 
+        containingElement.append($compile(html)($scope))</span><span class="s2">;</span><span class="s0"> 
+        $scope.$apply()</span><span class="s2">;</span><span class="s0"> 
+ 
+        setTimeout(</span><span class="s3">function</span><span class="s0">() { 
+            expect($scope.myVal).toEqual(</span><span class="s1">'foo'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+            done()</span><span class="s2">;</span><span class="s0"> 
+        }</span><span class="s2">, </span><span class="s4">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+    it(</span><span class="s1">'should work with multiple elements at the same time'</span><span class="s2">, </span><span class="s3">function</span><span class="s0">(done) { 
+        compile(</span><span class="s1">'will'</span><span class="s2">, </span><span class="s4">100</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+        compile(</span><span class="s1">'smith'</span><span class="s2">, </span><span class="s4">100</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+        setTimeout(</span><span class="s3">function</span><span class="s0">() { 
+            expect(containingElement.children().eq(</span><span class="s4">0</span><span class="s0">).text()).toEqual(</span><span class="s1">'will'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+            expect(containingElement.children().eq(</span><span class="s4">1</span><span class="s0">).text()).toEqual(</span><span class="s1">'smith'</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+            done()</span><span class="s2">;</span><span class="s0"> 
+        }</span><span class="s2">, </span><span class="s4">250</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+    })</span><span class="s2">;</span><span class="s0"> 
+})</span><span class="s2">;</span></pre>
+</body>
+</html>

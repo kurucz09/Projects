@@ -1,0 +1,40 @@
+<html>
+<head>
+<title>dirPagination.tpl.html</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(232,191,106); }
+.s1 { color: rgb(186,186,186); }
+.s2 { color: rgb(165,194,97); }
+.s3 { color: rgb(169,183,198); }
+.s4 { color: rgb(109,156,190); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+dirPagination.tpl.html</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">&lt;ul </span><span class="s1">class=</span><span class="s2">&quot;pagination&quot; </span><span class="s1">ng-if=</span><span class="s2">&quot;1 &lt; pages.length || !autoHide&quot;</span><span class="s0">&gt;</span><span class="s3"> 
+    </span><span class="s0">&lt;li </span><span class="s1">ng-if=</span><span class="s2">&quot;boundaryLinks&quot; </span><span class="s1">ng-class=</span><span class="s2">&quot;{ disabled : pagination.current == 1 }&quot;</span><span class="s0">&gt;</span><span class="s3"> 
+        </span><span class="s0">&lt;a </span><span class="s1">href=</span><span class="s2">&quot;&quot; </span><span class="s1">ng-click=</span><span class="s2">&quot;setCurrent(1)&quot;</span><span class="s0">&gt;</span><span class="s4">&amp;laquo;</span><span class="s0">&lt;/a&gt;</span><span class="s3"> 
+    </span><span class="s0">&lt;/li&gt;</span><span class="s3"> 
+    </span><span class="s0">&lt;li </span><span class="s1">ng-if=</span><span class="s2">&quot;directionLinks&quot; </span><span class="s1">ng-class=</span><span class="s2">&quot;{ disabled : pagination.current == 1 }&quot;</span><span class="s0">&gt;</span><span class="s3"> 
+        </span><span class="s0">&lt;a </span><span class="s1">href=</span><span class="s2">&quot;&quot; </span><span class="s1">ng-click=</span><span class="s2">&quot;setCurrent(pagination.current - 1)&quot;</span><span class="s0">&gt;</span><span class="s4">&amp;lsaquo;</span><span class="s0">&lt;/a&gt;</span><span class="s3"> 
+    </span><span class="s0">&lt;/li&gt;</span><span class="s3"> 
+    </span><span class="s0">&lt;li </span><span class="s1">ng-repeat=</span><span class="s2">&quot;pageNumber in pages track by tracker(pageNumber, $index)&quot; </span><span class="s1">ng-class=</span><span class="s2">&quot;{ active : pagination.current == pageNumber, disabled : pageNumber == '...' }&quot;</span><span class="s0">&gt;</span><span class="s3"> 
+        </span><span class="s0">&lt;a </span><span class="s1">href=</span><span class="s2">&quot;&quot; </span><span class="s1">ng-click=</span><span class="s2">&quot;setCurrent(pageNumber)&quot;</span><span class="s0">&gt;</span><span class="s3">{{ pageNumber }}</span><span class="s0">&lt;/a&gt;</span><span class="s3"> 
+    </span><span class="s0">&lt;/li&gt;</span><span class="s3"> 
+ 
+    </span><span class="s0">&lt;li </span><span class="s1">ng-if=</span><span class="s2">&quot;directionLinks&quot; </span><span class="s1">ng-class=</span><span class="s2">&quot;{ disabled : pagination.current == pagination.last }&quot;</span><span class="s0">&gt;</span><span class="s3"> 
+        </span><span class="s0">&lt;a </span><span class="s1">href=</span><span class="s2">&quot;&quot; </span><span class="s1">ng-click=</span><span class="s2">&quot;setCurrent(pagination.current + 1)&quot;</span><span class="s0">&gt;</span><span class="s4">&amp;rsaquo;</span><span class="s0">&lt;/a&gt;</span><span class="s3"> 
+    </span><span class="s0">&lt;/li&gt;</span><span class="s3"> 
+    </span><span class="s0">&lt;li </span><span class="s1">ng-if=</span><span class="s2">&quot;boundaryLinks&quot;  </span><span class="s1">ng-class=</span><span class="s2">&quot;{ disabled : pagination.current == pagination.last }&quot;</span><span class="s0">&gt;</span><span class="s3"> 
+        </span><span class="s0">&lt;a </span><span class="s1">href=</span><span class="s2">&quot;&quot; </span><span class="s1">ng-click=</span><span class="s2">&quot;setCurrent(pagination.last)&quot;</span><span class="s0">&gt;</span><span class="s4">&amp;raquo;</span><span class="s0">&lt;/a&gt;</span><span class="s3"> 
+    </span><span class="s0">&lt;/li&gt;</span><span class="s3"> 
+</span><span class="s0">&lt;/ul&gt;</span></pre>
+</body>
+</html>

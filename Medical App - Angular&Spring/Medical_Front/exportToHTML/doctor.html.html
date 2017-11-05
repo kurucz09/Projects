@@ -1,0 +1,169 @@
+<html>
+<head>
+<title>doctor.html</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(232,191,106); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(186,186,186); }
+.s3 { color: rgb(104,151,187); }
+.s4 { color: rgb(204,120,50); }
+.s5 { color: rgb(165,194,97); }
+.s6 { color: rgb(128,128,128); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+doctor.html</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">&lt;style&gt;</span><span class="s1"> 
+    .</span><span class="s0">myButtons </span><span class="s1">{ 
+        </span><span class="s2">background-color</span><span class="s1">: </span><span class="s3">#1c5792</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">border-radius</span><span class="s1">: </span><span class="s3">0</span><span class="s5">px</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">margin-bottom</span><span class="s1">: </span><span class="s3">3</span><span class="s5">px</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    .</span><span class="s0">addConsult</span><span class="s1">{ 
+        </span><span class="s2">background-color</span><span class="s1">: </span><span class="s3">#920a0c</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">border-radius</span><span class="s1">: </span><span class="s3">0</span><span class="s5">px</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">width</span><span class="s1">: </span><span class="s3">20</span><span class="s5">vw</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">height</span><span class="s1">: </span><span class="s3">7</span><span class="s5">vh</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    .</span><span class="s0">table </span><span class="s1">&gt; </span><span class="s0">caption </span><span class="s1">+ </span><span class="s0">thead </span><span class="s1">&gt; </span><span class="s0">tr</span><span class="s1">:</span><span class="s0">first-child </span><span class="s1">&gt; </span><span class="s0">td</span><span class="s4">, </span><span class="s1">.</span><span class="s0">table </span><span class="s1">&gt; </span><span class="s0">caption </span><span class="s1">+ </span><span class="s0">thead </span><span class="s1">&gt; </span><span class="s0">tr</span><span class="s1">:</span><span class="s0">first-child </span><span class="s1">&gt; </span><span class="s0">th</span><span class="s4">, </span><span class="s1">.</span><span class="s0">table </span><span class="s1">&gt; </span><span class="s0">colgroup </span><span class="s1">+ </span><span class="s0">thead </span><span class="s1">&gt; </span><span class="s0">tr</span><span class="s1">:</span><span class="s0">first-child </span><span class="s1">&gt; </span><span class="s0">td</span><span class="s4">, </span><span class="s1">.</span><span class="s0">table </span><span class="s1">&gt; </span><span class="s0">colgroup </span><span class="s1">+ </span><span class="s0">thead </span><span class="s1">&gt; </span><span class="s0">tr</span><span class="s1">:</span><span class="s0">first-child </span><span class="s1">&gt; </span><span class="s0">th</span><span class="s4">, </span><span class="s1">.</span><span class="s0">table </span><span class="s1">&gt; </span><span class="s0">thead</span><span class="s1">:</span><span class="s0">first-child </span><span class="s1">&gt; </span><span class="s0">tr</span><span class="s1">:</span><span class="s0">first-child </span><span class="s1">&gt; </span><span class="s0">td</span><span class="s4">, </span><span class="s1">.</span><span class="s0">table </span><span class="s1">&gt; </span><span class="s0">thead</span><span class="s1">:</span><span class="s0">first-child </span><span class="s1">&gt; </span><span class="s0">tr</span><span class="s1">:</span><span class="s0">first-child </span><span class="s1">&gt; </span><span class="s0">th </span><span class="s1">{ 
+        </span><span class="s2">background-color</span><span class="s1">: </span><span class="s3">#1c5792</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">color</span><span class="s1">: </span><span class="s3">#FFFFFF</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">border-color</span><span class="s1">: </span><span class="s3">#1c5792</span><span class="s4">;</span><span class="s1"> 
+        </span><span class="s2">border-top</span><span class="s1">: </span><span class="s3">0</span><span class="s1"> 
+    } 
+ 
+    .</span><span class="s0">form-horizontal </span><span class="s1">{ 
+        </span><span class="s2">width</span><span class="s1">: </span><span class="s3">500</span><span class="s5">px</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    .</span><span class="s0">datetime-picker-dropdown </span><span class="s1">{ 
+ 
+    } 
+ 
+    .</span><span class="s0">datetime-picker-dropdown </span><span class="s1">&gt; </span><span class="s0">li</span><span class="s1">.</span><span class="s0">date-picker-menu div </span><span class="s1">&gt; </span><span class="s0">table </span><span class="s1">.</span><span class="s0">btn-default </span><span class="s1">{ 
+        </span><span class="s2">border</span><span class="s1">: </span><span class="s3">0</span><span class="s4">;</span><span class="s1"> 
+    } 
+ 
+    .</span><span class="s0">datetime-picker-dropdown </span><span class="s1">&gt; </span><span class="s0">li</span><span class="s1">.</span><span class="s0">time-picker-menu div </span><span class="s1">&gt; </span><span class="s0">table </span><span class="s1">{ 
+ 
+    } 
+ 
+</span><span class="s0">&lt;/style&gt;</span><span class="s1"> 
+ 
+</span><span class="s0">&lt;div </span><span class="s2">ng-controller=</span><span class="s5">&quot;doctorCtrl&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+    </span><span class="s6">&lt;!-- 
+    &lt;div&gt;Server response: 
+        &lt;div class=&quot;response-container&quot;&gt; 
+            &lt;div ng-model=&quot;data&quot; class=&quot;response-text swap-animation&quot;&gt;{{ data }}&lt;/div&gt; 
+        &lt;/div&gt; 
+    &lt;/div&gt; 
+    --&gt;</span><span class="s1"> 
+    </span><span class="s0">&lt;div 
+            </span><span class="s2">ng-show=</span><span class="s5">&quot;endConsultationVar&quot;</span><span class="s0"> 
+            </span><span class="s2">class=</span><span class="s5">&quot;alert alert-success&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+        </span><span class="s0">&lt;strong&gt;</span><span class="s1">You are in a consultation. Patient: {{memoryPatient}}</span><span class="s0">&lt;/strong&gt;</span><span class="s1">. 
+    </span><span class="s0">&lt;/div&gt;</span><span class="s1"> 
+ 
+    </span><span class="s0">&lt;div </span><span class="s2">class=</span><span class="s5">&quot;container&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+        </span><span class="s0">&lt;div </span><span class="s2">class=</span><span class="s5">&quot;col-md-12&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+            </span><span class="s0">&lt;button </span><span class="s2">class=</span><span class="s5">&quot;btn btn-primary myButtons pull-right&quot; </span><span class="s2">ng-click=</span><span class="s5">&quot;viewAllConsult()&quot;</span><span class="s0">&gt;</span><span class="s1">View all</span><span class="s0">&lt;/button&gt;</span><span class="s1"> 
+            </span><span class="s0">&lt;div </span><span class="s2">class=</span><span class="s5">&quot;input-group&quot; </span><span class="s2">; style=</span><span class="s5">&quot;</span><span class="s2">min-width</span><span class="s1">: </span><span class="s3">0</span><span class="s5">px</span><span class="s4">; </span><span class="s2">background-color</span><span class="s1">: </span><span class="s3">#FFFFFF</span><span class="s4">; </span><span class="s2">margin-left</span><span class="s1">: </span><span class="s3">0</span><span class="s5">px</span><span class="s4">;</span><span class="s5">&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+                </span><span class="s0">&lt;div </span><span class="s2">class=</span><span class="s5">&quot;input-group-addon&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+                    </span><span class="s0">&lt;i </span><span class="s2">class=</span><span class="s5">&quot;glyphicon glyphicon-search&quot;</span><span class="s0">&gt;&lt;/i&gt;</span><span class="s1"> 
+                </span><span class="s0">&lt;/div&gt;</span><span class="s1"> 
+                </span><span class="s0">&lt;input 
+                        </span><span class="s2">type=</span><span class="s5">&quot;text&quot;</span><span class="s0"> 
+                        </span><span class="s2">class=</span><span class="s5">&quot;form-control col-md-12&quot;</span><span class="s0"> 
+                        </span><span class="s2">style=</span><span class="s5">&quot;</span><span class="s2">width</span><span class="s1">: </span><span class="s3">100</span><span class="s1">%</span><span class="s5">&quot;</span><span class="s0"> 
+                        </span><span class="s2">placeholder=</span><span class="s5">&quot;Search patient&quot;</span><span class="s0"> 
+                        </span><span class="s2">ng-model=</span><span class="s5">&quot;patientFilter&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+            </span><span class="s0">&lt;/div&gt;</span><span class="s1"> 
+ 
+            </span><span class="s0">&lt;div </span><span class="s2">style=</span><span class="s5">&quot;</span><span class="s2">max-height</span><span class="s1">: </span><span class="s3">150</span><span class="s5">px</span><span class="s4">;</span><span class="s2">min-height</span><span class="s1">: </span><span class="s3">150</span><span class="s5">px</span><span class="s4">; </span><span class="s2">width</span><span class="s1">: </span><span class="s3">100</span><span class="s1">%</span><span class="s4">; </span><span class="s2">margin</span><span class="s1">: </span><span class="s3">0</span><span class="s4">; </span><span class="s2">overflow-y</span><span class="s1">: </span><span class="s5">auto</span><span class="s4">; </span><span class="s5">&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+                </span><span class="s0">&lt;table </span><span class="s2">class=</span><span class="s5">&quot;table table-striped table-hover table-condensed table-scrollable&quot;</span><span class="s0"> 
+                       </span><span class="s2">style=</span><span class="s5">&quot;</span><span class="s2">color</span><span class="s1">: </span><span class="s3">#337ab7</span><span class="s4">; </span><span class="s2">font-weight</span><span class="s1">: </span><span class="s5">bold</span><span class="s4">;</span><span class="s5">&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+                    </span><span class="s0">&lt;tbody&gt;</span><span class="s1"> 
+                    </span><span class="s0">&lt;tr </span><span class="s2">ng-repeat=</span><span class="s5">&quot;patient in patients | filter:patientFilter&quot;</span><span class="s0"> 
+                        </span><span class="s2">ng-click=</span><span class="s5">&quot; 
+                                        select.name = patient.name; 
+                                        setSelectedPatient(patient.pnc);&quot;</span><span class="s0"> 
+ 
+                        </span><span class="s2">ng-class=</span><span class="s5">&quot;{rowSelected : patient.pnc === patientSelected}&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+ 
+                        </span><span class="s0">&lt;td&gt;</span><span class="s1">{{patient.name}}</span><span class="s0">&lt;/td&gt;</span><span class="s1"> 
+                        </span><span class="s0">&lt;td&gt;</span><span class="s1">{{patient.pnc}}</span><span class="s0">&lt;/td&gt;</span><span class="s1"> 
+                    </span><span class="s0">&lt;/tr&gt;</span><span class="s1"> 
+                    </span><span class="s0">&lt;/tbody&gt;</span><span class="s1"> 
+                </span><span class="s0">&lt;/table&gt;</span><span class="s1"> 
+            </span><span class="s0">&lt;/div&gt;</span><span class="s1"> 
+ 
+        </span><span class="s0">&lt;/div&gt;</span><span class="s1"> 
+        </span><span class="s0">&lt;div </span><span class="s2">class=</span><span class="s5">&quot;col-md-12&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+            </span><span class="s0">&lt;div </span><span class="s2">style=</span><span class="s5">&quot;</span><span class="s2">max-height</span><span class="s1">: </span><span class="s3">35</span><span class="s5">vh</span><span class="s4">;</span><span class="s2">min-height</span><span class="s1">: </span><span class="s3">20</span><span class="s5">vh</span><span class="s4">; </span><span class="s2">width</span><span class="s1">: </span><span class="s3">100</span><span class="s1">%</span><span class="s4">; </span><span class="s2">margin-top</span><span class="s1">: </span><span class="s3">20</span><span class="s5">px</span><span class="s4">;</span><span class="s2">overflow-y</span><span class="s1">: </span><span class="s5">auto</span><span class="s4">;  </span><span class="s5">&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+                </span><span class="s0">&lt;table </span><span class="s2">class=</span><span class="s5">&quot;table table-striped table-hover table-condensed table-scrollable&quot;</span><span class="s0"> 
+                       </span><span class="s2">style=</span><span class="s5">&quot;</span><span class="s2">color</span><span class="s1">: </span><span class="s3">#337ab7</span><span class="s4">; </span><span class="s2">font-weight</span><span class="s1">: </span><span class="s5">bold</span><span class="s4">;</span><span class="s5">&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+                    </span><span class="s0">&lt;thead&gt;</span><span class="s1"> 
+                    </span><span class="s0">&lt;tr&gt;</span><span class="s1"> 
+                        </span><span class="s0">&lt;th &gt;</span><span class="s1"> 
+                            ID 
+                        </span><span class="s0">&lt;/th&gt;</span><span class="s1"> 
+                        </span><span class="s0">&lt;th </span><span class="s2">class=</span><span class="s5">&quot;noselect&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+                            Date 
+                        </span><span class="s0">&lt;/th&gt;</span><span class="s1"> 
+                        </span><span class="s0">&lt;th </span><span class="s2">class=</span><span class="s5">&quot;noselect&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+                            Details 
+                        </span><span class="s0">&lt;/th&gt;</span><span class="s1"> 
+                    </span><span class="s0">&lt;/tr&gt;</span><span class="s1"> 
+                    </span><span class="s0">&lt;tbody&gt;</span><span class="s1"> 
+                    </span><span class="s0">&lt;tr </span><span class="s2">ng-repeat=</span><span class="s5">&quot;cons in consultations | orderBy: orderBy:sortKey:reverse&quot;</span><span class="s0"> 
+                        </span><span class="s2">ng-click=</span><span class="s5">&quot;setSelectedCons(cons);&quot;</span><span class="s0"> 
+                        </span><span class="s2">ng-class=</span><span class="s5">&quot;{rowSelected : cons.id === consSelected.id}&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+ 
+                        </span><span class="s0">&lt;td </span><span class="s2">style=</span><span class="s5">&quot;</span><span class="s2">max-width</span><span class="s1">: </span><span class="s3">100</span><span class="s5">px</span><span class="s4">; </span><span class="s2">min-width</span><span class="s1">: </span><span class="s3">100</span><span class="s5">px&quot;</span><span class="s0">&gt;</span><span class="s1">{{cons.id}}</span><span class="s0">&lt;/td&gt;</span><span class="s1"> 
+                        </span><span class="s0">&lt;td </span><span class="s2">style=</span><span class="s5">&quot;</span><span class="s2">max-width</span><span class="s1">: </span><span class="s3">100</span><span class="s5">px</span><span class="s4">; </span><span class="s2">min-width</span><span class="s1">: </span><span class="s3">100</span><span class="s5">px&quot;</span><span class="s0">&gt;</span><span class="s1">{{cons.startDate.substring(0,10)}}</span><span class="s0">&lt;/td&gt;</span><span class="s1"> 
+                        </span><span class="s0">&lt;td&gt;</span><span class="s1">{{cons.details}}</span><span class="s0">&lt;/td&gt;</span><span class="s1"> 
+                    </span><span class="s0">&lt;/tr&gt;</span><span class="s1"> 
+                    </span><span class="s0">&lt;/tbody&gt;</span><span class="s1"> 
+                </span><span class="s0">&lt;/table&gt;</span><span class="s1"> 
+            </span><span class="s0">&lt;/div&gt;</span><span class="s1"> 
+        </span><span class="s0">&lt;/div&gt;</span><span class="s1"> 
+        </span><span class="s0">&lt;div </span><span class="s2">class=</span><span class="s5">&quot;container&quot; </span><span class="s2">style=</span><span class="s5">&quot;</span><span class="s2">align-items</span><span class="s1">: </span><span class="s5">center</span><span class="s4">; </span><span class="s2">align-content</span><span class="s1">: </span><span class="s5">center</span><span class="s4">; </span><span class="s2">text-align</span><span class="s1">: </span><span class="s5">center&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+            </span><span class="s0">&lt;textarea 
+                    </span><span class="s2">rows=</span><span class="s5">&quot;5&quot;</span><span class="s0"> 
+                    </span><span class="s2">class=</span><span class="s5">&quot;form-control col-md-12&quot;</span><span class="s0"> 
+                    </span><span class="s2">style=</span><span class="s5">&quot;</span><span class="s2">width</span><span class="s1">: </span><span class="s3">100</span><span class="s1">%</span><span class="s4">; </span><span class="s2">height</span><span class="s1">: </span><span class="s3">15</span><span class="s5">vh</span><span class="s4">; </span><span class="s2">word-wrap</span><span class="s1">: </span><span class="s5">break-word</span><span class="s4">; </span><span class="s2">word-break</span><span class="s1">:</span><span class="s5">break-all</span><span class="s4">;</span><span class="s2">white-space</span><span class="s1">: </span><span class="s5">normal</span><span class="s4">;</span><span class="s5">&quot;</span><span class="s0"> 
+                    </span><span class="s2">placeholder=</span><span class="s5">&quot;Add details to consultation&quot;</span><span class="s0"> 
+                    </span><span class="s2">ng-model = </span><span class="s5">&quot;consDetails&quot;</span><span class="s0"> 
+                   &gt;</span><span class="s1"> 
+            </span><span class="s0">&lt;/textarea&gt;</span><span class="s1"> 
+            </span><span class="s0">&lt;button 
+                    </span><span class="s2">id=</span><span class="s5">&quot;consultUpdateBtn&quot;</span><span class="s0"> 
+                    </span><span class="s2">class=</span><span class="s5">&quot;btn btn-primary addConsult&quot;</span><span class="s0"> 
+                    </span><span class="s2">disabled</span><span class="s0"> 
+                    </span><span class="s2">ng-click=</span><span class="s5">&quot;addConsultDetails()&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+                Add consultation details 
+            </span><span class="s0">&lt;/button&gt;</span><span class="s1"> 
+            </span><span class="s0">&lt;button 
+                    </span><span class="s2">id=</span><span class="s5">&quot;endConsultationBtn&quot;</span><span class="s0"> 
+                    </span><span class="s2">class=</span><span class="s5">&quot;btn btn-primary addConsult&quot;</span><span class="s0"> 
+                    </span><span class="s2">ng-click=</span><span class="s5">&quot;endConsultation()&quot;</span><span class="s0"> 
+                    </span><span class="s2">ng-show=</span><span class="s5">&quot;endConsultationVar&quot;</span><span class="s0">&gt;</span><span class="s1"> 
+               End consultation 
+            </span><span class="s0">&lt;/button&gt;</span><span class="s1"> 
+ 
+ 
+ 
+        </span><span class="s0">&lt;/div&gt;</span><span class="s1"> 
+    </span><span class="s0">&lt;/div&gt;</span><span class="s1"> 
+</span><span class="s0">&lt;/div&gt;</span></pre>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<html>
+<head>
+<title>time-picker.html</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(232,191,106); }
+.s1 { color: rgb(186,186,186); }
+.s2 { color: rgb(165,194,97); }
+.s3 { color: rgb(169,183,198); }
+.s4 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+time-picker.html</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">&lt;ul </span><span class="s1">class=</span><span class="s2">&quot;dropdown-menu dropdown-menu-left datetime-picker-dropdown&quot; </span><span class="s1">ng-if=</span><span class="s2">&quot;isOpen &amp;&amp; showPicker == 'time'&quot; </span><span class="s1">ng-style=</span><span class="s2">&quot;dropdownStyle&quot; </span><span class="s1">style=</span><span class="s2">&quot;</span><span class="s1">left</span><span class="s3">:</span><span class="s2">inherit&quot; </span><span class="s1">ng-keydown=</span><span class="s2">&quot;keydown($event)&quot; </span><span class="s1">ng-click=</span><span class="s2">&quot;$event.preventDefault(); $event.stopPropagation()&quot;</span><span class="s0">&gt;</span><span class="s3"> 
+    </span><span class="s0">&lt;li </span><span class="s1">style=</span><span class="s2">&quot;</span><span class="s1">padding</span><span class="s3">:</span><span class="s4">0 5</span><span class="s2">px </span><span class="s4">5</span><span class="s2">px </span><span class="s4">5</span><span class="s2">px&quot; </span><span class="s1">class=</span><span class="s2">&quot;time-picker-menu&quot;</span><span class="s0">&gt;</span><span class="s3"> 
+        </span><span class="s0">&lt;div </span><span class="s1">ng-transclude</span><span class="s0">&gt;&lt;/div&gt;</span><span class="s3"> 
+    </span><span class="s0">&lt;/li&gt;</span><span class="s3"> 
+    </span><span class="s0">&lt;li </span><span class="s1">style=</span><span class="s2">&quot;</span><span class="s1">padding</span><span class="s3">:</span><span class="s4">5</span><span class="s2">px&quot; </span><span class="s1">ng-if=</span><span class="s2">&quot;buttonBar.show&quot;</span><span class="s0">&gt;</span><span class="s3"> 
+        </span><span class="s0">&lt;span </span><span class="s1">class=</span><span class="s2">&quot;btn-group pull-left&quot; </span><span class="s1">style=</span><span class="s2">&quot;</span><span class="s1">margin-right</span><span class="s3">:</span><span class="s4">10</span><span class="s2">px&quot; </span><span class="s1">ng-if=</span><span class="s2">&quot;doShow('now') || doShow('clear')&quot;</span><span class="s0">&gt;</span><span class="s3"> 
+            </span><span class="s0">&lt;button </span><span class="s1">type=</span><span class="s2">&quot;button&quot; </span><span class="s1">class=</span><span class="s2">&quot;btn&quot; </span><span class="s1">ng-class=</span><span class="s2">&quot;getClass('now')&quot;  </span><span class="s1">ng-if=</span><span class="s2">&quot;doShow('now')&quot; </span><span class="s1">ng-click=</span><span class="s2">&quot;select('now', $event)&quot; </span><span class="s1">ng-disabled=</span><span class="s2">&quot;isDisabled('now')&quot;</span><span class="s0">&gt;</span><span class="s3">{{ getText('now') }}</span><span class="s0">&lt;/button&gt;</span><span class="s3"> 
+            </span><span class="s0">&lt;button </span><span class="s1">type=</span><span class="s2">&quot;button&quot; </span><span class="s1">class=</span><span class="s2">&quot;btn&quot; </span><span class="s1">ng-class=</span><span class="s2">&quot;getClass('clear')&quot;  </span><span class="s1">ng-if=</span><span class="s2">&quot;doShow('clear')&quot; </span><span class="s1">ng-click=</span><span class="s2">&quot;select('clear', $event)&quot;</span><span class="s0">&gt;</span><span class="s3">{{ getText('clear') }}</span><span class="s0">&lt;/button&gt;</span><span class="s3"> 
+        </span><span class="s0">&lt;/span&gt;</span><span class="s3"> 
+        </span><span class="s0">&lt;span </span><span class="s1">class=</span><span class="s2">&quot;btn-group pull-right&quot; </span><span class="s1">ng-if=</span><span class="s2">&quot;(doShow('date') &amp;&amp; enableDate) || doShow('close') || doShow('cancel')&quot; </span><span class="s0">&gt;</span><span class="s3"> 
+            </span><span class="s0">&lt;button </span><span class="s1">type=</span><span class="s2">&quot;button&quot; </span><span class="s1">class=</span><span class="s2">&quot;btn&quot; </span><span class="s1">ng-class=</span><span class="s2">&quot;getClass('date')&quot;  </span><span class="s1">ng-if=</span><span class="s2">&quot;doShow('date') &amp;&amp; enableDate&quot; </span><span class="s1">ng-click=</span><span class="s2">&quot;open('date', $event)&quot;</span><span class="s0">&gt;</span><span class="s3">{{ getText('date')}}</span><span class="s0">&lt;/button&gt;</span><span class="s3"> 
+            </span><span class="s0">&lt;button </span><span class="s1">type=</span><span class="s2">&quot;button&quot; </span><span class="s1">class=</span><span class="s2">&quot;btn&quot; </span><span class="s1">ng-class=</span><span class="s2">&quot;getClass('close')&quot;  </span><span class="s1">ng-if=</span><span class="s2">&quot;doShow('close')&quot; </span><span class="s1">ng-click=</span><span class="s2">&quot;close(true, $event)&quot;</span><span class="s0">&gt;</span><span class="s3">{{ getText('close') }}</span><span class="s0">&lt;/button&gt;</span><span class="s3"> 
+            </span><span class="s0">&lt;button </span><span class="s1">type=</span><span class="s2">&quot;button&quot; </span><span class="s1">class=</span><span class="s2">&quot;btn&quot;  </span><span class="s1">ng-class=</span><span class="s2">&quot;getClass('cancel')&quot; </span><span class="s1">ng-if=</span><span class="s2">&quot;doShow('cancel')&quot; </span><span class="s1">ng-click=</span><span class="s2">&quot;cancel($event)&quot;</span><span class="s0">&gt;</span><span class="s3">{{ getText('cancel') }}</span><span class="s0">&lt;/button&gt;</span><span class="s3"> 
+        </span><span class="s0">&lt;/span&gt;</span><span class="s3"> 
+        </span><span class="s0">&lt;span </span><span class="s1">class=</span><span class="s2">&quot;clearfix&quot;</span><span class="s0">&gt;&lt;/span&gt;</span><span class="s3"> 
+    </span><span class="s0">&lt;/li&gt;</span><span class="s3"> 
+</span><span class="s0">&lt;/ul&gt;</span></pre>
+</body>
+</html>

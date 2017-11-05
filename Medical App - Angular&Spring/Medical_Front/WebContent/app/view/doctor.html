@@ -1,0 +1,145 @@
+<style>
+    .myButtons {
+        background-color: #1c5792;
+        border-radius: 0px;
+        margin-bottom: 3px;
+    }
+
+    .addConsult{
+        background-color: #920a0c;
+        border-radius: 0px;
+        width: 20vw;
+        height: 7vh;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        background-color: #1c5792;
+        color: #FFFFFF;
+        border-color: #1c5792;
+        border-top: 0
+    }
+
+    .form-horizontal {
+        width: 500px;
+    }
+
+    .datetime-picker-dropdown {
+
+    }
+
+    .datetime-picker-dropdown > li.date-picker-menu div > table .btn-default {
+        border: 0;
+    }
+
+    .datetime-picker-dropdown > li.time-picker-menu div > table {
+
+    }
+
+</style>
+
+<div ng-controller="doctorCtrl">
+    <!--
+    <div>Server response:
+        <div class="response-container">
+            <div ng-model="data" class="response-text swap-animation">{{ data }}</div>
+        </div>
+    </div>
+    -->
+    <div
+            ng-show="endConsultationVar"
+            class="alert alert-success">
+        <strong>You are in a consultation. Patient: {{memoryPatient}}</strong>.
+    </div>
+
+    <div class="container">
+        <div class="col-md-12">
+            <button class="btn btn-primary myButtons pull-right" ng-click="viewAllConsult()">View all</button>
+            <div class="input-group" ; style="min-width: 0px; background-color: #FFFFFF; margin-left: 0px;">
+                <div class="input-group-addon">
+                    <i class="glyphicon glyphicon-search"></i>
+                </div>
+                <input
+                        type="text"
+                        class="form-control col-md-12"
+                        style="width: 100%"
+                        placeholder="Search patient"
+                        ng-model="patientFilter">
+            </div>
+
+            <div style="max-height: 150px;min-height: 150px; width: 100%; margin: 0; overflow-y: auto; ">
+                <table class="table table-striped table-hover table-condensed table-scrollable"
+                       style="color: #337ab7; font-weight: bold;">
+                    <tbody>
+                    <tr ng-repeat="patient in patients | filter:patientFilter"
+                        ng-click="
+                                        select.name = patient.name;
+                                        setSelectedPatient(patient.pnc);"
+
+                        ng-class="{rowSelected : patient.pnc === patientSelected}">
+
+                        <td>{{patient.name}}</td>
+                        <td>{{patient.pnc}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="col-md-12">
+            <div style="max-height: 35vh;min-height: 20vh; width: 100%; margin-top: 20px;overflow-y: auto;  ">
+                <table class="table table-striped table-hover table-condensed table-scrollable"
+                       style="color: #337ab7; font-weight: bold;">
+                    <thead>
+                    <tr>
+                        <th >
+                            ID
+                        </th>
+                        <th class="noselect">
+                            Date
+                        </th>
+                        <th class="noselect">
+                            Details
+                        </th>
+                    </tr>
+                    <tbody>
+                    <tr ng-repeat="cons in consultations | orderBy: orderBy:sortKey:reverse"
+                        ng-click="setSelectedCons(cons);"
+                        ng-class="{rowSelected : cons.id === consSelected.id}">
+
+                        <td style="max-width: 100px; min-width: 100px">{{cons.id}}</td>
+                        <td style="max-width: 100px; min-width: 100px">{{cons.startDate.substring(0,10)}}</td>
+                        <td>{{cons.details}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="container" style="align-items: center; align-content: center; text-align: center">
+            <textarea
+                    rows="5"
+                    class="form-control col-md-12"
+                    style="width: 100%; height: 15vh; word-wrap: break-word; word-break:break-all;white-space: normal;"
+                    placeholder="Add details to consultation"
+                    ng-model = "consDetails"
+                   >
+            </textarea>
+            <button
+                    id="consultUpdateBtn"
+                    class="btn btn-primary addConsult"
+                    disabled
+                    ng-click="addConsultDetails()">
+                Add consultation details
+            </button>
+            <button
+                    id="endConsultationBtn"
+                    class="btn btn-primary addConsult"
+                    ng-click="endConsultation()"
+                    ng-show="endConsultationVar">
+               End consultation
+            </button>
+
+
+
+        </div>
+    </div>
+</div>

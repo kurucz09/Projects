@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>_animated.scss</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(188,148,85); font-style: italic; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(232,191,106); }
+.s3 { color: rgb(109,156,190); }
+.s4 { color: rgb(169,183,198); }
+.s5 { color: rgb(186,186,186); }
+.s6 { color: rgb(104,151,187); }
+.s7 { color: rgb(165,194,97); }
+.s8 { color: rgb(204,120,50); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+_animated.scss</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">// Spinning Icons</span><span class="s1"> 
+</span><span class="s0">// --------------------------</span><span class="s1"> 
+ 
+.</span><span class="s2">#{</span><span class="s3">$fa-css-prefix</span><span class="s4">}</span><span class="s2">-spin </span><span class="s1">{ 
+  </span><span class="s5">-webkit-animation</span><span class="s4">: </span><span class="s2">fa-spin </span><span class="s6">2</span><span class="s7">s infinite linear</span><span class="s8">;</span><span class="s1"> 
+          </span><span class="s5">animation</span><span class="s4">: </span><span class="s2">fa-spin </span><span class="s6">2</span><span class="s7">s infinite linear</span><span class="s8">;</span><span class="s1"> 
+} 
+ 
+.</span><span class="s2">#{</span><span class="s3">$fa-css-prefix</span><span class="s4">}</span><span class="s2">-pulse </span><span class="s1">{ 
+  </span><span class="s5">-webkit-animation</span><span class="s4">: </span><span class="s2">fa-spin </span><span class="s6">1</span><span class="s7">s infinite </span><span class="s2">steps</span><span class="s1">(</span><span class="s6">8</span><span class="s1">)</span><span class="s8">;</span><span class="s1"> 
+          </span><span class="s5">animation</span><span class="s4">: </span><span class="s2">fa-spin </span><span class="s6">1</span><span class="s7">s infinite </span><span class="s2">steps</span><span class="s1">(</span><span class="s6">8</span><span class="s1">)</span><span class="s8">;</span><span class="s1"> 
+} 
+ 
+</span><span class="s8">@-webkit-keyframes </span><span class="s2">fa-spin </span><span class="s1">{ 
+  </span><span class="s2">0% </span><span class="s1">{ 
+    </span><span class="s5">-webkit-transform</span><span class="s4">: </span><span class="s2">rotate</span><span class="s1">(</span><span class="s6">0</span><span class="s7">deg</span><span class="s1">)</span><span class="s8">;</span><span class="s1"> 
+            </span><span class="s5">transform</span><span class="s4">: </span><span class="s2">rotate</span><span class="s1">(</span><span class="s6">0</span><span class="s7">deg</span><span class="s1">)</span><span class="s8">;</span><span class="s1"> 
+  } 
+  </span><span class="s2">100% </span><span class="s1">{ 
+    </span><span class="s5">-webkit-transform</span><span class="s4">: </span><span class="s2">rotate</span><span class="s1">(</span><span class="s6">359</span><span class="s7">deg</span><span class="s1">)</span><span class="s8">;</span><span class="s1"> 
+            </span><span class="s5">transform</span><span class="s4">: </span><span class="s2">rotate</span><span class="s1">(</span><span class="s6">359</span><span class="s7">deg</span><span class="s1">)</span><span class="s8">;</span><span class="s1"> 
+  } 
+} 
+ 
+</span><span class="s8">@keyframes </span><span class="s2">fa-spin </span><span class="s1">{ 
+  </span><span class="s2">0% </span><span class="s1">{ 
+    </span><span class="s5">-webkit-transform</span><span class="s4">: </span><span class="s2">rotate</span><span class="s1">(</span><span class="s6">0</span><span class="s7">deg</span><span class="s1">)</span><span class="s8">;</span><span class="s1"> 
+            </span><span class="s5">transform</span><span class="s4">: </span><span class="s2">rotate</span><span class="s1">(</span><span class="s6">0</span><span class="s7">deg</span><span class="s1">)</span><span class="s8">;</span><span class="s1"> 
+  } 
+  </span><span class="s2">100% </span><span class="s1">{ 
+    </span><span class="s5">-webkit-transform</span><span class="s4">: </span><span class="s2">rotate</span><span class="s1">(</span><span class="s6">359</span><span class="s7">deg</span><span class="s1">)</span><span class="s8">;</span><span class="s1"> 
+            </span><span class="s5">transform</span><span class="s4">: </span><span class="s2">rotate</span><span class="s1">(</span><span class="s6">359</span><span class="s7">deg</span><span class="s1">)</span><span class="s8">;</span><span class="s1"> 
+  } 
+} 
+</span></pre>
+</body>
+</html>

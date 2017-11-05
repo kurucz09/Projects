@@ -1,0 +1,117 @@
+<html>
+<head>
+<title>noise.spec.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(98,151,85); font-style: italic; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(106,135,89); }
+.s3 { color: rgb(204,120,50); }
+.s4 { color: rgb(204,120,50); font-weight: bold; }
+.s5 { color: rgb(128,128,128); }
+.s6 { color: rgb(104,151,187); }
+.s7 { color: rgb(98,151,85); font-weight: bold; font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+noise.spec.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/** 
+ * Created by Michael on 13/03/14. 
+ */</span><span class="s1"> 
+ 
+describe(</span><span class="s2">'Perlin noise service'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+    </span><span class="s4">var </span><span class="s1">generator</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s4">var </span><span class="s1">generateLotsOfNoise</span><span class="s3">;</span><span class="s1"> 
+ 
+    beforeEach(module(</span><span class="s2">'angularUtils.services.noise'</span><span class="s1">))</span><span class="s3">;</span><span class="s1"> 
+ 
+    beforeEach(inject(</span><span class="s4">function</span><span class="s1">(_noise_) { 
+        generator = _noise_.newGenerator()</span><span class="s3">;</span><span class="s1"> 
+ 
+        </span><span class="s5">// generate 10,000 values as a large enough sample to check they fall within the expected bounds.</span><span class="s1"> 
+        generateLotsOfNoise = </span><span class="s4">function</span><span class="s1">(generator) { 
+            </span><span class="s4">var </span><span class="s1">noiseValues = []</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">for </span><span class="s1">(</span><span class="s4">var </span><span class="s1">i = </span><span class="s6">0</span><span class="s3">; </span><span class="s1">i &lt; </span><span class="s6">10000</span><span class="s3">; </span><span class="s1">i ++ ) { 
+                noiseValues.push(generator.getVal(i))</span><span class="s3">;</span><span class="s1"> 
+            } 
+            </span><span class="s4">return </span><span class="s1">noiseValues</span><span class="s3">;</span><span class="s1"> 
+        }</span><span class="s3">;</span><span class="s1"> 
+ 
+        jasmine.addMatchers({ 
+            </span><span class="s0">/** 
+             * Matcher to check that all values in the array fall within the specified range (inclusive of the bounds) 
+             * </span><span class="s7">@returns </span><span class="s0">{{compare: compare}} 
+             */</span><span class="s1"> 
+            toAllBeWithinRange: </span><span class="s4">function</span><span class="s1">() { 
+                </span><span class="s4">return </span><span class="s1">{ 
+                    compare: </span><span class="s4">function</span><span class="s1">(valuesArray</span><span class="s3">, </span><span class="s1">lowerBound</span><span class="s3">, </span><span class="s1">upperBound) { 
+                        </span><span class="s4">var </span><span class="s1">pass = </span><span class="s4">true</span><span class="s3">;</span><span class="s1"> 
+                        </span><span class="s4">var </span><span class="s1">failingValue = </span><span class="s6">0</span><span class="s3">;</span><span class="s1"> 
+                        </span><span class="s4">for </span><span class="s1">(</span><span class="s4">var </span><span class="s1">i = </span><span class="s6">0</span><span class="s3">; </span><span class="s1">i &lt; valuesArray.length</span><span class="s3">; </span><span class="s1">i ++) { 
+                            </span><span class="s4">if </span><span class="s1">(valuesArray[i] &lt; lowerBound || upperBound &lt; valuesArray[i]) { 
+                                pass = </span><span class="s4">false</span><span class="s3">;</span><span class="s1"> 
+                                failingValue = valuesArray[i]</span><span class="s3">;</span><span class="s1"> 
+                                </span><span class="s4">break</span><span class="s3">;</span><span class="s1"> 
+                            } 
+                        } 
+ 
+                        </span><span class="s4">var </span><span class="s1">result = { 
+                            pass: pass 
+                        }</span><span class="s3">;</span><span class="s1"> 
+                        </span><span class="s4">if </span><span class="s1">(!result.pass) { 
+                            result.message = failingValue + </span><span class="s2">' is not between ' </span><span class="s1">+ lowerBound + </span><span class="s2">' and ' </span><span class="s1">+ upperBound</span><span class="s3">;</span><span class="s1"> 
+                        } 
+                        </span><span class="s4">return </span><span class="s1">result</span><span class="s3">;</span><span class="s1"> 
+                    } 
+                }</span><span class="s3">;</span><span class="s1"> 
+            }</span><span class="s3">,</span><span class="s1"> 
+            </span><span class="s0">/** 
+             * Matcher to check if at least one of the values in the array lies in the specified range 
+             * </span><span class="s7">@returns </span><span class="s0">{{compare: compare}} 
+             */</span><span class="s1"> 
+            toIncludeRange: </span><span class="s4">function</span><span class="s1">() { 
+                </span><span class="s4">return </span><span class="s1">{ 
+                    compare: </span><span class="s4">function</span><span class="s1">(valuesArray</span><span class="s3">, </span><span class="s1">lowerBound</span><span class="s3">, </span><span class="s1">upperBound) { 
+                        </span><span class="s4">var </span><span class="s1">pass = </span><span class="s4">false</span><span class="s3">;</span><span class="s1"> 
+ 
+                        </span><span class="s4">for </span><span class="s1">(</span><span class="s4">var </span><span class="s1">i = </span><span class="s6">0</span><span class="s3">; </span><span class="s1">i &lt; valuesArray.length</span><span class="s3">; </span><span class="s1">i ++) { 
+                            </span><span class="s4">if </span><span class="s1">(valuesArray[i] &gt; lowerBound &amp;&amp; upperBound &gt; valuesArray[i]) { 
+                                pass = </span><span class="s4">true</span><span class="s3">;</span><span class="s1"> 
+                                </span><span class="s4">break</span><span class="s3">;</span><span class="s1"> 
+                            } 
+                        } 
+ 
+                        </span><span class="s4">var </span><span class="s1">result = { 
+                            pass: pass 
+                        }</span><span class="s3">;</span><span class="s1"> 
+                        </span><span class="s4">if </span><span class="s1">(!result.pass) { 
+                            result.message = </span><span class="s2">'Array has no values between ' </span><span class="s1">+ lowerBound + </span><span class="s2">' and ' </span><span class="s1">+ upperBound</span><span class="s3">;</span><span class="s1"> 
+                        } 
+                        </span><span class="s4">return </span><span class="s1">result</span><span class="s3">;</span><span class="s1"> 
+                    } 
+                }</span><span class="s3">;</span><span class="s1"> 
+            } 
+        })</span><span class="s3">;</span><span class="s1"> 
+    }))</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should generate values between 0 and 1 on default settings'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">var </span><span class="s1">noiseValues = generateLotsOfNoise(generator)</span><span class="s3">;</span><span class="s1"> 
+        expect(noiseValues).toAllBeWithinRange(</span><span class="s6">0</span><span class="s3">, </span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should amplify correctly'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        generator.setAmplitude(</span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        </span><span class="s4">var </span><span class="s1">noiseValues = generateLotsOfNoise(generator)</span><span class="s3">;</span><span class="s1"> 
+ 
+        expect(noiseValues).toAllBeWithinRange(</span><span class="s6">0</span><span class="s3">, </span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(noiseValues).toIncludeRange(</span><span class="s6">1</span><span class="s3">, </span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+})</span><span class="s3">;</span></pre>
+</body>
+</html>

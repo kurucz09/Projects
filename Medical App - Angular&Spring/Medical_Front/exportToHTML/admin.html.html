@@ -1,0 +1,433 @@
+<html>
+<head>
+<title>admin.html</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(169,183,198); }
+.s1 { color: rgb(232,191,106); }
+.s2 { color: rgb(186,186,186); }
+.s3 { color: rgb(165,194,97); }
+.s4 { color: rgb(104,151,187); }
+.s5 { color: rgb(204,120,50); }
+.s6 { color: rgb(128,128,128); }
+.s7 { color: rgb(109,156,190); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+admin.html</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0"> 
+</span><span class="s1">&lt;div </span><span class="s2">ng-controller=</span><span class="s3">&quot;adminCtrl&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+ 
+ 
+    </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;menuContent&quot; </span><span class="s2">data-ng-init=</span><span class="s3">&quot;init()&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+        </span><span class="s1">&lt;div&gt;</span><span class="s0"> 
+            </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;col-md-12&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">padding-top</span><span class="s0">: </span><span class="s4">25</span><span class="s3">px&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;col-md-1&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">max-width</span><span class="s0">: </span><span class="s4">8</span><span class="s3">vw&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                </span><span class="s1">&lt;div 
+                    </span><span class="s2">class=</span><span class="s3">&quot;col-md-3 shadowed&quot;</span><span class="s1"> 
+                    </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">background-color</span><span class="s0">: </span><span class="s4">#ffffff</span><span class="s5">; </span><span class="s2">padding-bottom</span><span class="s0">: </span><span class="s4">50</span><span class="s3">px</span><span class="s5">; </span><span class="s2">max-width</span><span class="s0">: </span><span class="s4">25</span><span class="s3">vw&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;form-group&quot;</span><span class="s1"> 
+                         </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">padding-bottom</span><span class="s0">: </span><span class="s4">20</span><span class="s3">px</span><span class="s5">; </span><span class="s2">margin-top</span><span class="s0">: </span><span class="s4">50</span><span class="s3">px</span><span class="s5">; </span><span class="s2">min-width</span><span class="s0">: </span><span class="s4">0</span><span class="s3">px</span><span class="s5">;</span><span class="s3">&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;input-group&quot;</span><span class="s2">; style=</span><span class="s3">&quot;</span><span class="s2">min-width</span><span class="s0">: </span><span class="s4">0</span><span class="s3">px&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;input-group-addon&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;i </span><span class="s2">class=</span><span class="s3">&quot;glyphicon glyphicon-search&quot;</span><span class="s1">&gt;&lt;/i&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;input 
+                                    </span><span class="s2">id=</span><span class="s3">&quot;search_users&quot;</span><span class="s1"> 
+                                    </span><span class="s2">type=</span><span class="s3">&quot;text&quot;</span><span class="s1"> 
+                                    </span><span class="s2">class=</span><span class="s3">&quot;form-control col-md-12&quot;</span><span class="s1"> 
+                                    </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">width</span><span class="s0">: </span><span class="s4">100</span><span class="s0">%</span><span class="s3">&quot;</span><span class="s1"> 
+                                    </span><span class="s2">placeholder=</span><span class="s3">&quot;Search&quot;</span><span class="s1"> 
+                                    </span><span class="s2">ng-model=</span><span class="s3">&quot;searchedFilter&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">&quot;md-col-12&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                         </span><span class="s1">&lt;button 
+                                 </span><span class="s2">id=</span><span class="s3">&quot;addUserModal&quot;</span><span class="s1"> 
+                                 </span><span class="s2">type=</span><span class="s3">&quot;button&quot;</span><span class="s1"> 
+                                 </span><span class="s2">class=</span><span class="s3">&quot;col-md-4 btn btn-primary&quot;</span><span class="s1"> 
+                                 </span><span class="s2">data-toggle=</span><span class="s3">&quot;modal&quot;</span><span class="s1"> 
+                                 </span><span class="s2">ng-click=</span><span class="s3">&quot;setToNull()&quot;</span><span class="s1"> 
+                                 </span><span class="s2">data-target=</span><span class="s3">&quot;#addAccountModal&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;i </span><span class="s2">class=</span><span class="s3">&quot;glyphicon glyphicon-plus-sign&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">margin-right</span><span class="s0">: </span><span class="s4">5</span><span class="s3">px&quot;</span><span class="s1">&gt;&lt;/i&gt;</span><span class="s0"> 
+                             Add 
+                        </span><span class="s1">&lt;/button&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;button 
+                                </span><span class="s2">id=</span><span class="s3">&quot;updateUserM&quot;</span><span class="s1"> 
+                                </span><span class="s2">type=</span><span class="s3">&quot;button&quot;</span><span class="s1"> 
+                                </span><span class="s2">class=</span><span class="s3">&quot;col-md-4 btn btn-primary&quot;</span><span class="s1"> 
+                                </span><span class="s2">ng-click=</span><span class="s3">&quot;initUpdate()&quot;</span><span class="s1"> 
+                                </span><span class="s2">data-toggle=</span><span class="s3">&quot;modal&quot;</span><span class="s1"> 
+                                </span><span class="s2">data-target=</span><span class="s3">&quot;#updateAccountModal&quot;</span><span class="s1"> 
+                                </span><span class="s2">disabled</span><span class="s1">&gt;</span><span class="s0"> 
+                             </span><span class="s1">&lt;i </span><span class="s2">class=</span><span class="s3">&quot;glyphicon glyphicon-edit&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">margin-right</span><span class="s0">: </span><span class="s4">5</span><span class="s3">px&quot;</span><span class="s1">&gt;&lt;/i&gt;</span><span class="s0"> 
+                            Update 
+                        </span><span class="s1">&lt;/button&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;button 
+                                </span><span class="s2">id=</span><span class="s3">&quot;removeUserM&quot;</span><span class="s1"> 
+                                </span><span class="s2">type=</span><span class="s3">&quot;button&quot;</span><span class="s1"> 
+                                </span><span class="s2">class=</span><span class="s3">&quot;col-md-4 btn btn-primary&quot;</span><span class="s1"> 
+                                </span><span class="s2">disabled</span><span class="s1"> 
+                                </span><span class="s2">ng-click=</span><span class="s3">&quot;deleteAccount()&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                             </span><span class="s1">&lt;i </span><span class="s2">class=</span><span class="s3">&quot;glyphicon glyphicon-remove-sign&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">margin-right</span><span class="s0">: </span><span class="s4">5</span><span class="s3">px&quot;</span><span class="s1">&gt;&lt;/i&gt;</span><span class="s0"> 
+                            Delete 
+                        </span><span class="s1">&lt;/button&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;div&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;img </span><span class="s2">src=</span><span class="s3">&quot;../WebContent/assets/img/Doctor.png&quot;</span><span class="s1"> 
+                            </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">padding</span><span class="s0">: </span><span class="s4">50</span><span class="s3">px</span><span class="s5">; </span><span class="s2">padding-bottom</span><span class="s0">: </span><span class="s4">10</span><span class="s3">px</span><span class="s5">; </span><span class="s2">max-width</span><span class="s0">: </span><span class="s4">100</span><span class="s0">%</span><span class="s5">; </span><span class="s2">max-height</span><span class="s0">: </span><span class="s4">100</span><span class="s0">%</span><span class="s5">; </span><span class="s2">color</span><span class="s0">: </span><span class="s4">#F2F2F2</span><span class="s5">;</span><span class="s0"> 
+                                </span><span class="s2">-webkit-filter</span><span class="s0">: </span><span class="s1">drop-shadow</span><span class="s0">(</span><span class="s4">1</span><span class="s3">px </span><span class="s4">1</span><span class="s3">px </span><span class="s4">1</span><span class="s3">px </span><span class="s4">#11424a</span><span class="s0">)</span><span class="s5">; </span><span class="s2">filter</span><span class="s0">: </span><span class="s1">drop-shadow</span><span class="s0">(</span><span class="s4">1</span><span class="s3">px </span><span class="s4">1</span><span class="s3">px </span><span class="s4">1</span><span class="s3">px </span><span class="s4">#11424a</span><span class="s0">)</span><span class="s5">;</span><span class="s3">&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;div&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;H1 </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">font-size</span><span class="s0">: </span><span class="s4">2</span><span class="s3">vw</span><span class="s5">; </span><span class="s2">margin</span><span class="s0">: </span><span class="s4">0</span><span class="s3">px</span><span class="s5">; </span><span class="s2">color</span><span class="s0">: </span><span class="s4">#F2F2F2</span><span class="s5">; </span><span class="s2">text-align</span><span class="s0">: </span><span class="s3">center</span><span class="s5">; </span><span class="s2">text-shadow</span><span class="s0">: </span><span class="s4">1</span><span class="s3">px </span><span class="s4">1</span><span class="s3">px </span><span class="s4">1</span><span class="s3">px </span><span class="s4">#11424a</span><span class="s3">&quot;</span><span class="s1">&gt;</span><span class="s0">MEDICAL</span><span class="s1">&lt;/H1&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;H1 </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">font-size</span><span class="s0">: </span><span class="s4">2</span><span class="s3">vw</span><span class="s5">; </span><span class="s2">margin</span><span class="s0">: </span><span class="s4">0</span><span class="s3">px</span><span class="s5">; </span><span class="s2">color</span><span class="s0">: </span><span class="s4">#F2F2F2</span><span class="s5">; </span><span class="s2">text-align</span><span class="s0">: </span><span class="s3">center</span><span class="s5">; </span><span class="s2">text-shadow</span><span class="s0">: </span><span class="s4">1</span><span class="s3">px </span><span class="s4">1</span><span class="s3">px </span><span class="s4">1</span><span class="s3">px </span><span class="s4">#11424a</span><span class="s3">&quot;</span><span class="s1">&gt;</span><span class="s0">APPLICATION</span><span class="s1">&lt;/H1&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+ 
+                </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+                </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;col-md-7&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">max-width</span><span class="s0">: </span><span class="s4">58</span><span class="s3">vw</span><span class="s5">; </span><span class="s2">padding-left</span><span class="s0">: </span><span class="s4">50</span><span class="s3">px</span><span class="s5">; </span><span class="s2">border-top-width</span><span class="s0">: </span><span class="s4">0</span><span class="s3">px&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+ 
+                        </span><span class="s1">&lt;table  </span><span class="s2">class=</span><span class="s3">&quot;table table-striped table-responsive table-hover shadowed&quot;  </span><span class="s1">&gt;</span><span class="s0"> 
+ 
+                            </span><span class="s1">&lt;thead&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;tr </span><span class="s2">class=</span><span class="s3">&quot;&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;th </span><span class="s2">ng-click=</span><span class="s3">&quot;sort('username')&quot; </span><span class="s2">class=</span><span class="s3">&quot;noselect&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                    Email 
+                                    </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">&quot;glyphicon sort-icon&quot;  </span><span class="s2">ng-show=</span><span class="s3">&quot;sortKey=='username'&quot; </span><span class="s2">ng-class=</span><span class="s3">&quot;{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}&quot;</span><span class="s1">&gt;&lt;/span&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;/th&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;th </span><span class="s2">ng-click=</span><span class="s3">&quot;sort('name')&quot; </span><span class="s2">class=</span><span class="s3">&quot;noselect&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                    Name 
+                                    </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">&quot;glyphicon sort-icon&quot;  </span><span class="s2">ng-show=</span><span class="s3">&quot;sortKey=='name'&quot; </span><span class="s2">ng-class=</span><span class="s3">&quot;{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}&quot;</span><span class="s1">&gt;&lt;/span&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;/th&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;th </span><span class="s2">ng-click=</span><span class="s3">&quot;sort('accountType')&quot; </span><span class="s2">class=</span><span class="s3">&quot;noselect&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                    Type 
+                                    </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">&quot;glyphicon sort-icon&quot;  </span><span class="s2">ng-show=</span><span class="s3">&quot;sortKey=='accountType'&quot; </span><span class="s2">ng-class=</span><span class="s3">&quot;{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}&quot;</span><span class="s1">&gt;&lt;/span&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;/th&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;th </span><span class="s2">ng-click=</span><span class="s3">&quot;sort('accountType')&quot; </span><span class="s2">class=</span><span class="s3">&quot;noselect&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">text-align</span><span class="s0">: </span><span class="s3">center</span><span class="s5">;</span><span class="s3">&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                    Password 
+                                </span><span class="s1">&lt;/th&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;/tr&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;/thead&gt;</span><span class="s0"> 
+                             </span><span class="s1">&lt;tbody &gt;</span><span class="s0"> 
+                             </span><span class="s1">&lt;tr </span><span class="s2">ng-show=</span><span class="s3">&quot;accounts.length &lt;= 0&quot;</span><span class="s1">&gt;&lt;td </span><span class="s2">colspan=</span><span class="s3">&quot;5&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">text-align</span><span class="s0">:</span><span class="s3">center</span><span class="s5">;</span><span class="s3">&quot;</span><span class="s1">&gt;</span><span class="s0">Loading new data!!</span><span class="s1">&lt;/td&gt;&lt;/tr&gt;</span><span class="s0"> 
+ 
+                             </span><span class="s1">&lt;tr </span><span class="s2">dir-paginate=</span><span class="s3">&quot;account in accounts | orderBy:sortKey:reverse | filter:searchedFilter | itemsPerPage: itemsPerPage&quot;</span><span class="s1"> 
+                                    </span><span class="s2">ng-click=</span><span class="s3">&quot; 
+                                select.username = account.username; 
+                                select.name = account.name; 
+                                select.accountType = account.accountType; 
+                                select.password = account.password; 
+                                setSelectedAccount(account.username,account.accountType);&quot;</span><span class="s1"> 
+ 
+                                    </span><span class="s2">ng-class=</span><span class="s3">&quot;{rowSelected : account.username === emailSelected}&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+ 
+                                    </span><span class="s1">&lt;td </span><span class="s2">class=</span><span class="s3">&quot;columnAuto&quot;</span><span class="s1">&gt;</span><span class="s0">{{account.username}}</span><span class="s1">&lt;/td&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;td </span><span class="s2">class=</span><span class="s3">&quot;columnAuto&quot;</span><span class="s1">&gt;</span><span class="s0">{{account.name}}</span><span class="s1">&lt;/td&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;td </span><span class="s2">class=</span><span class="s3">&quot;columnAuto&quot;</span><span class="s1">&gt;</span><span class="s0">{{account.accountType}}</span><span class="s1">&lt;/td&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;td </span><span class="s2">class=</span><span class="s3">&quot;columnAuto&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">min-width</span><span class="s0">: </span><span class="s4">100</span><span class="s3">px</span><span class="s5">; </span><span class="s2">text-align</span><span class="s0">: </span><span class="s3">center</span><span class="s5">; </span><span class="s2">cursor</span><span class="s0">:</span><span class="s3">pointer&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                            </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">&quot;showhim&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                                </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;showme&quot;</span><span class="s1">&gt;</span><span class="s0">{{account.password}}</span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                                                </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot; ok glyphicon glyphicon-eye-close&quot;</span><span class="s1"> 
+                                                     </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">max-height </span><span class="s0">: </span><span class="s4">25</span><span class="s3">px&quot;</span><span class="s1">&gt;&lt;/div&gt;</span><span class="s0"> 
+ 
+                                            </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;/td&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;/tr&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;/tbody&gt;</span><span class="s0"> 
+ 
+                        </span><span class="s1">&lt;/table&gt;</span><span class="s0"> 
+ 
+                    </span><span class="s1">&lt;dir-pagination-controls 
+                            </span><span class="s2">class =</span><span class="s3">&quot;pull-right&quot;</span><span class="s1"> 
+                            </span><span class="s2">max-size=</span><span class="s3">&quot;8&quot;</span><span class="s1"> 
+                            </span><span class="s2">direction-links=</span><span class="s3">&quot;true&quot;</span><span class="s1"> 
+                            </span><span class="s2">boundary-links=</span><span class="s3">&quot;true&quot;</span><span class="s1"> 
+                            </span><span class="s2">on-page-change=</span><span class="s3">&quot;data.getData(newPageNumber)&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;/dir-pagination-controls&gt;</span><span class="s0"> 
+                </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+            </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+ 
+            </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;col-md-1&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">max-width</span><span class="s0">: </span><span class="s4">8</span><span class="s3">vw&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+            </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+        </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+    </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+    </span><span class="s6">&lt;!-- Modal add --&gt;</span><span class="s0"> 
+    </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;modal fade&quot; </span><span class="s2">id=</span><span class="s3">&quot;addAccountModal&quot; </span><span class="s2">role=</span><span class="s3">&quot;dialog&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+        </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;modal-dialog&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+ 
+            </span><span class="s6">&lt;!-- Modal content--&gt;</span><span class="s0"> 
+            </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;modal-content&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;modal-header&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">background-color</span><span class="s0">: </span><span class="s4">#00ceef</span><span class="s5">; </span><span class="s2">font-weight</span><span class="s0">: </span><span class="s3">bold</span><span class="s5">; </span><span class="s2">color</span><span class="s0">: </span><span class="s4">#ffffff</span><span class="s5">;</span><span class="s3">&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;button </span><span class="s2">type=</span><span class="s3">&quot;button&quot; </span><span class="s2">class=</span><span class="s3">&quot;close&quot; </span><span class="s2">data-dismiss=</span><span class="s3">&quot;modal&quot;</span><span class="s1">&gt;</span><span class="s7">&amp;times;</span><span class="s1">&lt;/button&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;h4 </span><span class="s2">class=</span><span class="s3">&quot;modal-title&quot;</span><span class="s1">&gt;</span><span class="s0">Add new account</span><span class="s1">&lt;/h4&gt;</span><span class="s0"> 
+                </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                </span><span class="s1">&lt;div &gt;</span><span class="s0"> 
+ 
+                    </span><span class="s1">&lt;form </span><span class="s2">name=</span><span class="s3">&quot;accountsForm&quot; </span><span class="s2">class=</span><span class="s3">&quot;col-md-12&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">margin-top</span><span class="s0">: </span><span class="s4">30</span><span class="s3">px&quot; </span><span class="s2">novalidate</span><span class="s1">&gt;</span><span class="s0"> 
+ 
+                        </span><span class="s1">&lt;label&gt;</span><span class="s0">E-MAIL:</span><span class="s1">&lt;/label&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;input-group&quot;</span><span class="s1"> 
+                             </span><span class="s2">ng-class=</span><span class="s3">&quot;{'has-error' : accountsForm.email.$invalid &amp;&amp; accountsForm.email.$dirty, 
+                                     'has-success' : accountsForm.email.$valid &amp;&amp; accountsForm.email.$dirty}&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">&quot;input-group-addon&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        </span><span class="s1">&lt;i </span><span class="s2">class=</span><span class="s3">&quot;glyphicon glyphicon-user&quot;</span><span class="s1"> 
+                                           </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">max-height </span><span class="s0">: </span><span class="s4">25</span><span class="s3">px&quot;</span><span class="s1">&gt;&lt;/i&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;input </span><span class="s2">class=</span><span class="s3">&quot;form-control&quot;</span><span class="s1"> 
+                                   </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">width</span><span class="s0">: </span><span class="s4">100</span><span class="s0">%</span><span class="s3">&quot;</span><span class="s1"> 
+                                   </span><span class="s2">type=</span><span class="s3">&quot;email&quot;</span><span class="s1"> 
+                                   </span><span class="s2">name=</span><span class="s3">&quot;email&quot;</span><span class="s1"> 
+                                   </span><span class="s2">placeholder=</span><span class="s3">&quot;email&quot;</span><span class="s1"> 
+                                   </span><span class="s2">ng-model=</span><span class="s3">&quot;account.email&quot;</span><span class="s1"> 
+                                   </span><span class="s2">required</span><span class="s1">/&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+                        </span><span class="s1">&lt;br&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;label&gt;</span><span class="s0">NAME:</span><span class="s1">&lt;/label&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;input-group&quot;</span><span class="s1"> 
+                             </span><span class="s2">ng-class=</span><span class="s3">&quot;{'has-error' : accountsForm.name.$invalid &amp;&amp; accountsForm.name.$dirty, 
+                                     'has-success' : accountsForm.name.$valid &amp;&amp; accountsForm.name.$dirty}&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">&quot;input-group-addon&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        </span><span class="s1">&lt;i </span><span class="s2">class=</span><span class="s3">&quot;glyphicon glyphicon-user&quot;</span><span class="s1"> 
+                                           </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">max-height </span><span class="s0">: </span><span class="s4">25</span><span class="s3">px&quot;</span><span class="s1">&gt;&lt;/i&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;input </span><span class="s2">class=</span><span class="s3">&quot;form-control&quot;</span><span class="s1"> 
+                                   </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">width</span><span class="s0">: </span><span class="s4">100</span><span class="s0">%</span><span class="s3">&quot;</span><span class="s1"> 
+                                   </span><span class="s2">type=</span><span class="s3">&quot;text&quot;</span><span class="s1"> 
+                                   </span><span class="s2">name=</span><span class="s3">&quot;name&quot;</span><span class="s1"> 
+                                   </span><span class="s2">placeholder=</span><span class="s3">&quot;name&quot;</span><span class="s1"> 
+                                   </span><span class="s2">ng-model=</span><span class="s3">&quot;account.name&quot;</span><span class="s1"> 
+                                   </span><span class="s2">required</span><span class="s1">/&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+                        </span><span class="s1">&lt;br&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;label&gt;</span><span class="s0">TYPE:</span><span class="s1">&lt;/label&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;input-group&quot;</span><span class="s1"> 
+                             </span><span class="s2">ng-class=</span><span class="s3">&quot;{'has-success' : !accountsForm.type.$isEmpty()}&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">&quot;input-group-addon&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        </span><span class="s1">&lt;i </span><span class="s2">class=</span><span class="s3">&quot;glyphicon glyphicon-user&quot;</span><span class="s1"> 
+                                           </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">max-height </span><span class="s0">: </span><span class="s4">25</span><span class="s3">px&quot;</span><span class="s1">&gt;&lt;/i&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;span </span><span class="s2">ng-switch on=</span><span class="s3">&quot;select.showCancel&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                   </span><span class="s1">&lt;select </span><span class="s2">ng-switch-when=</span><span class="s3">&quot;true&quot;</span><span class="s1"> 
+                                           </span><span class="s2">disabled ng-model=</span><span class="s3">&quot;selectedType&quot;</span><span class="s1"> 
+                                           </span><span class="s2">class=</span><span class="s3">&quot;form-control col-md-12&quot;</span><span class="s1"> 
+                                           </span><span class="s2">ng-change=</span><span class="s3">&quot;changedAccountType(selectedType)&quot;</span><span class="s1"> 
+                                           </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">width</span><span class="s0">: </span><span class="s4">100</span><span class="s0">%</span><span class="s3">&quot;</span><span class="s1"> 
+                                           </span><span class="s2">ng-options=</span><span class="s3">&quot;account.type for account in accountsType&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        </span><span class="s1">&lt;option </span><span class="s2">value=</span><span class="s3">'' </span><span class="s2">disabled style=</span><span class="s3">'</span><span class="s2">display</span><span class="s0">:</span><span class="s3">none</span><span class="s5">;</span><span class="s3">'</span><span class="s1">&gt;</span><span class="s0"> 
+                                            Account type 
+                                        </span><span class="s1">&lt;/option&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;/select&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;select </span><span class="s2">ng-switch-default</span><span class="s1"> 
+                                            </span><span class="s2">ng-model=</span><span class="s3">&quot;selectedType&quot;</span><span class="s1"> 
+                                            </span><span class="s2">class=</span><span class="s3">&quot;form-control col-md-12&quot;</span><span class="s1"> 
+                                            </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">width</span><span class="s0">: </span><span class="s4">100</span><span class="s0">%</span><span class="s3">&quot;</span><span class="s1"> 
+                                            </span><span class="s2">ng-change=</span><span class="s3">&quot;changedAccountType(selectedType)&quot;</span><span class="s1"> 
+                                            </span><span class="s2">ng-options=</span><span class="s3">&quot;account.type for account in accountsType&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        </span><span class="s1">&lt;option </span><span class="s2">value=</span><span class="s3">'' </span><span class="s2">disabled style=</span><span class="s3">'</span><span class="s2">display</span><span class="s0">:</span><span class="s3">none</span><span class="s5">;</span><span class="s3">'</span><span class="s1">&gt;</span><span class="s0"> 
+                                            Account type 
+                                        </span><span class="s1">&lt;/option&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;/select&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+                        </span><span class="s1">&lt;br&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;label&gt;</span><span class="s0">PASSWORD:</span><span class="s1">&lt;/label&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;input-group&quot;</span><span class="s1"> 
+                             </span><span class="s2">ng-class=</span><span class="s3">&quot;{'has-error' : accountsForm.password.$invalid &amp;&amp; accountsForm.password.$dirty, 
+                                     'has-success' : accountsForm.password.$valid &amp;&amp; accountsForm.password.$dirty}&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">&quot;input-group-addon&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        </span><span class="s1">&lt;i </span><span class="s2">class=</span><span class="s3">&quot;glyphicon glyphicon-user&quot;</span><span class="s1"> 
+                                           </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">max-height </span><span class="s0">: </span><span class="s4">25</span><span class="s3">px&quot;</span><span class="s1">&gt;&lt;/i&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;input </span><span class="s2">class=</span><span class="s3">&quot;form-control&quot;</span><span class="s1"> 
+                                   </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">width</span><span class="s0">: </span><span class="s4">100</span><span class="s0">%</span><span class="s3">&quot;</span><span class="s1"> 
+                                   </span><span class="s2">type=</span><span class="s3">&quot;password&quot;</span><span class="s1"> 
+                                   </span><span class="s2">name=</span><span class="s3">&quot;password&quot;</span><span class="s1"> 
+                                   </span><span class="s2">placeholder=</span><span class="s3">&quot;password&quot;</span><span class="s1"> 
+                                   </span><span class="s2">ng-model=</span><span class="s3">&quot;account.password&quot;</span><span class="s1"> 
+                                   </span><span class="s2">ng-pattern=</span><span class="s3">&quot;passwordRegex&quot;</span><span class="s1"> 
+                                   </span><span class="s2">ng-minlength=</span><span class="s3">&quot;5&quot;</span><span class="s1"> 
+                                   </span><span class="s2">required</span><span class="s1">/&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;hr&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;span&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;div </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">margin-top</span><span class="s0">:</span><span class="s4">30</span><span class="s3">px&quot;</span><span class="s1"> 
+                                 </span><span class="s2">class=</span><span class="s3">&quot;form-group&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;col-sm-12 controls&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                     </span><span class="s1">&lt;button 
+                                             </span><span class="s2">type=</span><span class="s3">&quot;button-primary&quot;</span><span class="s1"> 
+                                             </span><span class="s2">class=</span><span class="s3">&quot;btn btn-primary pull-right col-md-3&quot;</span><span class="s1"> 
+                                             </span><span class="s2">ng-disabled=</span><span class="s3">&quot;accountsForm.$invalid&quot;</span><span class="s1"> 
+                                             </span><span class="s2">ng-click=</span><span class="s3">&quot;addAccount(accountsForm.$valid)&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        Submit 
+                                    </span><span class="s1">&lt;/button&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;button </span><span class="s2">type=</span><span class="s3">&quot;button&quot; </span><span class="s2">class=</span><span class="s3">&quot;btn btn-primary pull-right col-md-3&quot; </span><span class="s2">data-dismiss=</span><span class="s3">&quot;modal&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        Close 
+                                    </span><span class="s1">&lt;/button&gt;</span><span class="s0"> 
+ 
+                                </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;/form&gt;</span><span class="s0"> 
+ 
+                </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+ 
+                </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;modal-footer &quot; </span><span class="s1">&gt;</span><span class="s0"> 
+ 
+                </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+            </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+        </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+    </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+    </span><span class="s6">&lt;!-- Modal --&gt;</span><span class="s0"> 
+ 
+    </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;modal fade&quot; </span><span class="s2">id=</span><span class="s3">&quot;updateAccountModal&quot; </span><span class="s2">role=</span><span class="s3">&quot;dialog&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+        </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;modal-dialog&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+ 
+            </span><span class="s6">&lt;!-- Modal content--&gt;</span><span class="s0"> 
+            </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;modal-content&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;modal-header&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">background-color</span><span class="s0">: </span><span class="s4">#00ceef</span><span class="s5">; </span><span class="s2">font-weight</span><span class="s0">: </span><span class="s3">bold</span><span class="s5">; </span><span class="s2">color</span><span class="s0">: </span><span class="s4">#ffffff</span><span class="s5">;</span><span class="s3">&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;button </span><span class="s2">type=</span><span class="s3">&quot;button&quot; </span><span class="s2">class=</span><span class="s3">&quot;close&quot; </span><span class="s2">data-dismiss=</span><span class="s3">&quot;modal&quot;</span><span class="s1">&gt;</span><span class="s7">&amp;times;</span><span class="s1">&lt;/button&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;h4 </span><span class="s2">class=</span><span class="s3">&quot;modal-title&quot;</span><span class="s1">&gt;</span><span class="s0">Update account</span><span class="s1">&lt;/h4&gt;</span><span class="s0"> 
+                </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                </span><span class="s1">&lt;div &gt;</span><span class="s0"> 
+ 
+                    </span><span class="s1">&lt;form </span><span class="s2">name=</span><span class="s3">&quot;accountsFormUpdate&quot; </span><span class="s2">class=</span><span class="s3">&quot;col-md-12&quot; </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">margin-top</span><span class="s0">: </span><span class="s4">30</span><span class="s3">px&quot; </span><span class="s2">novalidate</span><span class="s1">&gt;</span><span class="s0"> 
+ 
+                        </span><span class="s1">&lt;label&gt;</span><span class="s0">E-MAIL:</span><span class="s1">&lt;/label&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;input-group&quot;</span><span class="s1"> 
+                             </span><span class="s2">ng-class=</span><span class="s3">&quot;{'has-error' : accountsFormUpdate.email.$invalid &amp;&amp; accountsFormUpdate.email.$dirty, 
+                                     'has-success' : accountsFormUpdate.email.$valid &amp;&amp; accountsFormUpdate.email.$dirty}&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">&quot;input-group-addon&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        </span><span class="s1">&lt;i </span><span class="s2">class=</span><span class="s3">&quot;glyphicon glyphicon-user&quot;</span><span class="s1"> 
+                                           </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">max-height </span><span class="s0">: </span><span class="s4">25</span><span class="s3">px&quot;</span><span class="s1">&gt;&lt;/i&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;input </span><span class="s2">class=</span><span class="s3">&quot;form-control&quot;</span><span class="s1"> 
+                                   </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">width</span><span class="s0">: </span><span class="s4">100</span><span class="s0">%</span><span class="s3">&quot;</span><span class="s1"> 
+                                   </span><span class="s2">type=</span><span class="s3">&quot;email&quot;</span><span class="s1"> 
+                                   </span><span class="s2">name=</span><span class="s3">&quot;email&quot;</span><span class="s1"> 
+                                   </span><span class="s2">disabled</span><span class="s1"> 
+                                   </span><span class="s2">placeholder=</span><span class="s3">&quot;email&quot;</span><span class="s1"> 
+                                   </span><span class="s2">ng-model=</span><span class="s3">&quot;select.username&quot;</span><span class="s1"> 
+                                   </span><span class="s2">required</span><span class="s1">/&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+                        </span><span class="s1">&lt;br&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;label&gt;</span><span class="s0">NAME:</span><span class="s1">&lt;/label&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;input-group&quot;</span><span class="s1"> 
+                             </span><span class="s2">ng-class=</span><span class="s3">&quot;{'has-error' : accountsFormUpdate.name.$invalid &amp;&amp; accountsFormUpdate.name.$dirty, 
+                                     'has-success' : accountsFormUpdate.name.$valid &amp;&amp; accountsFormUpdate.name.$dirty}&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">&quot;input-group-addon&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        </span><span class="s1">&lt;i </span><span class="s2">class=</span><span class="s3">&quot;glyphicon glyphicon-user&quot;</span><span class="s1"> 
+                                           </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">max-height </span><span class="s0">: </span><span class="s4">25</span><span class="s3">px&quot;</span><span class="s1">&gt;&lt;/i&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;input </span><span class="s2">class=</span><span class="s3">&quot;form-control&quot;</span><span class="s1"> 
+                                   </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">width</span><span class="s0">: </span><span class="s4">100</span><span class="s0">%</span><span class="s3">&quot;</span><span class="s1"> 
+                                   </span><span class="s2">type=</span><span class="s3">&quot;text&quot;</span><span class="s1"> 
+                                   </span><span class="s2">name=</span><span class="s3">&quot;name&quot;</span><span class="s1"> 
+                                   </span><span class="s2">placeholder=</span><span class="s3">&quot;name&quot;</span><span class="s1"> 
+                                   </span><span class="s2">ng-model=</span><span class="s3">&quot;select.name&quot;</span><span class="s1"> 
+                                   </span><span class="s2">required</span><span class="s1">/&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+                        </span><span class="s1">&lt;br&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;label&gt;</span><span class="s0">TYPE:</span><span class="s1">&lt;/label&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;input-group&quot;</span><span class="s1"> 
+                             </span><span class="s2">ng-class=</span><span class="s3">&quot;{'has-success' : !accountsFormUpdate.type.$isEmpty()}&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">&quot;input-group-addon&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        </span><span class="s1">&lt;i </span><span class="s2">class=</span><span class="s3">&quot;glyphicon glyphicon-user&quot;</span><span class="s1"> 
+                                           </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">max-height </span><span class="s0">: </span><span class="s4">25</span><span class="s3">px&quot;</span><span class="s1">&gt;&lt;/i&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;span </span><span class="s2">ng-switch on=</span><span class="s3">&quot;select.showCancel&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                   </span><span class="s1">&lt;select </span><span class="s2">ng-switch-when=</span><span class="s3">&quot;true&quot;</span><span class="s1"> 
+                                           </span><span class="s2">disabled ng-model=</span><span class="s3">&quot;selectedType&quot;</span><span class="s1"> 
+                                           </span><span class="s2">class=</span><span class="s3">&quot;form-control col-md-12&quot;</span><span class="s1"> 
+                                           </span><span class="s2">ng-change=</span><span class="s3">&quot;changedAccountType(selectedType)&quot;</span><span class="s1"> 
+                                           </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">width</span><span class="s0">: </span><span class="s4">100</span><span class="s0">%</span><span class="s3">&quot;</span><span class="s1"> 
+                                           </span><span class="s2">ng-options=</span><span class="s3">&quot;account.type for account in accountsType&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        </span><span class="s1">&lt;option </span><span class="s2">value=</span><span class="s3">'' </span><span class="s2">disabled style=</span><span class="s3">'</span><span class="s2">display</span><span class="s0">:</span><span class="s3">none</span><span class="s5">;</span><span class="s3">'</span><span class="s1">&gt;</span><span class="s0"> 
+                                            Account type 
+                                        </span><span class="s1">&lt;/option&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;/select&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;select </span><span class="s2">ng-switch-default</span><span class="s1"> 
+                                            </span><span class="s2">ng-model=</span><span class="s3">&quot;selectedType&quot;</span><span class="s1"> 
+                                            </span><span class="s2">class=</span><span class="s3">&quot;form-control col-md-12&quot;</span><span class="s1"> 
+                                            </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">width</span><span class="s0">: </span><span class="s4">100</span><span class="s0">%</span><span class="s3">&quot;</span><span class="s1"> 
+                                            </span><span class="s2">ng-change=</span><span class="s3">&quot;changedAccountType(selectedType)&quot;</span><span class="s1"> 
+                                            </span><span class="s2">ng-options=</span><span class="s3">&quot;account.type for account in accountsType&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        </span><span class="s1">&lt;option </span><span class="s2">value=</span><span class="s3">'' </span><span class="s2">disabled style=</span><span class="s3">'</span><span class="s2">display</span><span class="s0">:</span><span class="s3">none</span><span class="s5">;</span><span class="s3">'</span><span class="s1">&gt;</span><span class="s0"> 
+                                            Account type 
+                                        </span><span class="s1">&lt;/option&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;/select&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+                        </span><span class="s1">&lt;br&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;label&gt;</span><span class="s0">PASSWORD:</span><span class="s1">&lt;/label&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;input-group&quot;</span><span class="s1"> 
+                             </span><span class="s2">ng-class=</span><span class="s3">&quot;{'has-error' : accountsFormUpdate.password.$invalid &amp;&amp; accountsFormUpdate.password.$dirty, 
+                                     'has-success' : accountsFormUpdate.password.$valid &amp;&amp; accountsFormUpdate.password.$dirty}&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">&quot;input-group-addon&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        </span><span class="s1">&lt;i </span><span class="s2">class=</span><span class="s3">&quot;glyphicon glyphicon-user&quot;</span><span class="s1"> 
+                                           </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">max-height </span><span class="s0">: </span><span class="s4">25</span><span class="s3">px&quot;</span><span class="s1">&gt;&lt;/i&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;input </span><span class="s2">class=</span><span class="s3">&quot;form-control&quot;</span><span class="s1"> 
+                                   </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">width</span><span class="s0">: </span><span class="s4">100</span><span class="s0">%</span><span class="s3">&quot;</span><span class="s1"> 
+                                   </span><span class="s2">type=</span><span class="s3">&quot;password&quot;</span><span class="s1"> 
+                                   </span><span class="s2">name=</span><span class="s3">&quot;password&quot;</span><span class="s1"> 
+                                   </span><span class="s2">placeholder=</span><span class="s3">&quot;password&quot;</span><span class="s1"> 
+                                   </span><span class="s2">ng-model=</span><span class="s3">&quot;select.password&quot;</span><span class="s1"> 
+                                   </span><span class="s2">ng-pattern=</span><span class="s3">&quot;passwordRegex&quot;</span><span class="s1"> 
+                                   </span><span class="s2">ng-minlength=</span><span class="s3">&quot;5&quot;</span><span class="s1"> 
+                                   </span><span class="s2">required</span><span class="s1">/&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;hr&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;span&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;div </span><span class="s2">style=</span><span class="s3">&quot;</span><span class="s2">margin-top</span><span class="s0">:</span><span class="s4">30</span><span class="s3">px&quot;</span><span class="s1"> 
+                                 </span><span class="s2">class=</span><span class="s3">&quot;form-group&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;col-sm-12 controls&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                     </span><span class="s1">&lt;button 
+                                             </span><span class="s2">type=</span><span class="s3">&quot;button-primary&quot;</span><span class="s1"> 
+                                             </span><span class="s2">class=</span><span class="s3">&quot;btn btn-primary pull-right col-md-3&quot;</span><span class="s1"> 
+                                             </span><span class="s2">ng-disabled=</span><span class="s3">&quot;accountsFormUpdate.$invalid&quot;</span><span class="s1"> 
+                                             </span><span class="s2">ng-click=</span><span class="s3">&quot;updateAccount(accountsFormUpdate.$valid)&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        Submit 
+                                    </span><span class="s1">&lt;/button&gt;</span><span class="s0"> 
+                                    </span><span class="s1">&lt;button </span><span class="s2">type=</span><span class="s3">&quot;button&quot; </span><span class="s2">class=</span><span class="s3">&quot;btn btn-primary pull-right col-md-3&quot; </span><span class="s2">data-dismiss=</span><span class="s3">&quot;modal&quot;</span><span class="s1">&gt;</span><span class="s0"> 
+                                        Close 
+                                    </span><span class="s1">&lt;/button&gt;</span><span class="s0"> 
+ 
+                                </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                            </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                        </span><span class="s1">&lt;/span&gt;</span><span class="s0"> 
+                    </span><span class="s1">&lt;/form&gt;</span><span class="s0"> 
+ 
+                </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+                </span><span class="s1">&lt;div </span><span class="s2">class=</span><span class="s3">&quot;modal-footer &quot; </span><span class="s1">&gt;</span><span class="s0"> 
+ 
+                </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+            </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+        </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+    </span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+</span><span class="s1">&lt;/div&gt;</span><span class="s0"> 
+ 
+</span></pre>
+</body>
+</html>

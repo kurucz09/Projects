@@ -1,0 +1,407 @@
+
+<div ng-controller="adminCtrl">
+
+
+    <div class="menuContent" data-ng-init="init()">
+        <div>
+            <div class="col-md-12" style="padding-top: 25px">
+                <div class="col-md-1" style="max-width: 8vw">
+                </div>
+                <div
+                    class="col-md-3 shadowed"
+                    style="background-color: #ffffff; padding-bottom: 50px; max-width: 25vw">
+                    <div class="form-group"
+                         style="padding-bottom: 20px; margin-top: 50px; min-width: 0px;">
+                        <div class="input-group"; style="min-width: 0px">
+                            <div class="input-group-addon">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </div>
+                            <input
+                                    id="search_users"
+                                    type="text"
+                                    class="form-control col-md-12"
+                                    style="width: 100%"
+                                    placeholder="Search"
+                                    ng-model="searchedFilter">
+                        </div>
+                    </div>
+                    <span class="md-col-12">
+                         <button
+                                 id="addUserModal"
+                                 type="button"
+                                 class="col-md-4 btn btn-primary"
+                                 data-toggle="modal"
+                                 ng-click="setToNull()"
+                                 data-target="#addAccountModal">
+                            <i class="glyphicon glyphicon-plus-sign" style="margin-right: 5px"></i>
+                             Add
+                        </button>
+                        <button
+                                id="updateUserM"
+                                type="button"
+                                class="col-md-4 btn btn-primary"
+                                ng-click="initUpdate()"
+                                data-toggle="modal"
+                                data-target="#updateAccountModal"
+                                disabled>
+                             <i class="glyphicon glyphicon-edit" style="margin-right: 5px"></i>
+                            Update
+                        </button>
+                        <button
+                                id="removeUserM"
+                                type="button"
+                                class="col-md-4 btn btn-primary"
+                                disabled
+                                ng-click="deleteAccount()">
+                             <i class="glyphicon glyphicon-remove-sign" style="margin-right: 5px"></i>
+                            Delete
+                        </button>
+                    </span>
+                    <div>
+                        <img src="../WebContent/assets/img/Doctor.png"
+                            style="padding: 50px; padding-bottom: 10px; max-width: 100%; max-height: 100%; color: #F2F2F2;
+                                -webkit-filter: drop-shadow(1px 1px 1px #11424a); filter: drop-shadow(1px 1px 1px #11424a);">
+                    </div>
+                    <div>
+                        <H1 style="font-size: 2vw; margin: 0px; color: #F2F2F2; text-align: center; text-shadow: 1px 1px 1px #11424a">MEDICAL</H1>
+                        <H1 style="font-size: 2vw; margin: 0px; color: #F2F2F2; text-align: center; text-shadow: 1px 1px 1px #11424a">APPLICATION</H1>
+                    </div>
+
+
+                </div>
+
+                <div class="col-md-7" style="max-width: 58vw; padding-left: 50px; border-top-width: 0px">
+
+                        <table  class="table table-striped table-responsive table-hover shadowed"  >
+
+                            <thead>
+                            <tr class="">
+                                <th ng-click="sort('username')" class="noselect">
+                                    Email
+                                    <span class="glyphicon sort-icon"  ng-show="sortKey=='username'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                                </th>
+                                <th ng-click="sort('name')" class="noselect">
+                                    Name
+                                    <span class="glyphicon sort-icon"  ng-show="sortKey=='name'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                                </th>
+                                <th ng-click="sort('accountType')" class="noselect">
+                                    Type
+                                    <span class="glyphicon sort-icon"  ng-show="sortKey=='accountType'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                                </th>
+                                <th ng-click="sort('accountType')" class="noselect" style="text-align: center;">
+                                    Password
+                                </th>
+                            </tr>
+                            </thead>
+                             <tbody >
+                             <tr ng-show="accounts.length <= 0"><td colspan="5" style="text-align:center;">Loading new data!!</td></tr>
+
+                             <tr dir-paginate="account in accounts | orderBy:sortKey:reverse | filter:searchedFilter | itemsPerPage: itemsPerPage"
+                                    ng-click="
+                                select.username = account.username;
+                                select.name = account.name;
+                                select.accountType = account.accountType;
+                                select.password = account.password;
+                                setSelectedAccount(account.username,account.accountType);"
+
+                                    ng-class="{rowSelected : account.username === emailSelected}">
+
+                                    <td class="columnAuto">{{account.username}}</td>
+                                    <td class="columnAuto">{{account.name}}</td>
+                                    <td class="columnAuto">{{account.accountType}}</td>
+                                    <td class="columnAuto" style="min-width: 100px; text-align: center; cursor:pointer">
+                                            <span class="showhim">
+                                                <div class="showme">{{account.password}}</div>
+                                                <div class=" ok glyphicon glyphicon-eye-close"
+                                                     style="max-height : 25px"></div>
+
+                                            </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    <dir-pagination-controls
+                            class ="pull-right"
+                            max-size="8"
+                            direction-links="true"
+                            boundary-links="true"
+                            on-page-change="data.getData(newPageNumber)">
+                    </dir-pagination-controls>
+                </div>
+
+            </div>
+
+
+            <div class="col-md-1" style="max-width: 8vw">
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal add -->
+    <div class="modal fade" id="addAccountModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #00ceef; font-weight: bold; color: #ffffff;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add new account</h4>
+                </div>
+                <div >
+
+                    <form name="accountsForm" class="col-md-12" style="margin-top: 30px" novalidate>
+
+                        <label>E-MAIL:</label>
+                        <div class="input-group"
+                             ng-class="{'has-error' : accountsForm.email.$invalid && accountsForm.email.$dirty,
+                                     'has-success' : accountsForm.email.$valid && accountsForm.email.$dirty}">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-user"
+                                           style="max-height : 25px"></i>
+                                    </span>
+                            <input class="form-control"
+                                   style="width: 100%"
+                                   type="email"
+                                   name="email"
+                                   placeholder="email"
+                                   ng-model="account.email"
+                                   required/>
+                        </div>
+
+                        <br>
+                        <label>NAME:</label>
+                        <div class="input-group"
+                             ng-class="{'has-error' : accountsForm.name.$invalid && accountsForm.name.$dirty,
+                                     'has-success' : accountsForm.name.$valid && accountsForm.name.$dirty}">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-user"
+                                           style="max-height : 25px"></i>
+                                    </span>
+                            <input class="form-control"
+                                   style="width: 100%"
+                                   type="text"
+                                   name="name"
+                                   placeholder="name"
+                                   ng-model="account.name"
+                                   required/>
+                        </div>
+
+                        <br>
+                        <label>TYPE:</label>
+                        <div class="input-group"
+                             ng-class="{'has-success' : !accountsForm.type.$isEmpty()}">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-user"
+                                           style="max-height : 25px"></i>
+                                    </span>
+                            <span ng-switch on="select.showCancel">
+                                   <select ng-switch-when="true"
+                                           disabled ng-model="selectedType"
+                                           class="form-control col-md-12"
+                                           ng-change="changedAccountType(selectedType)"
+                                           style="width: 100%"
+                                           ng-options="account.type for account in accountsType">
+                                        <option value='' disabled style='display:none;'>
+                                            Account type
+                                        </option>
+                                    </select>
+                                    <select ng-switch-default
+                                            ng-model="selectedType"
+                                            class="form-control col-md-12"
+                                            style="width: 100%"
+                                            ng-change="changedAccountType(selectedType)"
+                                            ng-options="account.type for account in accountsType">
+                                        <option value='' disabled style='display:none;'>
+                                            Account type
+                                        </option>
+                                </select>
+                                </span>
+                        </div>
+
+                        <br>
+                        <label>PASSWORD:</label>
+                        <div class="input-group"
+                             ng-class="{'has-error' : accountsForm.password.$invalid && accountsForm.password.$dirty,
+                                     'has-success' : accountsForm.password.$valid && accountsForm.password.$dirty}">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-user"
+                                           style="max-height : 25px"></i>
+                                    </span>
+                            <input class="form-control"
+                                   style="width: 100%"
+                                   type="password"
+                                   name="password"
+                                   placeholder="password"
+                                   ng-model="account.password"
+                                   ng-pattern="passwordRegex"
+                                   ng-minlength="5"
+                                   required/>
+                        </div>
+                        <hr>
+                        <span>
+                            <div style="margin-top:30px"
+                                 class="form-group">
+                                <div class="col-sm-12 controls">
+                                     <button
+                                             type="button-primary"
+                                             class="btn btn-primary pull-right col-md-3"
+                                             ng-disabled="accountsForm.$invalid"
+                                             ng-click="addAccount(accountsForm.$valid)">
+                                        Submit
+                                    </button>
+                                    <button type="button" class="btn btn-primary pull-right col-md-3" data-dismiss="modal">
+                                        Close
+                                    </button>
+
+                                </div>
+                            </div>
+                        </span>
+                    </form>
+
+                </div>
+
+
+                <div class="modal-footer " >
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+
+    <div class="modal fade" id="updateAccountModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #00ceef; font-weight: bold; color: #ffffff;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Update account</h4>
+                </div>
+                <div >
+
+                    <form name="accountsFormUpdate" class="col-md-12" style="margin-top: 30px" novalidate>
+
+                        <label>E-MAIL:</label>
+                        <div class="input-group"
+                             ng-class="{'has-error' : accountsFormUpdate.email.$invalid && accountsFormUpdate.email.$dirty,
+                                     'has-success' : accountsFormUpdate.email.$valid && accountsFormUpdate.email.$dirty}">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-user"
+                                           style="max-height : 25px"></i>
+                                    </span>
+                            <input class="form-control"
+                                   style="width: 100%"
+                                   type="email"
+                                   name="email"
+                                   disabled
+                                   placeholder="email"
+                                   ng-model="select.username"
+                                   required/>
+                        </div>
+
+                        <br>
+                        <label>NAME:</label>
+                        <div class="input-group"
+                             ng-class="{'has-error' : accountsFormUpdate.name.$invalid && accountsFormUpdate.name.$dirty,
+                                     'has-success' : accountsFormUpdate.name.$valid && accountsFormUpdate.name.$dirty}">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-user"
+                                           style="max-height : 25px"></i>
+                                    </span>
+                            <input class="form-control"
+                                   style="width: 100%"
+                                   type="text"
+                                   name="name"
+                                   placeholder="name"
+                                   ng-model="select.name"
+                                   required/>
+                        </div>
+
+                        <br>
+                        <label>TYPE:</label>
+                        <div class="input-group"
+                             ng-class="{'has-success' : !accountsFormUpdate.type.$isEmpty()}">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-user"
+                                           style="max-height : 25px"></i>
+                                    </span>
+                            <span ng-switch on="select.showCancel">
+                                   <select ng-switch-when="true"
+                                           disabled ng-model="selectedType"
+                                           class="form-control col-md-12"
+                                           ng-change="changedAccountType(selectedType)"
+                                           style="width: 100%"
+                                           ng-options="account.type for account in accountsType">
+                                        <option value='' disabled style='display:none;'>
+                                            Account type
+                                        </option>
+                                    </select>
+                                    <select ng-switch-default
+                                            ng-model="selectedType"
+                                            class="form-control col-md-12"
+                                            style="width: 100%"
+                                            ng-change="changedAccountType(selectedType)"
+                                            ng-options="account.type for account in accountsType">
+                                        <option value='' disabled style='display:none;'>
+                                            Account type
+                                        </option>
+                                </select>
+                                </span>
+                        </div>
+
+                        <br>
+                        <label>PASSWORD:</label>
+                        <div class="input-group"
+                             ng-class="{'has-error' : accountsFormUpdate.password.$invalid && accountsFormUpdate.password.$dirty,
+                                     'has-success' : accountsFormUpdate.password.$valid && accountsFormUpdate.password.$dirty}">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-user"
+                                           style="max-height : 25px"></i>
+                                    </span>
+                            <input class="form-control"
+                                   style="width: 100%"
+                                   type="password"
+                                   name="password"
+                                   placeholder="password"
+                                   ng-model="select.password"
+                                   ng-pattern="passwordRegex"
+                                   ng-minlength="5"
+                                   required/>
+                        </div>
+                        <hr>
+                        <span>
+                            <div style="margin-top:30px"
+                                 class="form-group">
+                                <div class="col-sm-12 controls">
+                                     <button
+                                             type="button-primary"
+                                             class="btn btn-primary pull-right col-md-3"
+                                             ng-disabled="accountsFormUpdate.$invalid"
+                                             ng-click="updateAccount(accountsFormUpdate.$valid)">
+                                        Submit
+                                    </button>
+                                    <button type="button" class="btn btn-primary pull-right col-md-3" data-dismiss="modal">
+                                        Close
+                                    </button>
+
+                                </div>
+                            </div>
+                        </span>
+                    </form>
+
+                </div>
+                <div class="modal-footer " >
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+

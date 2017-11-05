@@ -1,0 +1,51 @@
+<html>
+<head>
+<title>startsWith.spec.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(98,151,85); font-style: italic; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(106,135,89); }
+.s3 { color: rgb(204,120,50); }
+.s4 { color: rgb(204,120,50); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+startsWith.spec.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/** 
+ * Created by Michael on 27/03/14. 
+ */</span><span class="s1"> 
+describe(</span><span class="s2">'startsWith filter'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+    </span><span class="s4">var </span><span class="s1">startsWithFilter</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s4">var </span><span class="s1">testArray</span><span class="s3">;</span><span class="s1"> 
+ 
+    beforeEach(module(</span><span class="s2">'angularUtils.filters.startsWith'</span><span class="s1">))</span><span class="s3">;</span><span class="s1"> 
+    beforeEach(inject(</span><span class="s4">function</span><span class="s1">(_$filter_) { 
+        testArray = [ 
+            </span><span class="s2">'cake'</span><span class="s3">,</span><span class="s1"> 
+            </span><span class="s2">'hammer'</span><span class="s3">,</span><span class="s1"> 
+            </span><span class="s2">'cup'</span><span class="s3">,</span><span class="s1"> 
+            </span><span class="s2">'earth'</span><span class="s3">,</span><span class="s1"> 
+            </span><span class="s2">'apple'</span><span class="s3">,</span><span class="s1"> 
+            </span><span class="s2">'tap'</span><span class="s1"> 
+        ]</span><span class="s3">;</span><span class="s1"> 
+        startsWithFilter = _$filter_(</span><span class="s2">'startsWith'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    }))</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should should return just the items starting with the search string'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        expect(startsWithFilter(testArray</span><span class="s3">, </span><span class="s2">'c'</span><span class="s1">)).toEqual([</span><span class="s2">'cake'</span><span class="s3">, </span><span class="s2">'cup'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should not return items if the search appears mid way through the string'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        expect(startsWithFilter(testArray</span><span class="s3">, </span><span class="s2">'a'</span><span class="s1">)).toEqual([</span><span class="s2">'apple'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+})</span><span class="s3">;</span></pre>
+</body>
+</html>

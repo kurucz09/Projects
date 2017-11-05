@@ -1,0 +1,236 @@
+<html>
+<head>
+<title>collapse.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(128,128,128); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(204,120,50); font-weight: bold; }
+.s3 { color: rgb(106,135,89); }
+.s4 { color: rgb(204,120,50); }
+.s5 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+collapse.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/* ======================================================================== 
+ * Bootstrap: collapse.js v3.3.7 
+ * http://getbootstrap.com/javascript/#collapse 
+ * ======================================================================== 
+ * Copyright 2011-2016 Twitter, Inc. 
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE) 
+ * ======================================================================== */</span><span class="s1"> 
+ 
+</span><span class="s0">/* jshint latedef: false */</span><span class="s1"> 
+ 
++</span><span class="s2">function </span><span class="s1">($) { 
+  </span><span class="s3">'use strict'</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s0">// COLLAPSE PUBLIC CLASS DEFINITION</span><span class="s1"> 
+  </span><span class="s0">// ================================</span><span class="s1"> 
+ 
+  </span><span class="s2">var </span><span class="s1">Collapse = </span><span class="s2">function </span><span class="s1">(element</span><span class="s4">, </span><span class="s1">options) { 
+    </span><span class="s2">this</span><span class="s1">.$element      = $(element) 
+    </span><span class="s2">this</span><span class="s1">.options       = $.extend({}</span><span class="s4">, </span><span class="s1">Collapse.DEFAULTS</span><span class="s4">, </span><span class="s1">options) 
+    </span><span class="s2">this</span><span class="s1">.$trigger      = $(</span><span class="s3">'[data-toggle=&quot;collapse&quot;][href=&quot;#' </span><span class="s1">+ element.id + </span><span class="s3">'&quot;],' </span><span class="s1">+ 
+                           </span><span class="s3">'[data-toggle=&quot;collapse&quot;][data-target=&quot;#' </span><span class="s1">+ element.id + </span><span class="s3">'&quot;]'</span><span class="s1">) 
+    </span><span class="s2">this</span><span class="s1">.transitioning = </span><span class="s2">null</span><span class="s1"> 
+ 
+    </span><span class="s2">if </span><span class="s1">(</span><span class="s2">this</span><span class="s1">.options.parent) { 
+      </span><span class="s2">this</span><span class="s1">.$parent = </span><span class="s2">this</span><span class="s1">.getParent() 
+    } </span><span class="s2">else </span><span class="s1">{ 
+      </span><span class="s2">this</span><span class="s1">.addAriaAndCollapsedClass(</span><span class="s2">this</span><span class="s1">.$element</span><span class="s4">, </span><span class="s2">this</span><span class="s1">.$trigger) 
+    } 
+ 
+    </span><span class="s2">if </span><span class="s1">(</span><span class="s2">this</span><span class="s1">.options.toggle) </span><span class="s2">this</span><span class="s1">.toggle() 
+  } 
+ 
+  Collapse.VERSION  = </span><span class="s3">'3.3.7'</span><span class="s1"> 
+ 
+  Collapse.TRANSITION_DURATION = </span><span class="s5">350</span><span class="s1"> 
+ 
+  Collapse.DEFAULTS = { 
+    toggle: </span><span class="s2">true</span><span class="s1"> 
+  } 
+ 
+  Collapse.prototype.dimension = </span><span class="s2">function </span><span class="s1">() { 
+    </span><span class="s2">var </span><span class="s1">hasWidth = </span><span class="s2">this</span><span class="s1">.$element.hasClass(</span><span class="s3">'width'</span><span class="s1">) 
+    </span><span class="s2">return </span><span class="s1">hasWidth ? </span><span class="s3">'width' </span><span class="s1">: </span><span class="s3">'height'</span><span class="s1"> 
+  } 
+ 
+  Collapse.prototype.show = </span><span class="s2">function </span><span class="s1">() { 
+    </span><span class="s2">if </span><span class="s1">(</span><span class="s2">this</span><span class="s1">.transitioning || </span><span class="s2">this</span><span class="s1">.$element.hasClass(</span><span class="s3">'in'</span><span class="s1">)) </span><span class="s2">return</span><span class="s1"> 
+ 
+    </span><span class="s2">var </span><span class="s1">activesData 
+    </span><span class="s2">var </span><span class="s1">actives = </span><span class="s2">this</span><span class="s1">.$parent &amp;&amp; </span><span class="s2">this</span><span class="s1">.$parent.children(</span><span class="s3">'.panel'</span><span class="s1">).children(</span><span class="s3">'.in, .collapsing'</span><span class="s1">) 
+ 
+    </span><span class="s2">if </span><span class="s1">(actives &amp;&amp; actives.length) { 
+      activesData = actives.data(</span><span class="s3">'bs.collapse'</span><span class="s1">) 
+      </span><span class="s2">if </span><span class="s1">(activesData &amp;&amp; activesData.transitioning) </span><span class="s2">return</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">var </span><span class="s1">startEvent = $.Event(</span><span class="s3">'show.bs.collapse'</span><span class="s1">) 
+    </span><span class="s2">this</span><span class="s1">.$element.trigger(startEvent) 
+    </span><span class="s2">if </span><span class="s1">(startEvent.isDefaultPrevented()) </span><span class="s2">return</span><span class="s1"> 
+ 
+    </span><span class="s2">if </span><span class="s1">(actives &amp;&amp; actives.length) { 
+      Plugin.call(actives</span><span class="s4">, </span><span class="s3">'hide'</span><span class="s1">) 
+      activesData || actives.data(</span><span class="s3">'bs.collapse'</span><span class="s4">, </span><span class="s2">null</span><span class="s1">) 
+    } 
+ 
+    </span><span class="s2">var </span><span class="s1">dimension = </span><span class="s2">this</span><span class="s1">.dimension() 
+ 
+    </span><span class="s2">this</span><span class="s1">.$element 
+      .removeClass(</span><span class="s3">'collapse'</span><span class="s1">) 
+      .addClass(</span><span class="s3">'collapsing'</span><span class="s1">)[dimension](</span><span class="s5">0</span><span class="s1">) 
+      .attr(</span><span class="s3">'aria-expanded'</span><span class="s4">, </span><span class="s2">true</span><span class="s1">) 
+ 
+    </span><span class="s2">this</span><span class="s1">.$trigger 
+      .removeClass(</span><span class="s3">'collapsed'</span><span class="s1">) 
+      .attr(</span><span class="s3">'aria-expanded'</span><span class="s4">, </span><span class="s2">true</span><span class="s1">) 
+ 
+    </span><span class="s2">this</span><span class="s1">.transitioning = </span><span class="s5">1</span><span class="s1"> 
+ 
+    </span><span class="s2">var </span><span class="s1">complete = </span><span class="s2">function </span><span class="s1">() { 
+      </span><span class="s2">this</span><span class="s1">.$element 
+        .removeClass(</span><span class="s3">'collapsing'</span><span class="s1">) 
+        .addClass(</span><span class="s3">'collapse in'</span><span class="s1">)[dimension](</span><span class="s3">''</span><span class="s1">) 
+      </span><span class="s2">this</span><span class="s1">.transitioning = </span><span class="s5">0</span><span class="s1"> 
+      </span><span class="s2">this</span><span class="s1">.$element 
+        .trigger(</span><span class="s3">'shown.bs.collapse'</span><span class="s1">) 
+    } 
+ 
+    </span><span class="s2">if </span><span class="s1">(!$.support.transition) </span><span class="s2">return </span><span class="s1">complete.call(</span><span class="s2">this</span><span class="s1">) 
+ 
+    </span><span class="s2">var </span><span class="s1">scrollSize = $.camelCase([</span><span class="s3">'scroll'</span><span class="s4">, </span><span class="s1">dimension].join(</span><span class="s3">'-'</span><span class="s1">)) 
+ 
+    </span><span class="s2">this</span><span class="s1">.$element 
+      .one(</span><span class="s3">'bsTransitionEnd'</span><span class="s4">, </span><span class="s1">$.proxy(complete</span><span class="s4">, </span><span class="s2">this</span><span class="s1">)) 
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION)[dimension](</span><span class="s2">this</span><span class="s1">.$element[</span><span class="s5">0</span><span class="s1">][scrollSize]) 
+  } 
+ 
+  Collapse.prototype.hide = </span><span class="s2">function </span><span class="s1">() { 
+    </span><span class="s2">if </span><span class="s1">(</span><span class="s2">this</span><span class="s1">.transitioning || !</span><span class="s2">this</span><span class="s1">.$element.hasClass(</span><span class="s3">'in'</span><span class="s1">)) </span><span class="s2">return</span><span class="s1"> 
+ 
+    </span><span class="s2">var </span><span class="s1">startEvent = $.Event(</span><span class="s3">'hide.bs.collapse'</span><span class="s1">) 
+    </span><span class="s2">this</span><span class="s1">.$element.trigger(startEvent) 
+    </span><span class="s2">if </span><span class="s1">(startEvent.isDefaultPrevented()) </span><span class="s2">return</span><span class="s1"> 
+ 
+    </span><span class="s2">var </span><span class="s1">dimension = </span><span class="s2">this</span><span class="s1">.dimension() 
+ 
+    </span><span class="s2">this</span><span class="s1">.$element[dimension](</span><span class="s2">this</span><span class="s1">.$element[dimension]())[</span><span class="s5">0</span><span class="s1">].offsetHeight 
+ 
+    </span><span class="s2">this</span><span class="s1">.$element 
+      .addClass(</span><span class="s3">'collapsing'</span><span class="s1">) 
+      .removeClass(</span><span class="s3">'collapse in'</span><span class="s1">) 
+      .attr(</span><span class="s3">'aria-expanded'</span><span class="s4">, </span><span class="s2">false</span><span class="s1">) 
+ 
+    </span><span class="s2">this</span><span class="s1">.$trigger 
+      .addClass(</span><span class="s3">'collapsed'</span><span class="s1">) 
+      .attr(</span><span class="s3">'aria-expanded'</span><span class="s4">, </span><span class="s2">false</span><span class="s1">) 
+ 
+    </span><span class="s2">this</span><span class="s1">.transitioning = </span><span class="s5">1</span><span class="s1"> 
+ 
+    </span><span class="s2">var </span><span class="s1">complete = </span><span class="s2">function </span><span class="s1">() { 
+      </span><span class="s2">this</span><span class="s1">.transitioning = </span><span class="s5">0</span><span class="s1"> 
+      </span><span class="s2">this</span><span class="s1">.$element 
+        .removeClass(</span><span class="s3">'collapsing'</span><span class="s1">) 
+        .addClass(</span><span class="s3">'collapse'</span><span class="s1">) 
+        .trigger(</span><span class="s3">'hidden.bs.collapse'</span><span class="s1">) 
+    } 
+ 
+    </span><span class="s2">if </span><span class="s1">(!$.support.transition) </span><span class="s2">return </span><span class="s1">complete.call(</span><span class="s2">this</span><span class="s1">) 
+ 
+    </span><span class="s2">this</span><span class="s1">.$element 
+      [dimension](</span><span class="s5">0</span><span class="s1">) 
+      .one(</span><span class="s3">'bsTransitionEnd'</span><span class="s4">, </span><span class="s1">$.proxy(complete</span><span class="s4">, </span><span class="s2">this</span><span class="s1">)) 
+      .emulateTransitionEnd(Collapse.TRANSITION_DURATION) 
+  } 
+ 
+  Collapse.prototype.toggle = </span><span class="s2">function </span><span class="s1">() { 
+    </span><span class="s2">this</span><span class="s1">[</span><span class="s2">this</span><span class="s1">.$element.hasClass(</span><span class="s3">'in'</span><span class="s1">) ? </span><span class="s3">'hide' </span><span class="s1">: </span><span class="s3">'show'</span><span class="s1">]() 
+  } 
+ 
+  Collapse.prototype.getParent = </span><span class="s2">function </span><span class="s1">() { 
+    </span><span class="s2">return </span><span class="s1">$(</span><span class="s2">this</span><span class="s1">.options.parent) 
+      .find(</span><span class="s3">'[data-toggle=&quot;collapse&quot;][data-parent=&quot;' </span><span class="s1">+ </span><span class="s2">this</span><span class="s1">.options.parent + </span><span class="s3">'&quot;]'</span><span class="s1">) 
+      .each($.proxy(</span><span class="s2">function </span><span class="s1">(i</span><span class="s4">, </span><span class="s1">element) { 
+        </span><span class="s2">var </span><span class="s1">$element = $(element) 
+        </span><span class="s2">this</span><span class="s1">.addAriaAndCollapsedClass(getTargetFromTrigger($element)</span><span class="s4">, </span><span class="s1">$element) 
+      }</span><span class="s4">, </span><span class="s2">this</span><span class="s1">)) 
+      .end() 
+  } 
+ 
+  Collapse.prototype.addAriaAndCollapsedClass = </span><span class="s2">function </span><span class="s1">($element</span><span class="s4">, </span><span class="s1">$trigger) { 
+    </span><span class="s2">var </span><span class="s1">isOpen = $element.hasClass(</span><span class="s3">'in'</span><span class="s1">) 
+ 
+    $element.attr(</span><span class="s3">'aria-expanded'</span><span class="s4">, </span><span class="s1">isOpen) 
+    $trigger 
+      .toggleClass(</span><span class="s3">'collapsed'</span><span class="s4">, </span><span class="s1">!isOpen) 
+      .attr(</span><span class="s3">'aria-expanded'</span><span class="s4">, </span><span class="s1">isOpen) 
+  } 
+ 
+  </span><span class="s2">function </span><span class="s1">getTargetFromTrigger($trigger) { 
+    </span><span class="s2">var </span><span class="s1">href 
+    </span><span class="s2">var </span><span class="s1">target = $trigger.attr(</span><span class="s3">'data-target'</span><span class="s1">) 
+      || (href = $trigger.attr(</span><span class="s3">'href'</span><span class="s1">)) &amp;&amp; href.replace(</span><span class="s3">/.*(?=#[^\s]+$)/</span><span class="s4">, </span><span class="s3">''</span><span class="s1">) </span><span class="s0">// strip for ie7</span><span class="s1"> 
+ 
+    </span><span class="s2">return </span><span class="s1">$(target) 
+  } 
+ 
+ 
+  </span><span class="s0">// COLLAPSE PLUGIN DEFINITION</span><span class="s1"> 
+  </span><span class="s0">// ==========================</span><span class="s1"> 
+ 
+  </span><span class="s2">function </span><span class="s1">Plugin(option) { 
+    </span><span class="s2">return this</span><span class="s1">.each(</span><span class="s2">function </span><span class="s1">() { 
+      </span><span class="s2">var </span><span class="s1">$this   = $(</span><span class="s2">this</span><span class="s1">) 
+      </span><span class="s2">var </span><span class="s1">data    = $this.data(</span><span class="s3">'bs.collapse'</span><span class="s1">) 
+      </span><span class="s2">var </span><span class="s1">options = $.extend({}</span><span class="s4">, </span><span class="s1">Collapse.DEFAULTS</span><span class="s4">, </span><span class="s1">$this.data()</span><span class="s4">, </span><span class="s2">typeof </span><span class="s1">option == </span><span class="s3">'object' </span><span class="s1">&amp;&amp; option) 
+ 
+      </span><span class="s2">if </span><span class="s1">(!data &amp;&amp; options.toggle &amp;&amp; </span><span class="s3">/show|hide/</span><span class="s1">.test(option)) options.toggle = </span><span class="s2">false</span><span class="s1"> 
+      </span><span class="s2">if </span><span class="s1">(!data) $this.data(</span><span class="s3">'bs.collapse'</span><span class="s4">, </span><span class="s1">(data = </span><span class="s2">new </span><span class="s1">Collapse(</span><span class="s2">this</span><span class="s4">, </span><span class="s1">options))) 
+      </span><span class="s2">if </span><span class="s1">(</span><span class="s2">typeof </span><span class="s1">option == </span><span class="s3">'string'</span><span class="s1">) data[option]() 
+    }) 
+  } 
+ 
+  </span><span class="s2">var </span><span class="s1">old = $.fn.collapse 
+ 
+  $.fn.collapse             = Plugin 
+  $.fn.collapse.Constructor = Collapse 
+ 
+ 
+  </span><span class="s0">// COLLAPSE NO CONFLICT</span><span class="s1"> 
+  </span><span class="s0">// ====================</span><span class="s1"> 
+ 
+  $.fn.collapse.noConflict = </span><span class="s2">function </span><span class="s1">() { 
+    $.fn.collapse = old 
+    </span><span class="s2">return this</span><span class="s1"> 
+  } 
+ 
+ 
+  </span><span class="s0">// COLLAPSE DATA-API</span><span class="s1"> 
+  </span><span class="s0">// =================</span><span class="s1"> 
+ 
+  $(document).on(</span><span class="s3">'click.bs.collapse.data-api'</span><span class="s4">, </span><span class="s3">'[data-toggle=&quot;collapse&quot;]'</span><span class="s4">, </span><span class="s2">function </span><span class="s1">(e) { 
+    </span><span class="s2">var </span><span class="s1">$this   = $(</span><span class="s2">this</span><span class="s1">) 
+ 
+    </span><span class="s2">if </span><span class="s1">(!$this.attr(</span><span class="s3">'data-target'</span><span class="s1">)) e.preventDefault() 
+ 
+    </span><span class="s2">var </span><span class="s1">$target = getTargetFromTrigger($this) 
+    </span><span class="s2">var </span><span class="s1">data    = $target.data(</span><span class="s3">'bs.collapse'</span><span class="s1">) 
+    </span><span class="s2">var </span><span class="s1">option  = data ? </span><span class="s3">'toggle' </span><span class="s1">: $this.data() 
+ 
+    Plugin.call($target</span><span class="s4">, </span><span class="s1">option) 
+  }) 
+ 
+}(jQuery)</span><span class="s4">;</span><span class="s1"> 
+</span></pre>
+</body>
+</html>

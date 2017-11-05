@@ -1,0 +1,74 @@
+<html>
+<head>
+<title>userServices.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(169,183,198); }
+.s1 { color: rgb(204,120,50); font-weight: bold; }
+.s2 { color: rgb(106,135,89); }
+.s3 { color: rgb(204,120,50); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+userServices.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">(</span><span class="s1">function </span><span class="s0">() { 
+    </span><span class="s1">var </span><span class="s0">userServices = angular.module(</span><span class="s2">'userServices'</span><span class="s3">, </span><span class="s0">[])</span><span class="s3">;</span><span class="s0"> 
+ 
+    userServices.factory(</span><span class="s2">'userFactory'</span><span class="s3">, </span><span class="s0">[</span><span class="s2">'$http'</span><span class="s3">, </span><span class="s2">'API_URL'</span><span class="s3">,</span><span class="s0"> 
+        </span><span class="s1">function </span><span class="s0">($http</span><span class="s3">, </span><span class="s0">API_URL) { 
+ 
+            </span><span class="s1">return </span><span class="s0">{ 
+                getAllAccounts: </span><span class="s1">function </span><span class="s0">() { 
+                    </span><span class="s1">return </span><span class="s0">$http.get(API_URL + </span><span class="s2">'/accounts/get'</span><span class="s0">)</span><span class="s3">;</span><span class="s0"> 
+                }</span><span class="s3">,</span><span class="s0"> 
+ 
+                addNewUser: </span><span class="s1">function </span><span class="s0">(user) { 
+                    </span><span class="s1">return </span><span class="s0">$http.post(API_URL + </span><span class="s2">'/accounts/'</span><span class="s3">, </span><span class="s0">JSON.stringify(user))</span><span class="s3">;</span><span class="s0"> 
+                }</span><span class="s3">,</span><span class="s0"> 
+ 
+                updateUser: </span><span class="s1">function </span><span class="s0">(user) { 
+                    </span><span class="s1">return </span><span class="s0">$http.put(API_URL + </span><span class="s2">'/accounts/'</span><span class="s3">, </span><span class="s0">JSON.stringify(user))</span><span class="s3">;</span><span class="s0"> 
+                }</span><span class="s3">,</span><span class="s0"> 
+ 
+                getUserByUsername: </span><span class="s1">function </span><span class="s0">(username) { 
+                    </span><span class="s1">return </span><span class="s0">$http.get(API_URL + </span><span class="s2">'/users/' </span><span class="s0">+ username)</span><span class="s3">;</span><span class="s0"> 
+                }</span><span class="s3">,</span><span class="s0"> 
+ 
+                deleteUserByUsername: </span><span class="s1">function </span><span class="s0">(username) { 
+                    </span><span class="s1">return </span><span class="s0">$http.delete(API_URL + </span><span class="s2">'/accounts/' </span><span class="s0">+ username)</span><span class="s3">;</span><span class="s0"> 
+                }</span><span class="s3">,</span><span class="s0"> 
+ 
+                login: </span><span class="s1">function </span><span class="s0">(user) { 
+                    </span><span class="s1">return  </span><span class="s0">$http.post( 
+                        API_URL + </span><span class="s2">'/login'</span><span class="s3">,</span><span class="s0"> 
+                        JSON.stringify(user)</span><span class="s3">,</span><span class="s0"> 
+                        { 
+                            headers : { 
+                                </span><span class="s2">'Content-Type' </span><span class="s0">: </span><span class="s2">'application/json; charset=UTF-8'</span><span class="s0"> 
+                        } 
+                    })</span><span class="s3">;</span><span class="s0"> 
+                }</span><span class="s3">,</span><span class="s0"> 
+ 
+ 
+ 
+                decode: </span><span class="s1">function</span><span class="s0">(){ 
+                    </span><span class="s1">var </span><span class="s0">token = localStorage.auth_token</span><span class="s3">;</span><span class="s0"> 
+                    </span><span class="s1">var </span><span class="s0">decoded = jwt_decode(token)</span><span class="s3">;</span><span class="s0"> 
+                    </span><span class="s1">return </span><span class="s0">decoded.sub</span><span class="s3">;</span><span class="s0"> 
+                } 
+ 
+            }</span><span class="s3">;</span><span class="s0"> 
+        } 
+    ])</span><span class="s3">;</span><span class="s0"> 
+ 
+ 
+     
+})()</span><span class="s3">;</span></pre>
+</body>
+</html>

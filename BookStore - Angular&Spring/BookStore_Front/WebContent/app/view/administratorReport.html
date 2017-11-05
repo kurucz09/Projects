@@ -1,0 +1,116 @@
+<style>
+
+    .adminStyle {
+        background-color: #C09F80;
+    }
+
+    .adminSelect {
+        background-color: #565656;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        background-color: #76323F;
+        color: #FFFFFF;
+        border-top: 0
+    }
+
+    a {
+        color: #76323F;
+        text-decoration: none;
+        cursor: hand;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #D7CEC7;
+        color: #000000;
+        cursor: pointer;
+        cursor: hand;
+    }
+
+    .refresh_icon {
+        border-radius: 50%;
+        -webkit-transition: -webkit-transform .8s ease-in-out;
+        transition: transform .8s ease-in-out;
+    }
+
+    .refresh_icon:hover {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+
+    .btn-color-red:hover {
+        color: #fff;
+        background-color: #4a1312;
+        border-color: #FFFFFF
+    }
+
+</style>
+
+<div ng-controller="adminReportCtrl">
+    <nav class="navbar navbar-default adminStyle">
+        <div>
+
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" ng-click="return()"> <img
+                            src="\BookStore_Front\WebContent\assets\img\Logo_Book.png" align="middle" alt="LOGO"
+                            width="200" height="50"></a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li ><a ng-click="switchAdminPage('users')">Users</a></li>
+                        <li><a ng-click="switchAdminPage('books')">Books</a></li>
+                        <li class="adminSelect"><a ng-click="switchAdminPage('report')">Reports</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+
+                        <p style="margin: 10px; color: #ffffff;" class="navbar-text">Signed in as <b>{{usernameLoggedin}}</b>.
+                            <a ng-click="logOut()" class="btn btn-primary btn-sm" style="margin-bottom: 0px; margin-left: 20px; background-color:#565656">
+                                <span class="glyphicon glyphicon-log-out" style="margin: 0px"></span> Log out
+                            </a>
+                        </p>
+
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="col-md-12">
+            <label>Download PDF out of stock report</label>
+            <button class="glyphicon glyphicon-download-alt" style="margin-left: 30px;" ng-click="downloadReport('pdf')"> </button>
+        </div>
+        <div class="col-md-12">
+            <label>Download CSV out of stock report</label>
+            <button class="glyphicon glyphicon-download-alt" style="margin-left: 30px;" ng-click="downloadReport('csv')"> </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <table class="table table-striped table-bordered table-responsive table-hover" style="margin-top: 30px;">
+            <thead>
+                <tr class="">
+                    <th>Date</th>
+                    <th>Book</th>
+                    <th>User</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tr ng-repeat="sell in sells">
+                <td>{{sell.date}}</td>
+                <td>{{sell.book.isbn}} | {{sell.book.title}} | {{sell.book.authors}}</td>
+                <td>{{sell.user}}</td>
+                <td>{{sell.quantity}}</td>
+            </tr>
+        </table>
+    </div>
+
+
+</div>
+
+

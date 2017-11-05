@@ -1,0 +1,220 @@
+<style>
+
+    .adminStyle {
+        background-color: #C09F80;
+    }
+
+    .adminSelect {
+        background-color: #565656;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        background-color: #76323F;
+        color: #FFFFFF;
+        border-top: 0
+    }
+
+    a {
+        color: #76323F;
+        text-decoration: none;
+        cursor: hand;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #D7CEC7;
+        color: #000000;
+        cursor: pointer;
+        cursor: hand;
+    }
+
+    .refresh_icon {
+        border-radius: 50%;
+        -webkit-transition: -webkit-transform .8s ease-in-out;
+        transition: transform .8s ease-in-out;
+    }
+
+    .refresh_icon:hover {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+
+    .btn-color-red:hover {
+        color: #fff;
+        background-color: #4a1312;
+        border-color: #FFFFFF
+    }
+
+</style>
+
+<div ng-controller="adminCtrlUsers">
+    <nav class="navbar navbar-default adminStyle">
+        <div>
+
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" ng-click="return()"> <img
+                            src="\BookStore_Front\WebContent\assets\img\Logo_Book.png" align="middle" alt="LOGO"
+                            width="200" height="50"></a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="adminSelect"><a ng-click="switchAdminPage('users')">Users</a></li>
+                        <li><a ng-click="switchAdminPage('books')">Books</a></li>
+                        <li><a ng-click="switchAdminPage('report')">Reports</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+
+                        <p style="margin: 10px; color: #ffffff;" class="navbar-text">Signed in as <b>{{usernameLoggedin}}</b>.
+                            <a ng-click="logOut()" class="btn btn-primary btn-sm" style="margin-bottom: 0px; margin-left: 20px; background-color:#565656">
+                                <span class="glyphicon glyphicon-log-out" style="margin: 0px"></span> Log out
+                            </a>
+                        </p>
+
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </div>
+    </nav>
+
+    <div class="menuContent" data-ng-init="init()">
+
+        <div class="col-md-12">
+
+            <div class="col-md-1">
+            </div>
+            <span>
+                <form name="userForm" class="col-md-3" style="margin-top: 65px" ng-submit="addUser(userForm.$valid)"
+                      novalidate>
+
+
+                              <!-- ID -->
+                        <div>
+                            <label>User ID:</label>
+                            <div>
+                                <input id="ID_input" type="text" class="form-control col-md-12 " disabled="disabled"
+                                       name="clusterName"
+                                       placeholder="User ID"
+                                       ng-model="select.id">
+                            </div>
+                            <br>
+                        </div>
+
+                    <!--  Username -->
+                        <div name="usernameForm">
+                            <label>Username:</label>
+                            <input id="username_input" type="text" class="form-control col-md-12" name="username"
+                                   placeholder="Username" ng-pattern="usernamePattern"
+                                   ng-model="select.username">
+                            <div ng-show="userForm.username.$invalid && userForm.username.$error.pattern"
+                                 class="alert alert-danger col-md-12"
+                                 style="margin-top: -20px">
+                                <p style=" font-size: 10px;">Insert a valid username. Only letters, digits and "_" allowed!</p>
+                           </div>
+                            <br/>
+                        </div>
+
+                    <!--  Password -->
+                        <div name="passwordForm">
+                            <label>Password:</label>
+                            <input id="password_input" type="text" class="form-control col-md-12" name="password"
+                                   placeholder="Password" ng-pattern="passwordPattern"
+                                   ng-model="select.password" required>
+                            <div ng-show="userForm.password.$invalid && userForm.password.$error.pattern"
+                                 class="alert alert-danger col-md-12"
+                                 style="margin-top: -20px">
+                                <p style=" font-size: 10px;">Insert a valid password. Between 6 and 18 characters required!</p>
+                           </div>
+                            <br/>
+                        </div>
+
+                    <!--  User Type -->
+                        <div>
+                            <label>User Type:</label>
+                            <span ng-switch on="select.showCancel">
+                                   <select ng-switch-when="true" disabled ng-model="selectedType"
+                                           class="form-control col-md-12" ng-change="changedUsertype(selectedType)"
+                                           ng-options="user.type for user in accountType">
+                                        <option value='' disabled style='display:none;'>
+                                            User type
+                                        </option>
+                                    </select>
+                                    <select ng-switch-default ng-model="selectedType" class="form-control col-md-12"
+                                            ng-change="changedUsertype(selectedType)"
+                                            ng-options="user.type for user in accountType">
+                                        <option value='' disabled style='display:none;'>
+                                            User type
+                                        </option>
+                                </select>
+                                </span>
+                        </div>
+
+
+                        <div>
+                            <label class="pull-left">Manage users Database - Perform operations</label>
+
+                            <!-- add button -->
+                            <button id="addButton" type="button-primary" class="btn btn-primary pull-right col-md-4">
+                                Add user
+                            </button>
+
+                            <!-- update button -->
+                            <button id="updateButton" type="button" class="btn btn-primary pull-right col-md-4"
+                                    disabled
+                                    ng-click="updateUser() ">
+                                Update user
+                            </button>
+
+                            <!-- delete button -->
+                            <button id="deleteButton" type="button" class="btn btn-primary pull-right col-md-4"
+                                    disabled
+                                    ng-click="deleteUser() ">
+                                Delete user
+                            </button>
+                         </div>
+                </form>
+            </span>
+
+
+            <div class="col-md-7">
+                <span>
+                    <h3>Table containing all users</h3>
+                    <hr>
+                     <table class="table table-striped table-bordered table-responsive table-hover">
+                    <thead>
+                    <tr class="">
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>User Type</th>
+                    </tr>
+                    </thead>
+                    <tr ng-repeat="user in users"
+                        ng-click="
+                            select.id = user.id;
+                            select.username = user.username;
+                            select.password = user.password;
+                            select.tester_uniqueness = user.username;
+                            setSelected(user.userType);
+                             ">
+                        <td>{{user.id}}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.password}}</td>
+                        <td>{{user.userType}}</td>
+                    </tr>
+                </table>
+                </span>
+
+            </div>
+
+            <div class="col-md-1">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+

@@ -1,0 +1,186 @@
+<html>
+<head>
+<title>dirTagbox.spec.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(98,151,85); font-style: italic; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(106,135,89); }
+.s3 { color: rgb(204,120,50); }
+.s4 { color: rgb(204,120,50); font-weight: bold; }
+.s5 { color: rgb(104,151,187); }
+.s6 { color: rgb(128,128,128); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+dirTagbox.spec.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/** 
+ * Created by Michael on 27/03/14. 
+ */</span><span class="s1"> 
+ 
+describe(</span><span class="s2">'tagbox directive'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+    </span><span class="s4">var </span><span class="s1">textarea</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s4">var </span><span class="s1">suggestions</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s4">var </span><span class="s1">scope</span><span class="s3">;</span><span class="s1"> 
+ 
+    beforeEach(module(</span><span class="s2">'angularUtils.directives.dirTagBox'</span><span class="s1">))</span><span class="s3">;</span><span class="s1"> 
+    beforeEach(inject(</span><span class="s4">function</span><span class="s1">(_$compile_</span><span class="s3">, </span><span class="s1">_$rootScope_) { 
+        scope = _$rootScope_</span><span class="s3">;</span><span class="s1"> 
+ 
+        scope.tags = [ 
+            </span><span class="s2">'cake'</span><span class="s3">,</span><span class="s1"> 
+            </span><span class="s2">'cup'</span><span class="s3">,</span><span class="s1"> 
+            </span><span class="s2">'hammer'</span><span class="s3">,</span><span class="s1"> 
+            </span><span class="s2">'earth'</span><span class="s3">,</span><span class="s1"> 
+            </span><span class="s2">'apple'</span><span class="s3">,</span><span class="s1"> 
+            </span><span class="s2">'tap'</span><span class="s1"> 
+        ]</span><span class="s3">;</span><span class="s1"> 
+ 
+        textarea = angular.element(</span><span class="s2">'&lt;textarea name=&quot;description&quot; id=&quot;description&quot; dir-tagbox=&quot;tags&quot; dir-tagtoken=&quot;#&quot; rows=&quot;3&quot;&gt;&lt;/textarea&gt;'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        document.body.appendChild(textarea[</span><span class="s5">0</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        _$compile_(textarea)(scope)</span><span class="s3">;</span><span class="s1"> 
+        scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        suggestions = textarea.next()</span><span class="s3">;</span><span class="s1"> 
+        textarea[</span><span class="s5">0</span><span class="s1">].focus()</span><span class="s3">;</span><span class="s1"> 
+    }))</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should add the suggestions div after the textarea'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        expect(suggestions.hasClass(</span><span class="s2">'suggestions-container'</span><span class="s1">)).toBe(</span><span class="s4">true</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'suggestions should start off hidden'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        expect(suggestions.hasClass(</span><span class="s2">'ng-hide'</span><span class="s1">)).toBe(</span><span class="s4">true</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should show the suggestions when typing a hashtag that matches'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        textarea.val(</span><span class="s2">'#c'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        textarea[</span><span class="s5">0</span><span class="s1">].selectionStart = </span><span class="s5">2</span><span class="s3">;</span><span class="s1"> 
+ 
+        textarea.triggerHandler(</span><span class="s2">'keyup'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+        expect(suggestions.hasClass(</span><span class="s2">'ng-hide'</span><span class="s1">)).toBe(</span><span class="s4">false</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should display the correct suggestions'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        textarea.val(</span><span class="s2">'#c'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        textarea[</span><span class="s5">0</span><span class="s1">].selectionStart = </span><span class="s5">2</span><span class="s3">;</span><span class="s1"> 
+ 
+        textarea.triggerHandler(</span><span class="s2">'keyup'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+        expect(suggestions.children()[</span><span class="s5">0</span><span class="s1">].innerHTML).toBe(</span><span class="s2">'#cake'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(suggestions.children()[</span><span class="s5">1</span><span class="s1">].innerHTML).toBe(</span><span class="s2">'#cup'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should work when hashtag is in the middle of other text'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        textarea.val(</span><span class="s2">'I want to eat some #ham and pickle'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        textarea[</span><span class="s5">0</span><span class="s1">].selectionStart = </span><span class="s5">23</span><span class="s3">; </span><span class="s6">// the end of the word &quot;#ham&quot;</span><span class="s1"> 
+ 
+        textarea.triggerHandler(</span><span class="s2">'keyup'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+        expect(suggestions.children()[</span><span class="s5">0</span><span class="s1">].innerHTML).toBe(</span><span class="s2">'#hammer'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should be case-insensitive'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        textarea.val(</span><span class="s2">'#C'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        textarea[</span><span class="s5">0</span><span class="s1">].selectionStart = </span><span class="s5">2</span><span class="s3">;</span><span class="s1"> 
+ 
+        textarea.triggerHandler(</span><span class="s2">'keyup'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+        expect(suggestions.children()[</span><span class="s5">0</span><span class="s1">].innerHTML).toBe(</span><span class="s2">'#cake'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(suggestions.children()[</span><span class="s5">1</span><span class="s1">].innerHTML).toBe(</span><span class="s2">'#cup'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    describe(</span><span class="s2">'specifying the tagToken'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">var </span><span class="s1">input</span><span class="s3">;</span><span class="s1"> 
+        </span><span class="s4">var </span><span class="s1">suggestions</span><span class="s3">;</span><span class="s1"> 
+        beforeEach(inject(</span><span class="s4">function</span><span class="s1">(_$compile_) { 
+            input = angular.element(</span><span class="s2">'&lt;input type=&quot;text&quot; name=&quot;description&quot; id=&quot;description&quot; dir-tagbox=&quot;tags&quot; dir-tagtoken=&quot;@&quot;&gt;'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            _$compile_(input)(scope)</span><span class="s3">;</span><span class="s1"> 
+            scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+            suggestions = input.next()</span><span class="s3">;</span><span class="s1"> 
+            document.body.appendChild(input[</span><span class="s5">0</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        }))</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should show the correct suggestions with a custom tagToken'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            input.val(</span><span class="s2">'@c'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            input[</span><span class="s5">0</span><span class="s1">].selectionStart = </span><span class="s5">2</span><span class="s3">;</span><span class="s1"> 
+ 
+            input.triggerHandler(</span><span class="s2">'keyup'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            expect(suggestions.children()[</span><span class="s5">0</span><span class="s1">].innerHTML).toBe(</span><span class="s2">'@cake'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(suggestions.children()[</span><span class="s5">1</span><span class="s1">].innerHTML).toBe(</span><span class="s2">'@cup'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    describe(</span><span class="s2">'specifying no tagToken'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">var </span><span class="s1">input</span><span class="s3">;</span><span class="s1"> 
+        </span><span class="s4">var </span><span class="s1">suggestions</span><span class="s3">;</span><span class="s1"> 
+        beforeEach(inject(</span><span class="s4">function</span><span class="s1">(_$compile_) { 
+            input = angular.element(</span><span class="s2">'&lt;input type=&quot;text&quot; name=&quot;description&quot; id=&quot;description&quot; dir-tagbox=&quot;tags&quot;&gt;'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            _$compile_(input)(scope)</span><span class="s3">;</span><span class="s1"> 
+            scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+            suggestions = input.next()</span><span class="s3">;</span><span class="s1"> 
+            document.body.appendChild(input[</span><span class="s5">0</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        }))</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should show the correct suggestions an empty tagToken'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            input.val(</span><span class="s2">'c'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            input[</span><span class="s5">0</span><span class="s1">].selectionStart = </span><span class="s5">1</span><span class="s3">;</span><span class="s1"> 
+ 
+            input.triggerHandler(</span><span class="s2">'keyup'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            expect(suggestions.children()[</span><span class="s5">0</span><span class="s1">].innerHTML).toBe(</span><span class="s2">'cake'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(suggestions.children()[</span><span class="s5">1</span><span class="s1">].innerHTML).toBe(</span><span class="s2">'cup'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    xdescribe(</span><span class="s2">'keyboard events'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+        </span><span class="s0">/** 
+         * Unfortunately unable to properly unit test keyboard events at the moment. 
+         * See http://stackoverflow.com/questions/22574431/testing-keydown-events-in-jasmine-with-specific-keycode 
+         */</span><span class="s1"> 
+        </span><span class="s4">var </span><span class="s1">suggestedTag1</span><span class="s3">;</span><span class="s1"> 
+        </span><span class="s4">var </span><span class="s1">suggestedTag2</span><span class="s3">;</span><span class="s1"> 
+ 
+        beforeEach(</span><span class="s4">function</span><span class="s1">() { 
+            textarea.val(</span><span class="s2">'#c'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            textarea[</span><span class="s5">0</span><span class="s1">].selectionStart = </span><span class="s5">2</span><span class="s3">; </span><span class="s6">// the end of the word &quot;#ham&quot;</span><span class="s1"> 
+ 
+            textarea.triggerHandler(</span><span class="s2">'keyup'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+            suggestedTag1 = angular.element(suggestions.children()[</span><span class="s5">0</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+            suggestedTag2 = angular.element(suggestions.children()[</span><span class="s5">1</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should select suggestion on pressing down arrow'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+           </span><span class="s6">// var event = new Event('keydown');</span><span class="s1"> 
+            </span><span class="s6">//var event = new CustomEvent('keydown', { 'keyCode': 40 });</span><span class="s1"> 
+            </span><span class="s6">//event.keyCode = 40;</span><span class="s1"> 
+            </span><span class="s6">//var event = keyDownEvent(40);</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">event = document.createEvent(</span><span class="s2">&quot;Events&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            event.initEvent(</span><span class="s2">&quot;keydown&quot;</span><span class="s3">, </span><span class="s4">true</span><span class="s3">, </span><span class="s4">true</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            event.keyCode = </span><span class="s5">40</span><span class="s3">;</span><span class="s1"> 
+           </span><span class="s6">// var event =__triggerKeyboardEvent(40);</span><span class="s1"> 
+            textarea.triggerHandler(</span><span class="s2">&quot;keydown&quot;</span><span class="s3">, </span><span class="s1">[</span><span class="s5">40</span><span class="s3">, </span><span class="s5">41</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+            scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            expect(suggestedTag1.hasClass(</span><span class="s2">'selected'</span><span class="s1">)).toBe(</span><span class="s2">'true'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+    })</span><span class="s3">;</span><span class="s1"> 
+})</span><span class="s3">;</span></pre>
+</body>
+</html>

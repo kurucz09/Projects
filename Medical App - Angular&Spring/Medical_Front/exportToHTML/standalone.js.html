@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>standalone.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(128,128,128); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(204,120,50); font-weight: bold; }
+.s3 { color: rgb(106,135,89); }
+.s4 { color: rgb(204,120,50); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+standalone.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/* 
+ * 
+ * This is used to build the bundle with browserify. 
+ * 
+ * The bundle is used by people who doesn't use browserify. 
+ * Those who use browserify will install with npm and require the module, 
+ * the package.json file points to index.js. 
+ */</span><span class="s1"> 
+</span><span class="s2">var </span><span class="s1">jwt_decode = require(</span><span class="s3">'./lib/index'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+ 
+</span><span class="s0">//use amd or just throught to window object.</span><span class="s1"> 
+</span><span class="s2">if </span><span class="s1">(</span><span class="s2">typeof </span><span class="s1">global.window.define == </span><span class="s3">'function' </span><span class="s1">&amp;&amp; global.window.define.amd) { 
+  global.window.define(</span><span class="s3">'jwt_decode'</span><span class="s4">, </span><span class="s2">function </span><span class="s1">() { </span><span class="s2">return </span><span class="s1">jwt_decode</span><span class="s4">; </span><span class="s1">})</span><span class="s4">;</span><span class="s1"> 
+} </span><span class="s2">else if </span><span class="s1">(global.window) { 
+  global.window.jwt_decode = jwt_decode</span><span class="s4">;</span><span class="s1"> 
+}</span></pre>
+</body>
+</html>

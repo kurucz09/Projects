@@ -1,0 +1,78 @@
+<div ng-controller="loginCtrl">
+    <span>
+
+    <div class="outer">
+        <div class="middle">
+            <div class="inner">
+                <div id="loginbox">
+                    <div class="panel_login panel-info ">
+                        <div class="panel-heading">
+                            <div class="panel-title">Sign In</div>
+                        </div>
+                        <div style="padding-top:30px" class="panel-body">
+
+                            <form class="form-horizontal" name="loginForm" novalidate ng-submit="login()">
+
+                                <div class="alert alert-danger" ng-show="wrongCredentials() === true;">
+                                    WrongCredentials
+                                </div>
+
+                                <div class="input-group"
+                                     ng-class="{'has-error' : loginForm.email.$invalid && loginForm.email.$dirty,
+                                     'has-success' : loginForm.email.$valid && loginForm.email.$dirty}">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-user"
+                                           style="max-height : 25px"></i>
+                                    </span>
+                                    <input class="form-control"
+                                           style="width: 100%"
+                                           type="email"
+                                           name="email"
+                                           placeholder="email"
+                                           ng-model="user.email"
+                                           required/>
+
+                                </div>
+                                <br>
+                                <div style="margin-bottom: 25px" class="input-group"
+                                     ng-class="{'has-error' : loginForm.password.$invalid && loginForm.password.$dirty,
+                                     'has-success' : loginForm.password.$valid && loginForm.password.$dirty}">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input class="form-control"
+                                           style="width: 100%"
+                                           type="password"
+                                           name="password"
+                                           required
+                                           placeholder="password"
+                                           ng-model="user.password"/>
+                                </div>
+
+                                <span>
+                                    <div style="margin-top:10px"
+                                         class="form-group">
+                                        <div class="col-sm-12 controls">
+                                            <button class="btn btn-primary"
+                                                    style="width: 100px; height: 40px;"
+                                                    ng-disabled="loginForm.$invalid"
+                                                    type="submit">
+                                                Log In
+                                            </button>
+                                        </div>
+                                     </div>
+                                 </span>
+
+                            </form>
+
+                        </div>
+
+
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</span>
+
+
+
+</div>

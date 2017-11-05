@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>dirDisqus.spec.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(98,151,85); font-style: italic; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(106,135,89); }
+.s3 { color: rgb(204,120,50); }
+.s4 { color: rgb(204,120,50); font-weight: bold; }
+.s5 { color: rgb(128,128,128); }
+.s6 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+dirDisqus.spec.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/** 
+ * For some reason, when these tests are run along with all the others in this project, I get a &quot;script error&quot;. Running 
+ * them on their own using `ddescribe` works okay. Therefore this test is ignored in general unless specifically testing 
+ * this directive, in which case change `xdescribe` to `ddescribe`. 
+ */</span><span class="s1"> 
+xdescribe(</span><span class="s2">'dirDisqus directive'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+    </span><span class="s4">var </span><span class="s1">scope</span><span class="s3">,</span><span class="s1"> 
+        elem</span><span class="s3">,</span><span class="s1"> 
+        compiled</span><span class="s3">,</span><span class="s1"> 
+        html</span><span class="s3">;</span><span class="s1"> 
+ 
+    beforeEach(module(</span><span class="s2">'angularUtils.directives.dirDisqus'</span><span class="s1">))</span><span class="s3">;</span><span class="s1"> 
+    beforeEach(</span><span class="s4">function </span><span class="s1">(){ 
+        </span><span class="s5">//set our view html.</span><span class="s1"> 
+        html = </span><span class="s2">'&lt;dir-disqus disqus-shortname=&quot;shortname&quot; ' </span><span class="s1">+ 
+        </span><span class="s2">'disqus-identifier=&quot;{{ post.ID }}&quot;' </span><span class="s1">+ 
+        </span><span class="s2">'disqus-title=&quot;{{ post.title }}&quot;' </span><span class="s1">+ 
+        </span><span class="s2">'disqus-url=&quot;{{ post.link }}&quot;' </span><span class="s1">+ 
+        </span><span class="s2">'disqus-category-id=&quot;{{ post.catId }}&quot;' </span><span class="s1">+ 
+        </span><span class="s2">'disqus-disable-mobile=&quot;false&quot;' </span><span class="s1">+ 
+        </span><span class="s2">'disqus-config-language=&quot;{{ post.lang }}&quot;' </span><span class="s1">+ 
+        </span><span class="s2">'disqus-on-ready=&quot;ready()&quot;' </span><span class="s1">+ 
+        </span><span class="s2">'ready-to-bind=&quot;{{ loaded }}&quot;&gt;' </span><span class="s1">+ 
+        </span><span class="s2">'&lt;/dir-disqus&gt;'</span><span class="s3">;</span><span class="s1"> 
+ 
+        inject(</span><span class="s4">function</span><span class="s1">($compile</span><span class="s3">, </span><span class="s1">$rootScope) { 
+            </span><span class="s5">//create a scope and populate it</span><span class="s1"> 
+            scope = $rootScope.$new()</span><span class="s3">;</span><span class="s1"> 
+            scope.post = { 
+                ID: </span><span class="s6">123</span><span class="s3">,</span><span class="s1"> 
+                title: </span><span class="s2">'test title'</span><span class="s3">,</span><span class="s1"> 
+                link: </span><span class="s2">'http://www.test.com'</span><span class="s3">,</span><span class="s1"> 
+                catId: </span><span class="s6">999</span><span class="s3">,</span><span class="s1"> 
+                lang: </span><span class="s2">'en'</span><span class="s1"> 
+            }</span><span class="s3">;</span><span class="s1"> 
+            scope.loaded = </span><span class="s4">false</span><span class="s3">;</span><span class="s1"> 
+            scope.readyCalled = </span><span class="s4">false</span><span class="s3">;</span><span class="s1"> 
+            scope.ready = </span><span class="s4">function</span><span class="s1">() { 
+                scope.readyCalled = </span><span class="s4">true</span><span class="s3">;</span><span class="s1"> 
+            }</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s5">//get the jqLite or jQuery element</span><span class="s1"> 
+            elem = angular.element(html)</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s5">//compile the element into a function to process the view.</span><span class="s1"> 
+            compiled = $compile(elem)</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s5">//run the compiled view.</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">element = compiled(scope)</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">var </span><span class="s1">div = document.createElement(</span><span class="s2">&quot;div&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            div.innerHTML = element.html()</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s5">// Just add disqus to document - it is needed to work embed.js properly</span><span class="s1"> 
+            document.getElementsByTagName(</span><span class="s2">'body'</span><span class="s1">)[</span><span class="s6">0</span><span class="s1">].appendChild(div)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should not do anything when ready to bind is false'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s5">//call digest on the scope!</span><span class="s1"> 
+        scope.$digest()</span><span class="s3">;</span><span class="s1"> 
+ 
+        expect(elem.find(</span><span class="s2">&quot;#disqus_thread&quot;</span><span class="s1">)).toBeTruthy()</span><span class="s3">;</span><span class="s1"> 
+        expect($(</span><span class="s2">&quot;script[datepicker='//shortname.disqus.com/embed.js']&quot;</span><span class="s1">).length).toEqual(</span><span class="s6">0</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(window.disqus_shortname).toBeFalsy()</span><span class="s3">;</span><span class="s1"> 
+        expect(window.disqus_identifier).toBeFalsy()</span><span class="s3">;</span><span class="s1"> 
+        expect(window.disqus_title).toBeFalsy()</span><span class="s3">;</span><span class="s1"> 
+        expect(window.disqus_url).toBeFalsy()</span><span class="s3">;</span><span class="s1"> 
+        expect(window.disqus_category_id).toBeFalsy()</span><span class="s3">;</span><span class="s1"> 
+        expect(window.disqus_disable_mobile).toBeFalsy()</span><span class="s3">;</span><span class="s1"> 
+        expect(scope.readyCalled).toBeFalsy()</span><span class="s3">;</span><span class="s1"> 
+        expect(window.language).toBeFalsy()</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should activate when ready to bind is true'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        scope.loaded = </span><span class="s4">true</span><span class="s3">;</span><span class="s1"> 
+        scope.$digest()</span><span class="s3">;</span><span class="s1"> 
+        expect($(</span><span class="s2">&quot;script[datepicker='//shortname.disqus.com/embed.js']&quot;</span><span class="s1">).length).toEqual(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(window.disqus_shortname).toEqual(</span><span class="s2">'shortname'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(window.disqus_identifier).toEqual(</span><span class="s2">'123'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(window.disqus_title).toEqual(</span><span class="s2">'test title'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(window.disqus_url).toEqual(</span><span class="s2">'http://www.test.com'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(window.disqus_category_id).toEqual(</span><span class="s2">'999'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(window.disqus_disable_mobile).toEqual(</span><span class="s2">'false'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+        window.page = {}</span><span class="s3">;</span><span class="s1"> 
+        window.callbacks = {}</span><span class="s3">;</span><span class="s1"> 
+        window.disqus_config()</span><span class="s3">;</span><span class="s1"> 
+ 
+        expect(window.language).toEqual(</span><span class="s2">'en'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(window.callbacks.onReady).toBeDefined()</span><span class="s3">;</span><span class="s1"> 
+        expect(window.callbacks.onReady.length).toEqual(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        window.callbacks.onReady[</span><span class="s6">0</span><span class="s1">]()</span><span class="s3">;</span><span class="s1"> 
+        expect(scope.readyCalled).toBeTruthy()</span><span class="s3">;</span><span class="s1"> 
+ 
+    })</span><span class="s3">;</span><span class="s1"> 
+})</span><span class="s3">;</span></pre>
+</body>
+</html>

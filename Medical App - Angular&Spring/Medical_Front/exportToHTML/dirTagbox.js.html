@@ -1,0 +1,252 @@
+<html>
+<head>
+<title>dirTagbox.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(98,151,85); font-style: italic; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(204,120,50); font-weight: bold; }
+.s3 { color: rgb(106,135,89); }
+.s4 { color: rgb(204,120,50); }
+.s5 { color: rgb(104,151,187); }
+.s6 { color: rgb(128,128,128); }
+.s7 { color: rgb(98,151,85); font-weight: bold; font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+dirTagbox.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/** 
+ * Version 0.1.3 
+ * 
+ * A directive to enable tagging auto-complete on an input or textarea. 
+ * 
+ * For documentation, see the README.md file in this directory 
+ * 
+ * Created by Michael on 27/03/14. 
+ * Copyright Michael Bromley 2014 
+ * Available under the MIT license. 
+ */</span><span class="s1"> 
+ 
+(</span><span class="s2">function</span><span class="s1">() { 
+ 
+    angular.module(</span><span class="s3">'angularUtils.directives.dirTagBox'</span><span class="s4">, </span><span class="s1">[]) 
+ 
+        .directive(</span><span class="s3">'dirTagbox'</span><span class="s4">, </span><span class="s2">function </span><span class="s1">dirTagbox($compile</span><span class="s4">, </span><span class="s1">$parse) { 
+            </span><span class="s2">return </span><span class="s1">{ 
+                restrict: </span><span class="s3">'A'</span><span class="s4">,</span><span class="s1"> 
+                scope: { 
+                    tags: </span><span class="s3">'=dirTagbox'</span><span class="s4">,</span><span class="s1"> 
+                    callback: </span><span class="s3">'&amp;dirOnTagSelect'</span><span class="s1"> 
+                }</span><span class="s4">,</span><span class="s1"> 
+                link: </span><span class="s2">function </span><span class="s1">dirTagboxLinkingFn(scope</span><span class="s4">, </span><span class="s1">element</span><span class="s4">, </span><span class="s1">attrs) { 
+ 
+                    </span><span class="s2">var </span><span class="s1">TOKEN = attrs.dirTagtoken !== undefined ? attrs.dirTagtoken : </span><span class="s3">''</span><span class="s4">;</span><span class="s1"> 
+ 
+                    </span><span class="s2">var </span><span class="s1">input = element</span><span class="s4">;</span><span class="s1"> 
+                    </span><span class="s2">var </span><span class="s1">isValidInputType = (input[</span><span class="s5">0</span><span class="s1">].nodeName === </span><span class="s3">'INPUT' </span><span class="s1">&amp;&amp; (input[</span><span class="s5">0</span><span class="s1">].type === </span><span class="s3">'text' </span><span class="s1">|| input[</span><span class="s5">0</span><span class="s1">].type === </span><span class="s3">'search' </span><span class="s1">|| input[</span><span class="s5">0</span><span class="s1">].type === </span><span class="s3">'email'</span><span class="s1">))</span><span class="s4">;</span><span class="s1"> 
+                    </span><span class="s2">if </span><span class="s1">(input[</span><span class="s5">0</span><span class="s1">].nodeName !== </span><span class="s3">'TEXTAREA' </span><span class="s1">&amp;&amp; !isValidInputType) { 
+                        </span><span class="s2">return</span><span class="s4">;</span><span class="s1"> 
+                    } 
+ 
+                    </span><span class="s6">// create wrapper div</span><span class="s1"> 
+                    </span><span class="s2">var </span><span class="s1">wrapper = angular.element(</span><span class="s3">'&lt;div class=&quot;dir-tagbox-wrapper&quot; style=&quot;position: relative; display: inline-block&quot;&gt;&lt;/div&gt;'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                    input.wrap(wrapper)</span><span class="s4">;</span><span class="s1"> 
+ 
+                    </span><span class="s6">// create the suggestions div</span><span class="s1"> 
+                    </span><span class="s2">var </span><span class="s1">suggestions = makeSuggestionsBox()</span><span class="s4">;</span><span class="s1"> 
+                    input.parent().append(suggestions)</span><span class="s4">;</span><span class="s1"> 
+ 
+                    scope.candidateHashtag = </span><span class="s3">&quot;?&quot;</span><span class="s4">;</span><span class="s1"> 
+                    scope.candidate = { 
+                        start: </span><span class="s5">0</span><span class="s4">,</span><span class="s1"> 
+                        end: </span><span class="s5">0</span><span class="s1"> 
+                    }</span><span class="s4">;</span><span class="s1"> 
+                    scope.selectedIndex = </span><span class="s2">null</span><span class="s4">;</span><span class="s1"> 
+                    scope.filteredTags = []</span><span class="s4">;</span><span class="s1"> 
+                    scope.isFocussed = (</span><span class="s3">'autofocus' </span><span class="s2">in </span><span class="s1">input[</span><span class="s5">0</span><span class="s1">])</span><span class="s4">;</span><span class="s1"> 
+                    </span><span class="s2">var </span><span class="s1">mouseIsOverSuggestions = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+ 
+                    suggestions.on(</span><span class="s3">'click'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(e) { 
+                        </span><span class="s2">var </span><span class="s1">selectedTag = e.target.innerHTML.substring(TOKEN.length)</span><span class="s4">;</span><span class="s1"> 
+                        insertSelectedTag(selectedTag)</span><span class="s4">;</span><span class="s1"> 
+                        input[</span><span class="s5">0</span><span class="s1">].focus()</span><span class="s4">;</span><span class="s1"> 
+                        scope.$apply(</span><span class="s2">function</span><span class="s1">() { 
+                            scope.candidateHashtag = </span><span class="s3">&quot;?&quot;</span><span class="s4">;</span><span class="s1"> 
+                        })</span><span class="s4">;</span><span class="s1"> 
+                    })</span><span class="s4">;</span><span class="s1"> 
+ 
+                    suggestions.on(</span><span class="s3">'mouseover'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">() { 
+                        mouseIsOverSuggestions = </span><span class="s2">true</span><span class="s4">;</span><span class="s1"> 
+                        scope.$apply(</span><span class="s2">function</span><span class="s1">() { 
+                            scope.selectedIndex = </span><span class="s2">null</span><span class="s4">;</span><span class="s1"> 
+                        })</span><span class="s4">;</span><span class="s1"> 
+                    })</span><span class="s4">;</span><span class="s1"> 
+                    suggestions.on(</span><span class="s3">'mouseout'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">() { 
+                        mouseIsOverSuggestions = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+                    })</span><span class="s4">;</span><span class="s1"> 
+ 
+                    input.on(</span><span class="s3">'focus'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">() { 
+                        scope.$apply(</span><span class="s2">function</span><span class="s1">() { 
+                            scope.isFocussed = </span><span class="s2">true</span><span class="s4">;</span><span class="s1"> 
+                        })</span><span class="s4">;</span><span class="s1"> 
+                    })</span><span class="s4">;</span><span class="s1"> 
+ 
+                    input.on(</span><span class="s3">'blur'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">() { 
+                        </span><span class="s2">if </span><span class="s1">(!mouseIsOverSuggestions) { 
+                            scope.$apply(</span><span class="s2">function</span><span class="s1">() { 
+                                scope.isFocussed = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+                            })</span><span class="s4">;</span><span class="s1"> 
+                        } 
+                    })</span><span class="s4">;</span><span class="s1"> 
+ 
+                    input.on(</span><span class="s3">'keyup'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">() { 
+                        </span><span class="s6">// is the caret inside a hashtag?</span><span class="s1"> 
+                        </span><span class="s2">var </span><span class="s1">candidateChanged = </span><span class="s2">false</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">var </span><span class="s1">currentCaretIndex = getCaret(input[</span><span class="s5">0</span><span class="s1">])</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">var </span><span class="s1">text = input.val()</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">var </span><span class="s1">regexp</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">if </span><span class="s1">(TOKEN !== </span><span class="s3">''</span><span class="s1">) { 
+                            regexp = </span><span class="s2">new </span><span class="s1">RegExp(</span><span class="s3">'</span><span class="s4">\\</span><span class="s3">B' </span><span class="s1">+ TOKEN + </span><span class="s3">'</span><span class="s4">\\</span><span class="s3">w+'</span><span class="s4">, </span><span class="s3">'g'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                        } </span><span class="s2">else </span><span class="s1">{ 
+                            regexp = </span><span class="s2">new </span><span class="s1">RegExp(</span><span class="s3">'</span><span class="s4">\\</span><span class="s3">b</span><span class="s4">\\</span><span class="s3">w+'</span><span class="s4">, </span><span class="s3">'g'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                        } 
+                        </span><span class="s2">var </span><span class="s1">match</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">while </span><span class="s1">((match = regexp.exec(text)) !== </span><span class="s2">null</span><span class="s1">) { 
+                            </span><span class="s2">var </span><span class="s1">startOfHashtag = match.index</span><span class="s4">;</span><span class="s1"> 
+                            </span><span class="s2">var </span><span class="s1">endOfHashtag = startOfHashtag + match[</span><span class="s5">0</span><span class="s1">].length</span><span class="s4">;</span><span class="s1"> 
+ 
+                            </span><span class="s2">if </span><span class="s1">(startOfHashtag &lt;= currentCaretIndex &amp;&amp; currentCaretIndex &lt;= endOfHashtag) { 
+                                candidateChanged =  match[</span><span class="s5">0</span><span class="s1">].substring(TOKEN.length)</span><span class="s4">;</span><span class="s1"> 
+                                scope.candidate.start = startOfHashtag</span><span class="s4">;</span><span class="s1"> 
+                                scope.candidate.end = endOfHashtag</span><span class="s4">;</span><span class="s1"> 
+                            } 
+                        } 
+                        scope.$apply(</span><span class="s2">function</span><span class="s1">() { 
+                            scope.candidateHashtag = candidateChanged ? candidateChanged : </span><span class="s3">&quot;?&quot;</span><span class="s4">;</span><span class="s1"> 
+                        })</span><span class="s4">;</span><span class="s1"> 
+                    })</span><span class="s4">;</span><span class="s1"> 
+ 
+                    input.on(</span><span class="s3">'keydown'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">(e) { 
+                        </span><span class="s2">var </span><span class="s1">listLength = scope.filteredTags.length</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">if </span><span class="s1">(</span><span class="s5">0 </span><span class="s1">&lt; listLength) { 
+                            </span><span class="s2">var </span><span class="s1">currentIndex</span><span class="s4">;</span><span class="s1"> 
+                            </span><span class="s2">var </span><span class="s1">nextIndex = </span><span class="s2">null</span><span class="s4">;</span><span class="s1"> 
+ 
+                            </span><span class="s2">if </span><span class="s1">(e.keyCode === </span><span class="s5">40</span><span class="s1">) { 
+                                </span><span class="s6">// down arrow pressed</span><span class="s1"> 
+                                e.preventDefault()</span><span class="s4">;</span><span class="s1"> 
+                                currentIndex = scope.selectedIndex === </span><span class="s2">null </span><span class="s1">? -</span><span class="s5">1 </span><span class="s1">: parseInt(scope.selectedIndex</span><span class="s4">, </span><span class="s5">10</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                                nextIndex = currentIndex === listLength - </span><span class="s5">1 </span><span class="s1">? </span><span class="s5">0 </span><span class="s1">: currentIndex + </span><span class="s5">1</span><span class="s4">;</span><span class="s1"> 
+                            } </span><span class="s2">else if </span><span class="s1">(e.keyCode === </span><span class="s5">38</span><span class="s1">) { 
+                                </span><span class="s6">// up arrow pressed</span><span class="s1"> 
+                                e.preventDefault()</span><span class="s4">;</span><span class="s1"> 
+                                currentIndex = scope.selectedIndex === </span><span class="s2">null </span><span class="s1">? </span><span class="s5">0 </span><span class="s1">: parseInt(scope.selectedIndex</span><span class="s4">, </span><span class="s5">10</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                                nextIndex = currentIndex === </span><span class="s5">0 </span><span class="s1">? listLength - </span><span class="s5">1 </span><span class="s1">: currentIndex - </span><span class="s5">1</span><span class="s4">;</span><span class="s1"> 
+                            } </span><span class="s2">else if </span><span class="s1">(e.keyCode === </span><span class="s5">13</span><span class="s1">) { 
+                                </span><span class="s6">// enter key pressed</span><span class="s1"> 
+                                e.preventDefault()</span><span class="s4">;</span><span class="s1"> 
+                                </span><span class="s2">var </span><span class="s1">selectedTag = scope.filteredTags[scope.selectedIndex]</span><span class="s4">;</span><span class="s1"> 
+                                insertSelectedTag(selectedTag)</span><span class="s4">;</span><span class="s1"> 
+                            } 
+ 
+                            scope.$apply(</span><span class="s2">function</span><span class="s1">() { 
+                                scope.selectedIndex = nextIndex</span><span class="s4">;</span><span class="s1"> 
+                            })</span><span class="s4">;</span><span class="s1"> 
+                        } 
+                    })</span><span class="s4">;</span><span class="s1"> 
+ 
+                    </span><span class="s2">function </span><span class="s1">makeSuggestionsBox() { 
+                        </span><span class="s2">var </span><span class="s1">suggestions =angular.element( 
+                            </span><span class="s3">'&lt;div class=&quot;suggestions-container&quot; ng-show=&quot;isFocussed &amp;&amp; 0 &lt; filteredTags.length&quot; tabindex=&quot;-1&quot;&gt;' </span><span class="s1">+ 
+                                </span><span class="s3">'&lt;div class=&quot;suggestion&quot; ng-class=&quot;{selected: $index == selectedIndex}&quot; ng-repeat=&quot;tag in filteredTags = (tags | startsWith : candidateHashtag)&quot;&gt;' </span><span class="s1">+ TOKEN + </span><span class="s3">'{{ tag }}&lt;/div&gt;' </span><span class="s1">+ 
+                                </span><span class="s3">'&lt;/div&gt;'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+                        suggestions.css({ 
+                            </span><span class="s3">'position'</span><span class="s1">: </span><span class="s3">'absolute'</span><span class="s4">,</span><span class="s1"> 
+                            </span><span class="s3">'width'</span><span class="s1">: input[</span><span class="s5">0</span><span class="s1">].offsetWidth + </span><span class="s3">'px'</span><span class="s4">,</span><span class="s1"> 
+                            </span><span class="s3">'left'</span><span class="s1">: input[</span><span class="s5">0</span><span class="s1">].offsetLeft + </span><span class="s3">'px'</span><span class="s4">,</span><span class="s1"> 
+                            </span><span class="s3">'max-height'</span><span class="s1">: </span><span class="s3">'200px'</span><span class="s4">,</span><span class="s1"> 
+                            </span><span class="s3">'overflow'</span><span class="s1">: </span><span class="s3">'auto'</span><span class="s4">,</span><span class="s1"> 
+                            </span><span class="s3">'z-index'</span><span class="s1">: </span><span class="s5">100</span><span class="s1"> 
+                        })</span><span class="s4">;</span><span class="s1"> 
+                        $compile(suggestions)(scope)</span><span class="s4">;</span><span class="s1"> 
+                        </span><span class="s2">return </span><span class="s1">suggestions</span><span class="s4">;</span><span class="s1"> 
+                    } 
+ 
+                    </span><span class="s2">function </span><span class="s1">insertSelectedTag(selectedTag) { 
+                        </span><span class="s2">var </span><span class="s1">output</span><span class="s4">,</span><span class="s1"> 
+                            inputVal = input.val()</span><span class="s4">;</span><span class="s1"> 
+ 
+                        </span><span class="s2">if </span><span class="s1">(</span><span class="s2">typeof </span><span class="s1">selectedTag === </span><span class="s3">'undefined'</span><span class="s1">) { 
+                            output = inputVal</span><span class="s4">;</span><span class="s1"> 
+                        } </span><span class="s2">else </span><span class="s1">{ 
+                            output = inputVal.substring(</span><span class="s5">0</span><span class="s4">, </span><span class="s1">scope.candidate.start) + TOKEN + selectedTag + inputVal.substring(scope.candidate.end)</span><span class="s4">;</span><span class="s1"> 
+                        } 
+ 
+                        scope.$parent.$apply(</span><span class="s2">function</span><span class="s1">() { 
+                            </span><span class="s2">if </span><span class="s1">(attrs.ngModel) { 
+                                </span><span class="s2">var </span><span class="s1">setter = $parse(attrs.ngModel).assign</span><span class="s4">;</span><span class="s1"> 
+                                setter(scope.$parent</span><span class="s4">, </span><span class="s1">output)</span><span class="s4">;</span><span class="s1"> 
+                            } 
+                            input.val(output)</span><span class="s4">;</span><span class="s1"> 
+                        })</span><span class="s4">;</span><span class="s1"> 
+ 
+                        </span><span class="s2">if</span><span class="s1">(scope.callback) { 
+                            scope.callback()</span><span class="s4">;</span><span class="s1"> 
+                        } 
+                    } 
+ 
+                    </span><span class="s0">/** 
+                     * function taken from http://stackoverflow.com/a/263796/772859 
+                     * </span><span class="s7">@param </span><span class="s0">el 
+                     * </span><span class="s7">@returns </span><span class="s0">{*} 
+                     */</span><span class="s1"> 
+                    </span><span class="s2">function </span><span class="s1">getCaret(el) { 
+                        </span><span class="s2">if </span><span class="s1">(el.selectionStart) { 
+                            </span><span class="s2">return </span><span class="s1">el.selectionStart</span><span class="s4">;</span><span class="s1"> 
+                        } </span><span class="s2">else if </span><span class="s1">(document.selection) { 
+                            el.focus()</span><span class="s4">;</span><span class="s1"> 
+ 
+                            </span><span class="s2">var </span><span class="s1">r = document.selection.createRange()</span><span class="s4">;</span><span class="s1"> 
+                            </span><span class="s2">if </span><span class="s1">(r === </span><span class="s2">null</span><span class="s1">) { 
+                                </span><span class="s2">return </span><span class="s5">0</span><span class="s4">;</span><span class="s1"> 
+                            } 
+ 
+                            </span><span class="s2">var </span><span class="s1">re = el.createTextRange()</span><span class="s4">,</span><span class="s1"> 
+                                rc = re.duplicate()</span><span class="s4">;</span><span class="s1"> 
+                            re.moveToBookmark(r.getBookmark())</span><span class="s4">;</span><span class="s1"> 
+                            rc.setEndPoint(</span><span class="s3">'EndToStart'</span><span class="s4">, </span><span class="s1">re)</span><span class="s4">;</span><span class="s1"> 
+ 
+                            </span><span class="s2">return </span><span class="s1">rc.text.length</span><span class="s4">;</span><span class="s1"> 
+                        } 
+                        </span><span class="s2">return </span><span class="s5">0</span><span class="s4">;</span><span class="s1"> 
+                    } 
+                } 
+            }</span><span class="s4">;</span><span class="s1"> 
+        }) 
+ 
+    </span><span class="s0">/** 
+     * Note - this filter is included since the default Angular `filter` filter will match a string that appears anywhere in the target string, but typically in a tag autocomplete, we only care about 
+     * matching the start of the string. 
+     */</span><span class="s1"> 
+        .filter(</span><span class="s3">'startsWith'</span><span class="s4">, </span><span class="s2">function</span><span class="s1">() { 
+            </span><span class="s2">return function</span><span class="s1">(array</span><span class="s4">, </span><span class="s1">search) { 
+                </span><span class="s2">var </span><span class="s1">matches = []</span><span class="s4">;</span><span class="s1"> 
+                </span><span class="s2">for</span><span class="s1">(</span><span class="s2">var </span><span class="s1">i = </span><span class="s5">0</span><span class="s4">; </span><span class="s1">i &lt; array.length</span><span class="s4">; </span><span class="s1">i++) { 
+                    </span><span class="s2">if </span><span class="s1">(array[i].toLowerCase().indexOf(search.toLowerCase()) === </span><span class="s5">0 </span><span class="s1">&amp;&amp; 
+                        search.length &lt; array[i].length) { 
+                        matches.push(array[i])</span><span class="s4">;</span><span class="s1"> 
+                    } 
+                } 
+                </span><span class="s2">return </span><span class="s1">matches</span><span class="s4">;</span><span class="s1"> 
+            }</span><span class="s4">;</span><span class="s1"> 
+        })</span><span class="s4">;</span><span class="s1"> 
+ 
+})()</span><span class="s4">;</span></pre>
+</body>
+</html>

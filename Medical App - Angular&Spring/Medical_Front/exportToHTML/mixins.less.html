@@ -1,0 +1,88 @@
+<html>
+<head>
+<title>mixins.less</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(128,128,128); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(232,191,106); }
+.s3 { color: rgb(186,186,186); }
+.s4 { color: rgb(169,183,198); }
+.s5 { color: rgb(165,194,97); }
+.s6 { color: rgb(204,120,50); }
+.s7 { color: rgb(208,208,255); }
+.s8 { color: rgb(106,135,89); }
+.s9 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+mixins.less</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">// Mixins</span><span class="s1"> 
+</span><span class="s0">// --------------------------</span><span class="s1"> 
+ 
+.</span><span class="s2">fa-icon</span><span class="s1">() { 
+  </span><span class="s3">display</span><span class="s4">: </span><span class="s5">inline-block</span><span class="s6">;</span><span class="s1"> 
+  </span><span class="s3">font</span><span class="s4">: </span><span class="s5">normal normal normal </span><span class="s7">@fa-font-size-base</span><span class="s1">/</span><span class="s7">@fa-line-height-base </span><span class="s2">FontAwesome</span><span class="s6">; </span><span class="s0">// shortening font declaration</span><span class="s1"> 
+  </span><span class="s3">font-size</span><span class="s4">: </span><span class="s5">inherit</span><span class="s6">; </span><span class="s0">// can't have font-size inherit on line above, so need to override</span><span class="s1"> 
+  </span><span class="s3">text-rendering</span><span class="s4">: </span><span class="s5">auto</span><span class="s6">; </span><span class="s0">// optimizelegibility throws things off #1094</span><span class="s1"> 
+  </span><span class="s3">-webkit-font-smoothing</span><span class="s4">: </span><span class="s5">antialiased</span><span class="s6">;</span><span class="s1"> 
+  </span><span class="s3">-moz-osx-font-smoothing</span><span class="s4">: </span><span class="s5">grayscale</span><span class="s6">;</span><span class="s1"> 
+ 
+} 
+ 
+.</span><span class="s2">fa-icon-rotate</span><span class="s1">(</span><span class="s7">@degrees</span><span class="s6">, </span><span class="s7">@rotation</span><span class="s1">) { 
+  </span><span class="s3">-ms-filter</span><span class="s4">: </span><span class="s8">&quot;progid:DXImageTransform.Microsoft.BasicImage(rotation=</span><span class="s1">@{</span><span class="s7">rotation</span><span class="s1">}</span><span class="s8">)&quot;</span><span class="s6">;</span><span class="s1"> 
+  </span><span class="s3">-webkit-transform</span><span class="s4">: </span><span class="s2">rotate</span><span class="s1">(</span><span class="s7">@degrees</span><span class="s1">)</span><span class="s6">;</span><span class="s1"> 
+      </span><span class="s3">-ms-transform</span><span class="s4">: </span><span class="s2">rotate</span><span class="s1">(</span><span class="s7">@degrees</span><span class="s1">)</span><span class="s6">;</span><span class="s1"> 
+          </span><span class="s3">transform</span><span class="s4">: </span><span class="s2">rotate</span><span class="s1">(</span><span class="s7">@degrees</span><span class="s1">)</span><span class="s6">;</span><span class="s1"> 
+} 
+ 
+.</span><span class="s2">fa-icon-flip</span><span class="s1">(</span><span class="s7">@horiz</span><span class="s6">, </span><span class="s7">@vert</span><span class="s6">, </span><span class="s7">@rotation</span><span class="s1">) { 
+  </span><span class="s3">-ms-filter</span><span class="s4">: </span><span class="s8">&quot;progid:DXImageTransform.Microsoft.BasicImage(rotation=</span><span class="s1">@{</span><span class="s7">rotation</span><span class="s1">}</span><span class="s8">, mirror=1)&quot;</span><span class="s6">;</span><span class="s1"> 
+  </span><span class="s3">-webkit-transform</span><span class="s4">: </span><span class="s2">scale</span><span class="s1">(</span><span class="s7">@horiz</span><span class="s6">, </span><span class="s7">@vert</span><span class="s1">)</span><span class="s6">;</span><span class="s1"> 
+      </span><span class="s3">-ms-transform</span><span class="s4">: </span><span class="s2">scale</span><span class="s1">(</span><span class="s7">@horiz</span><span class="s6">, </span><span class="s7">@vert</span><span class="s1">)</span><span class="s6">;</span><span class="s1"> 
+          </span><span class="s3">transform</span><span class="s4">: </span><span class="s2">scale</span><span class="s1">(</span><span class="s7">@horiz</span><span class="s6">, </span><span class="s7">@vert</span><span class="s1">)</span><span class="s6">;</span><span class="s1"> 
+} 
+ 
+ 
+</span><span class="s0">// Only display content to screen readers. A la Bootstrap 4.</span><span class="s1"> 
+</span><span class="s0">//</span><span class="s1"> 
+</span><span class="s0">// See: http://a11yproject.com/posts/how-to-hide-content/</span><span class="s1"> 
+ 
+.</span><span class="s2">sr-only</span><span class="s1">() { 
+  </span><span class="s3">position</span><span class="s4">: </span><span class="s5">absolute</span><span class="s6">;</span><span class="s1"> 
+  </span><span class="s3">width</span><span class="s4">: </span><span class="s9">1</span><span class="s5">px</span><span class="s6">;</span><span class="s1"> 
+  </span><span class="s3">height</span><span class="s4">: </span><span class="s9">1</span><span class="s5">px</span><span class="s6">;</span><span class="s1"> 
+  </span><span class="s3">padding</span><span class="s4">: </span><span class="s9">0</span><span class="s6">;</span><span class="s1"> 
+  </span><span class="s3">margin</span><span class="s4">: </span><span class="s1">-</span><span class="s9">1</span><span class="s5">px</span><span class="s6">;</span><span class="s1"> 
+  </span><span class="s3">overflow</span><span class="s4">: </span><span class="s5">hidden</span><span class="s6">;</span><span class="s1"> 
+  </span><span class="s3">clip</span><span class="s4">: </span><span class="s2">rect</span><span class="s1">(</span><span class="s9">0</span><span class="s6">,</span><span class="s9">0</span><span class="s6">,</span><span class="s9">0</span><span class="s6">,</span><span class="s9">0</span><span class="s1">)</span><span class="s6">;</span><span class="s1"> 
+  </span><span class="s3">border</span><span class="s4">: </span><span class="s9">0</span><span class="s6">;</span><span class="s1"> 
+} 
+ 
+</span><span class="s0">// Use in conjunction with .sr-only to only display content when it's focused.</span><span class="s1"> 
+</span><span class="s0">//</span><span class="s1"> 
+</span><span class="s0">// Useful for &quot;Skip to main content&quot; links; see http://www.w3.org/TR/2013/NOTE-WCAG20-TECHS-20130905/G1</span><span class="s1"> 
+</span><span class="s0">//</span><span class="s1"> 
+</span><span class="s0">// Credit: HTML5 Boilerplate</span><span class="s1"> 
+ 
+.</span><span class="s2">sr-only-focusable</span><span class="s1">() { 
+  </span><span class="s2">&amp;</span><span class="s4">:</span><span class="s2">active</span><span class="s6">,</span><span class="s1"> 
+  </span><span class="s2">&amp;</span><span class="s4">:</span><span class="s2">focus </span><span class="s1">{ 
+    </span><span class="s3">position</span><span class="s4">: </span><span class="s5">static</span><span class="s6">;</span><span class="s1"> 
+    </span><span class="s3">width</span><span class="s4">: </span><span class="s5">auto</span><span class="s6">;</span><span class="s1"> 
+    </span><span class="s3">height</span><span class="s4">: </span><span class="s5">auto</span><span class="s6">;</span><span class="s1"> 
+    </span><span class="s3">margin</span><span class="s4">: </span><span class="s9">0</span><span class="s6">;</span><span class="s1"> 
+    </span><span class="s3">overflow</span><span class="s4">: </span><span class="s5">visible</span><span class="s6">;</span><span class="s1"> 
+    </span><span class="s3">clip</span><span class="s4">: </span><span class="s5">auto</span><span class="s6">;</span><span class="s1"> 
+  } 
+} 
+</span></pre>
+</body>
+</html>

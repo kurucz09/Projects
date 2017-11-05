@@ -1,0 +1,248 @@
+<style>
+    .bookImage {
+        height: 100px;
+        width: 100px;
+        object-fit: contain;
+    }
+
+    .columnAuto {
+        width: 1px;
+        white-space: nowrap
+    }
+
+    .adminStyle {
+        background-color: #76323F;
+    }
+
+    .rowSelected {
+        background-color: #D7CEC7;
+    }
+
+    .adminSelect {
+        background-color: #565656;
+    }
+
+    .table > caption + thead > tr:first-child > td, .table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > td, .table > thead:first-child > tr:first-child > th {
+        background-color: #565656;
+        color: #FFFFFF;
+        border-top: 0
+    }
+
+    a {
+        color: #565656;
+        text-decoration: none;
+    }
+
+    .table-hover > tbody > tr:hover {
+        background-color: #D7CEC7;
+        color: #000000
+    }
+
+    .refresh_icon {
+        border-radius: 50%;
+        -webkit-transition: -webkit-transform .8s ease-in-out;
+        transition: transform .8s ease-in-out;
+    }
+
+    .refresh_icon:hover {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+
+    .verticalLine {
+        border-left: thick solid #dbdbdb;
+    }
+
+</style>
+
+<div ng-controller="userCtrl">
+    <nav class="navbar navbar-default adminStyle">
+        <div>
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" ng-click="return()"> <img
+                            src="\BookStore_Front\WebContent\assets\img\Logo_Book.png" align="middle" alt="LOGO"
+                            width="200" height="50"></a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="adminSelect"><a>Sell Books</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+
+                        <p style="margin: 10px; color: #ffffff;" class="navbar-text">Signed in as <b>{{usernameLoggedin}}</b>.
+                            <a ng-click="logOut()" class="btn btn-primary btn-sm"
+                               style="margin-bottom: 0px; margin-left: 20px; background-color:#565656">
+                                <span class="glyphicon glyphicon-log-out" style="margin: 0px"></span> Log out
+                            </a>
+                        </p>
+
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </div>
+    </nav>
+
+    <div class="menuContent" data-ng-init="init()">
+        <div>
+            <div class="col-md-12" style="padding-top: 5px">
+                <div class="col-md-1">
+                </div>
+                <div class="col-md-10">
+                    <span>
+                         <div class="col-md-12" style="background-color: #f2f2f2; margin-bottom: 20px;
+                          padding:10px 10px 10px 50px;border-radius: 15px">
+                             <div class="col-md-12">
+                                <label>Sell Books</label>
+                             </div>
+
+                             <div class="col-md-5">
+                                 <p style="margin: 0px">Selected book title:<b> {{select.title}}</b></p>
+                                 <p style="margin: 0px">Selected book author:<b> {{select.authors}}</b></p>
+                                 <p style="margin: 0px">Selected book ISBN:<b> {{select.isbn}}</b></p>
+                             </div>
+                             <div class="col-md-3 verticalLine" style="height: 60px">
+                                 <p style="margin: 0px; font-weight: bold">Books on stock:<b> {{select.nrOfItems}}</b></p>
+                                 <p style="margin: 0px">Price per item: {{select.price}}.00 RON</p>
+                             </div>
+                             <div class="col-md-4 verticalLine" style="height: 60px">
+                                <form name="sellBooksForm" class="col-md-12" novalidate>
+                                    <div class="col-md-12">
+                                         <input type="text" class="form-control col-md-8" required
+                                                placeholder="Nr. of books to sell" name="items"
+                                                    ng-model="toBeSold" ng-pattern="numberPattern">
+                                         <button id="sellBooks" type="button"
+                                                 class="btn btn-primary pull-right col-md-3 glyphicon glyphicon-shopping-cart"
+                                                 disabled style="background-color: #565656"
+                                                 ng-click="sellBook(sellBooksForm.$valid)">
+                                                  Sell
+                                          </button>
+                                    </div>
+
+                                    <div ng-show="sellBooksForm.items.$invalid && sellBooksForm.items.$error.pattern"
+                                         class="alert alert-danger col-md-8"
+                                         style="margin-top: -20px">
+                                        <p style=" font-size: 10px;">Insert a valid number of items</p>
+                                    </div>
+
+
+                                </form>
+
+                             </div>
+
+                         </div>
+                    </span>
+                    <span>
+                            <div class="form-group col-md-4 " style="margin-bottom: 15px;">
+                                <div class="input-group">
+                                    <div class="input-group-addon" style=" background-color: #76323F; 
+                                    border-color: #76323F;color: #ffffff;">
+                                        <i class="glyphicon glyphicon-search"></i>
+                                    </div>
+                                    <input type="text" class="form-control col-md-12"
+                                           placeholder="Search books by title"
+                                           ng-model="searchedFilter.title"></div>
+                            </div>
+                            <div class="form-group col-md-4 " style="margin-bottom: 15px">
+                                <div class="input-group">
+                                    <div class="input-group-addon" style=" background-color: #76323F;
+                                    border-color: #76323F;color: #ffffff;">
+                                        <i class="glyphicon glyphicon-search"></i>
+                                    </div>
+                                    <input type="text" class="form-control col-md-12"
+                                           placeholder="Search books by author"
+                                           ng-model="searchedFilter.authors"></div>
+                            </div>
+                            <div class="form-group col-md-4 " style="margin-bottom: 15px">
+                                <div class="input-group">
+                                    <div class="input-group-addon" style=" background-color: #76323F;
+                                    border-color: #76323F;color: #ffffff;">
+                                        <i class="glyphicon glyphicon-search"></i>
+                                    </div>
+                                    <input type="text" class="form-control col-md-12"
+                                           placeholder="Search books by genre"
+                                           ng-model="searchedFilter.genres"></div>
+                            </div>
+                    </span>
+                </div>
+                <div class="col-md-1">
+                </div>
+            </div>
+
+
+            <div class="col-md-12">
+                <!--  table -->
+
+                <div class="col-md-1">
+
+                </div>
+                <div class="col-md-10">
+                    <table class="table table-striped table-bordered table-responsive table-hover">
+                        <thead>
+                        <tr class="">
+                            <th>Image</th>
+                            <th>ISBN</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Year</th>
+                            <th>Genre</th>
+                            <th>Review</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                        </tr>
+                        </thead>
+                        <tr ng-repeat="book in books | filter:searchedFilter"
+                            ng-click="
+                            select.isbn = book.isbn;
+                            select.title = book.title;
+                            select.authors = book.authors;
+                            select.year = book.year;
+                            select.image = book.image;
+                            select.price = book.price;
+                            select.review = book.review;
+                            select.nrOfItems = book.nrOfItems;
+                            setSelectedBook(book.isbn,book.genres);"
+                            ng-class="{rowSelected : book.isbn === isbnSelected}">
+                            <td class="columnAuto"><img ng-src="{{book.image}}" class="bookImage"></td>
+                            <td class="columnAuto">{{book.isbn}}</td>
+                            <td>{{book.title}}</td>
+                            <td class="columnAuto">{{book.authors}}</td>
+                            <td class="columnAuto">{{book.year}}</td>
+                            <td>
+                                <span ng-repeat="genre in book.genres ">
+                                {{genre}},
+                                </span>
+                            </td>
+
+                            <td class="columnAuto">
+                                <span ng-repeat-start="i in getNumberFullUser(book.review)  track by $index" ng-bind="label"
+                                      style="color: #C09F80;" class="glyphicon glyphicon-star"></span>
+                                <span ng-repeat-end></span>
+                                <span ng-repeat-start="i in getNumberEmptyUser(book.review)  track by $index"
+                                      class="glyphicon glyphicon-star-empty">{{ }}</span>
+                                <span ng-repeat-end></span>
+                            </td>
+                            <td class="columnAuto">{{book.price}}.00 RON</td>
+                            <td>
+                                <a style="font-weight: bold">{{book.nrOfItems}}</a>
+
+                            </td>
+
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-1">
+
+                </div>
+                <!--  table -->
+            </div>
+        </div>
+    </div>
+
+</div>
+
+

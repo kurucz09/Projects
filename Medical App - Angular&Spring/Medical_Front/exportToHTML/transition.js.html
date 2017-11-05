@@ -1,0 +1,82 @@
+<html>
+<head>
+<title>transition.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(128,128,128); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(204,120,50); font-weight: bold; }
+.s3 { color: rgb(106,135,89); }
+.s4 { color: rgb(204,120,50); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+transition.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/* ======================================================================== 
+ * Bootstrap: transition.js v3.3.7 
+ * http://getbootstrap.com/javascript/#transitions 
+ * ======================================================================== 
+ * Copyright 2011-2016 Twitter, Inc. 
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE) 
+ * ======================================================================== */</span><span class="s1"> 
+ 
+ 
++</span><span class="s2">function </span><span class="s1">($) { 
+  </span><span class="s3">'use strict'</span><span class="s4">;</span><span class="s1"> 
+ 
+  </span><span class="s0">// CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)</span><span class="s1"> 
+  </span><span class="s0">// ============================================================</span><span class="s1"> 
+ 
+  </span><span class="s2">function </span><span class="s1">transitionEnd() { 
+    </span><span class="s2">var </span><span class="s1">el = document.createElement(</span><span class="s3">'bootstrap'</span><span class="s1">) 
+ 
+    </span><span class="s2">var </span><span class="s1">transEndEventNames = { 
+      WebkitTransition : </span><span class="s3">'webkitTransitionEnd'</span><span class="s4">,</span><span class="s1"> 
+      MozTransition    : </span><span class="s3">'transitionend'</span><span class="s4">,</span><span class="s1"> 
+      OTransition      : </span><span class="s3">'oTransitionEnd otransitionend'</span><span class="s4">,</span><span class="s1"> 
+      transition       : </span><span class="s3">'transitionend'</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s2">for </span><span class="s1">(</span><span class="s2">var </span><span class="s1">name </span><span class="s2">in </span><span class="s1">transEndEventNames) { 
+      </span><span class="s2">if </span><span class="s1">(el.style[name] !== undefined) { 
+        </span><span class="s2">return </span><span class="s1">{ end: transEndEventNames[name] } 
+      } 
+    } 
+ 
+    </span><span class="s2">return false </span><span class="s0">// explicit for ie8 (  ._.)</span><span class="s1"> 
+  } 
+ 
+  </span><span class="s0">// http://blog.alexmaccaw.com/css-transitions</span><span class="s1"> 
+  $.fn.emulateTransitionEnd = </span><span class="s2">function </span><span class="s1">(duration) { 
+    </span><span class="s2">var </span><span class="s1">called = </span><span class="s2">false</span><span class="s1"> 
+    </span><span class="s2">var </span><span class="s1">$el = </span><span class="s2">this</span><span class="s1"> 
+    $(</span><span class="s2">this</span><span class="s1">).one(</span><span class="s3">'bsTransitionEnd'</span><span class="s4">, </span><span class="s2">function </span><span class="s1">() { called = </span><span class="s2">true </span><span class="s1">}) 
+    </span><span class="s2">var </span><span class="s1">callback = </span><span class="s2">function </span><span class="s1">() { </span><span class="s2">if </span><span class="s1">(!called) $($el).trigger($.support.transition.end) } 
+    setTimeout(callback</span><span class="s4">, </span><span class="s1">duration) 
+    </span><span class="s2">return this</span><span class="s1"> 
+  } 
+ 
+  $(</span><span class="s2">function </span><span class="s1">() { 
+    $.support.transition = transitionEnd() 
+ 
+    </span><span class="s2">if </span><span class="s1">(!$.support.transition) </span><span class="s2">return</span><span class="s1"> 
+ 
+    $.event.special.bsTransitionEnd = { 
+      bindType: $.support.transition.end</span><span class="s4">,</span><span class="s1"> 
+      delegateType: $.support.transition.end</span><span class="s4">,</span><span class="s1"> 
+      handle: </span><span class="s2">function </span><span class="s1">(e) { 
+        </span><span class="s2">if </span><span class="s1">($(e.target).is(</span><span class="s2">this</span><span class="s1">)) </span><span class="s2">return </span><span class="s1">e.handleObj.handler.apply(</span><span class="s2">this</span><span class="s4">, </span><span class="s1">arguments) 
+      } 
+    } 
+  }) 
+ 
+}(jQuery)</span><span class="s4">;</span><span class="s1"> 
+</span></pre>
+</body>
+</html>

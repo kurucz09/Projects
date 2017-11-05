@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>gruntfile.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(128,128,128); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(204,120,50); font-weight: bold; }
+.s3 { color: rgb(106,135,89); }
+.s4 { color: rgb(204,120,50); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+gruntfile.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/// &lt;vs AfterBuild='default' /&gt;</span><span class="s1"> 
+module.exports = </span><span class="s2">function </span><span class="s1">(grunt) { 
+    </span><span class="s3">'use strict'</span><span class="s4">;</span><span class="s1"> 
+    </span><span class="s0">// Project configuration</span><span class="s1"> 
+    grunt.initConfig({ 
+        </span><span class="s0">// Metadata</span><span class="s1"> 
+        pkg: grunt.file.readJSON(</span><span class="s3">'package.json'</span><span class="s1">)</span><span class="s4">,</span><span class="s1"> 
+        ngtemplates: { 
+            app: { 
+                src: [ 
+                    </span><span class="s3">'template/*.html'</span><span class="s1"> 
+                ]</span><span class="s4">,</span><span class="s1"> 
+                dest: </span><span class="s3">'dist/datetime-picker.tpls.js'</span><span class="s4">,</span><span class="s1"> 
+                options: { 
+                    module: </span><span class="s3">'ui.bootstrap.datetimepicker'</span><span class="s4">,</span><span class="s1"> 
+                    htmlmin: { 
+                        collapseBooleanAttributes: </span><span class="s2">true</span><span class="s4">,</span><span class="s1"> 
+                        collapseWhitespace: </span><span class="s2">true</span><span class="s4">,</span><span class="s1"> 
+                        removeAttributeQuotes: </span><span class="s2">true</span><span class="s4">,</span><span class="s1"> 
+                        removeComments: </span><span class="s2">true</span><span class="s4">, </span><span class="s0">// Only if you don't use comment directives!</span><span class="s1"> 
+                        removeEmptyAttributes: </span><span class="s2">true</span><span class="s4">,</span><span class="s1"> 
+                        removeRedundantAttributes: </span><span class="s2">true</span><span class="s4">,</span><span class="s1"> 
+                        removeScriptTypeAttributes: </span><span class="s2">true</span><span class="s4">,</span><span class="s1"> 
+                        removeStyleLinkTypeAttributes: </span><span class="s2">true</span><span class="s1"> 
+                    } 
+                } 
+            } 
+        }</span><span class="s4">,</span><span class="s1"> 
+        concat: { 
+            options: { 
+                banner: </span><span class="s3">'// &lt;%= pkg.url %&gt;</span><span class="s4">\n</span><span class="s3">// Version: &lt;%= pkg.version %&gt;</span><span class="s4">\n</span><span class="s3">// Released: &lt;%= grunt.template.today(&quot;yyyy-mm-dd&quot;) %&gt; </span><span class="s4">\n</span><span class="s3">'</span><span class="s1"> 
+            }</span><span class="s4">,</span><span class="s1"> 
+            app: { 
+                src: [ 
+                    </span><span class="s3">'datetime-picker.js'</span><span class="s4">,</span><span class="s1"> 
+                    </span><span class="s3">'&lt;%= ngtemplates.app.dest %&gt;'</span><span class="s4">,</span><span class="s1"> 
+                    </span><span class="s3">'module-export.js'</span><span class="s1"> 
+                ]</span><span class="s4">,</span><span class="s1"> 
+                dest: </span><span class="s3">'dist/datetime-picker.js'</span><span class="s1"> 
+            } 
+        }</span><span class="s4">,</span><span class="s1"> 
+        uglify: { 
+            options: { 
+                banner: </span><span class="s3">'// &lt;%= pkg.url %&gt;</span><span class="s4">\n</span><span class="s3">// Version: &lt;%= pkg.version %&gt;</span><span class="s4">\n</span><span class="s3">// Released: &lt;%= grunt.template.today(&quot;yyyy-mm-dd&quot;) %&gt; </span><span class="s4">\n</span><span class="s3">'</span><span class="s1"> 
+            }</span><span class="s4">,</span><span class="s1"> 
+            app: { 
+                src: </span><span class="s3">'dist/datetime-picker.js'</span><span class="s4">,</span><span class="s1"> 
+                dest: </span><span class="s3">'dist/datetime-picker.min.js'</span><span class="s1"> 
+            } 
+        } 
+ 
+    })</span><span class="s4">;</span><span class="s1"> 
+ 
+    </span><span class="s0">// These plugins provide necessary tasks</span><span class="s1"> 
+    grunt.loadNpmTasks(</span><span class="s3">'grunt-angular-templates'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+    grunt.loadNpmTasks(</span><span class="s3">'grunt-contrib-concat'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+    grunt.loadNpmTasks(</span><span class="s3">'grunt-contrib-uglify'</span><span class="s1">)</span><span class="s4">;</span><span class="s1"> 
+ 
+ 
+    </span><span class="s0">// Default task</span><span class="s1"> 
+    grunt.registerTask(</span><span class="s3">'default'</span><span class="s4">, </span><span class="s1">[</span><span class="s3">'ngtemplates'</span><span class="s4">, </span><span class="s3">'concat'</span><span class="s4">, </span><span class="s3">'uglify'</span><span class="s1">])</span><span class="s4">;</span><span class="s1"> 
+}</span><span class="s4">;</span></pre>
+</body>
+</html>

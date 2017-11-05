@@ -1,0 +1,300 @@
+<html>
+<head>
+<title>uiBreadcrumbs.spec.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(98,151,85); font-style: italic; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(106,135,89); }
+.s3 { color: rgb(204,120,50); }
+.s4 { color: rgb(204,120,50); font-weight: bold; }
+.s5 { color: rgb(128,128,128); }
+.s6 { color: rgb(104,151,187); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+uiBreadcrumbs.spec.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/** 
+ * Created by Michael on 02/04/14. 
+ */</span><span class="s1"> 
+ 
+describe(</span><span class="s2">'uiBreadcrumbs directive'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+    </span><span class="s4">var </span><span class="s1">$compile</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s4">var </span><span class="s1">$scope</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s4">var </span><span class="s1">element</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s4">var </span><span class="s1">$state</span><span class="s3">;</span><span class="s1"> 
+ 
+    beforeEach(module(</span><span class="s2">'angularUtils.directives.uiBreadcrumbs'</span><span class="s1">))</span><span class="s3">;</span><span class="s1"> 
+    beforeEach(module(</span><span class="s2">'templates-main'</span><span class="s1">))</span><span class="s3">;</span><span class="s1"> 
+ 
+    beforeEach(</span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">var </span><span class="s1">mockModule = angular.module(</span><span class="s2">'mockModule'</span><span class="s3">, </span><span class="s1">[]) 
+            .config(</span><span class="s4">function</span><span class="s1">($stateProvider) { 
+                $stateProvider 
+                    .state(</span><span class="s2">'root'</span><span class="s3">, </span><span class="s1">{ 
+                        url: </span><span class="s2">'/'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            displayName: </span><span class="s2">'Home'</span><span class="s1"> 
+                        }</span><span class="s3">,</span><span class="s1"> 
+                        custom: { 
+                            alternateDisplayName: </span><span class="s2">'Other Home'</span><span class="s1"> 
+                        } 
+                    }) 
+                    .state(</span><span class="s2">'root.section'</span><span class="s3">, </span><span class="s1">{ 
+                        url: </span><span class="s2">'section/'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            displayName: </span><span class="s2">'Section 1'</span><span class="s1"> 
+                        } 
+                    }) 
+                    .state(</span><span class="s2">'root.section.subsection'</span><span class="s3">, </span><span class="s1">{ 
+                        url: </span><span class="s2">'subsection/'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            displayName: </span><span class="s2">'Subsection'</span><span class="s1"> 
+                        } 
+                    }) 
+                    .state(</span><span class="s2">'root.section.subsection.nobreadcrumb'</span><span class="s3">, </span><span class="s1">{ 
+                        url: </span><span class="s2">'subsection/bit'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            displayName: </span><span class="s4">false</span><span class="s1"> 
+                        } 
+                    }) 
+                    .state(</span><span class="s2">'async1'</span><span class="s3">, </span><span class="s1">{ 
+                        url: </span><span class="s2">'aync1/'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            displayName: </span><span class="s2">'Async Route 1'</span><span class="s1"> 
+                        }</span><span class="s3">,</span><span class="s1"> 
+                        resolve:{ 
+                            simpleProperty: </span><span class="s4">function</span><span class="s1">() { 
+                                </span><span class="s4">return </span><span class="s2">'hello'</span><span class="s3">;</span><span class="s1"> 
+                            } 
+                        } 
+                    }) 
+                    .state(</span><span class="s2">'async2'</span><span class="s3">, </span><span class="s1">{ 
+                        url: </span><span class="s2">'async2/'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            displayName: </span><span class="s2">'{{ resolvedName | uppercase }}'</span><span class="s1"> 
+                        }</span><span class="s3">,</span><span class="s1"> 
+                        resolve:{ 
+                            resolvedName: </span><span class="s4">function</span><span class="s1">(){ 
+                                </span><span class="s4">return </span><span class="s2">&quot;A Good Route&quot;</span><span class="s3">;</span><span class="s1"> 
+                            } 
+                        } 
+                    }) 
+                    .state( </span><span class="s2">'root.abstract'</span><span class="s3">, </span><span class="s1">{ 
+                        abstract: </span><span class="s4">true</span><span class="s3">,</span><span class="s1"> 
+                        url: </span><span class="s2">'abstract/'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            breadcrumbProxy: </span><span class="s2">'abstract.child'</span><span class="s1"> 
+                        } 
+                    }) 
+                    .state( </span><span class="s2">'root.abstract.child'</span><span class="s3">, </span><span class="s1">{ 
+                        url: </span><span class="s2">'list/'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            displayName: </span><span class="s2">'Concrete'</span><span class="s1"> 
+                        } 
+                    }) 
+                    .state( </span><span class="s2">'root.things'</span><span class="s3">, </span><span class="s1">{ 
+                        abstract: </span><span class="s4">true</span><span class="s3">,</span><span class="s1"> 
+                        url: </span><span class="s2">'things/'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            breadcrumbProxy: </span><span class="s2">'root.things.list'</span><span class="s1"> 
+                        } 
+                    }) 
+                    .state( </span><span class="s2">'root.things.list'</span><span class="s3">, </span><span class="s1">{ 
+                        url: </span><span class="s2">'all/'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            displayName: </span><span class="s2">'Things'</span><span class="s1"> 
+                        } 
+                    }) 
+                    .state( </span><span class="s2">'root.things.detail'</span><span class="s3">, </span><span class="s1">{ 
+                        url: </span><span class="s2">'detail/'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            displayName: </span><span class="s2">'A Thing'</span><span class="s1"> 
+                        } 
+                    }) 
+                    .state( </span><span class="s2">'root.project'</span><span class="s3">, </span><span class="s1">{ 
+                        abstract: </span><span class="s4">true</span><span class="s3">,</span><span class="s1"> 
+                        url: </span><span class="s2">'abstract2/'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            breadcrumbProxy: </span><span class="s2">'root.project.dashboard'</span><span class="s1"> 
+                        }</span><span class="s3">,</span><span class="s1"> 
+                        resolve: { 
+                            resolvedName: </span><span class="s4">function</span><span class="s1">(){ 
+                                </span><span class="s4">return </span><span class="s2">&quot;Project&quot;</span><span class="s3">;</span><span class="s1"> 
+                            } 
+                        } 
+                    }) 
+                    .state( </span><span class="s2">'root.project.dashboard'</span><span class="s3">, </span><span class="s1">{ 
+                        url: </span><span class="s2">'dashboard/'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            displayName: </span><span class="s2">'{{ resolvedName }} Dashboard'</span><span class="s1"> 
+                        } 
+                    }) 
+                    .state( </span><span class="s2">'root.project.tasks'</span><span class="s3">, </span><span class="s1">{ 
+                        url: </span><span class="s2">'list/'</span><span class="s3">,</span><span class="s1"> 
+                        data: { 
+                            displayName: </span><span class="s2">'{{ resolvedName }} Tasks'</span><span class="s1"> 
+                        } 
+                    })</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+        module(</span><span class="s2">'mockModule'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        </span><span class="s5">// Kickstart the injectors previously registered with calls to angular.mock.module</span><span class="s1"> 
+        inject(</span><span class="s4">function </span><span class="s1">() {})</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    beforeEach(inject(</span><span class="s4">function</span><span class="s1">($rootScope</span><span class="s3">, </span><span class="s1">_$compile_</span><span class="s3">, </span><span class="s1">_$state_) { 
+        $compile = _$compile_</span><span class="s3">;</span><span class="s1"> 
+        $scope = $rootScope.$new()</span><span class="s3">;</span><span class="s1"> 
+        $state = _$state_</span><span class="s3">;</span><span class="s1"> 
+ 
+        element = $compile(</span><span class="s2">'&lt;ui-breadcrumbs displayname-property=&quot;data.displayName&quot;&gt;&lt;/ui-breadcrumbs&gt;'</span><span class="s1">)($scope)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        $state.go(</span><span class="s2">'root.section.subsection'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+    }))</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should display the breadcrumbs &lt;ol&gt; element'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        expect(element.children()[</span><span class="s6">0</span><span class="s1">].tagName).toBe(</span><span class="s2">'OL'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should display the correct number of list items'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        expect(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">).length).toBe(</span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should display the displayName if it exists'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        expect(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">0</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Home'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">1</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Section 1'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">2</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Subsection'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should insert the correct route in a ui-sref attribute'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        expect(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">1</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'ui-sref=&quot;root.section&quot;'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should apply the &quot;active&quot; class to the current state breadcrumb'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        expect(angular.element(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">2</span><span class="s1">]).hasClass(</span><span class="s2">&quot;active&quot;</span><span class="s1">)).toBe(</span><span class="s4">true</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should not add a link to current state breadcrumb'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">var </span><span class="s1">activeLi = angular.element(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">2</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        expect(activeLi.html()).not.toContain(</span><span class="s2">'href'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should update on route change'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        $state.go(</span><span class="s2">'root'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+        expect(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">).length).toBe(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should not make a breadcrumb if displayName is set to false'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        $state.go(</span><span class="s2">'root.section.subsection.nobreadcrumb'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        expect(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">).length).toBe(</span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(angular.element(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">2</span><span class="s1">]).hasClass(</span><span class="s2">&quot;active&quot;</span><span class="s1">)).toBe(</span><span class="s4">true</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should show correct displayName for alternative directive attribute'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">var </span><span class="s1">element2 = $compile(</span><span class="s2">'&lt;ui-breadcrumbs displayname-property=&quot;custom.alternateDisplayName&quot;&gt;&lt;/ui-breadcrumbs&gt;'</span><span class="s1">)($scope)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        $state.go(</span><span class="s2">'root'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">0</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Other Home'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should work when the route has a async resolve defined on it'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">var </span><span class="s1">element2 = $compile(</span><span class="s2">'&lt;ui-breadcrumbs displayname-property=&quot;data.displayName&quot;&gt;&lt;/ui-breadcrumbs&gt;'</span><span class="s1">)($scope)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        $state.go(</span><span class="s2">'async1'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">0</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Async Route 1'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should interpolate the string against the resolved properties on the config object'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">var </span><span class="s1">element2 = $compile(</span><span class="s2">'&lt;ui-breadcrumbs displayname-property=&quot;data.displayName&quot;&gt;&lt;/ui-breadcrumbs&gt;'</span><span class="s1">)($scope)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        $state.go(</span><span class="s2">'async2'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">0</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'A GOOD ROUTE'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should not display an abstract state in the breadcrumbs'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        $state.go(</span><span class="s2">'root.abstract.child'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        expect(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">0</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Home'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">1</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Concrete'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">2</span><span class="s1">]).not.toBeDefined()</span><span class="s3">;</span><span class="s1"> 
+        expect(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">).length).toBe(</span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should not display an abstract state in the breadcrumbs even if proxy attribute is set'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">var </span><span class="s1">element2 = $compile(</span><span class="s2">'&lt;ui-breadcrumbs displayname-property=&quot;data.displayName&quot; abstract-proxy-property=&quot;data.breadcrumbProxy&quot;&gt;&lt;/ui-breadcrumbs&gt;'</span><span class="s1">)($scope)</span><span class="s3">;</span><span class="s1"> 
+        $state.go(</span><span class="s2">'root.abstract.child'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">0</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Home'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">1</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Concrete'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">2</span><span class="s1">]).not.toBeDefined()</span><span class="s3">;</span><span class="s1"> 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">).length).toBe(</span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should not display an abstract state if no proxy has been set'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        $state.go(</span><span class="s2">'root.things.detail'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        expect(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">0</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Home'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">1</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'A Thing'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should substitute an abstract state with a proxy if one has been set'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">var </span><span class="s1">element2 = $compile(</span><span class="s2">'&lt;ui-breadcrumbs displayname-property=&quot;data.displayName&quot; abstract-proxy-property=&quot;data.breadcrumbProxy&quot;&gt;&lt;/ui-breadcrumbs&gt;'</span><span class="s1">)($scope)</span><span class="s3">;</span><span class="s1"> 
+        $state.go(</span><span class="s2">'root.things.detail'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">0</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Home'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">1</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Things'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">2</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'A Thing'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should not display the abstract proxy if it has already appeared in the breadcrumbs'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">var </span><span class="s1">element2 = $compile(</span><span class="s2">'&lt;ui-breadcrumbs displayname-property=&quot;data.displayName&quot; abstract-proxy-property=&quot;data.breadcrumbProxy&quot;&gt;&lt;/ui-breadcrumbs&gt;'</span><span class="s1">)($scope)</span><span class="s3">;</span><span class="s1"> 
+        $state.go(</span><span class="s2">'root.things.list'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">0</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Home'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">1</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Things'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">2</span><span class="s1">]).not.toBeDefined()</span><span class="s3">;</span><span class="s1"> 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">).length).toBe(</span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    it(</span><span class="s2">'should use resolved variables for abstract state proxy'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">var </span><span class="s1">element2 = $compile(</span><span class="s2">'&lt;ui-breadcrumbs displayname-property=&quot;data.displayName&quot; abstract-proxy-property=&quot;data.breadcrumbProxy&quot;&gt;&lt;/ui-breadcrumbs&gt;'</span><span class="s1">)($scope)</span><span class="s3">;</span><span class="s1"> 
+        $state.go(</span><span class="s2">'root.project.tasks'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">0</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Home'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">1</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Project Dashboard'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">2</span><span class="s1">].innerHTML).toContain(</span><span class="s2">'Project Tasks'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">)[</span><span class="s6">3</span><span class="s1">]).not.toBeDefined()</span><span class="s3">;</span><span class="s1"> 
+        expect(element2[</span><span class="s6">0</span><span class="s1">].querySelectorAll(</span><span class="s2">'li'</span><span class="s1">).length).toBe(</span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+})</span><span class="s3">;</span><span class="s1"> 
+</span></pre>
+</body>
+</html>

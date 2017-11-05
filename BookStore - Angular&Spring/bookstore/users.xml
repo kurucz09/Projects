@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<UsersList>
+    <User>
+        <id>1</id>
+        <username>Bogdan</username>
+        <password>123456</password>
+        <userType>regularUser</userType>
+    </User>
+    <User>
+        <id>3</id>
+        <username>admin</username>
+        <password>admin0</password>
+        <userType>administrator</userType>
+    </User>
+    <User>
+        <id>4</id>
+        <username>user</username>
+        <password>user00</password>
+        <userType>regularUser</userType>
+    </User>
+    <User>
+        <id>6</id>
+        <username>Victorian</username>
+        <password>vivirachita</password>
+        <userType>regularUser</userType>
+    </User>
+    <User>
+        <id>9</id>
+        <username>ioana</username>
+        <password>120491</password>
+        <userType>administrator</userType>
+    </User>
+    <User>
+        <id>10</id>
+        <username>TheRock2</username>
+        <password>dfasgffd</password>
+        <userType>regularUser</userType>
+    </User>
+</UsersList>

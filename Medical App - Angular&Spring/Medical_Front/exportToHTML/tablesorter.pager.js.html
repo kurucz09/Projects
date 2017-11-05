@@ -1,0 +1,207 @@
+<html>
+<head>
+<title>tablesorter.pager.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(169,183,198); }
+.s1 { color: rgb(204,120,50); font-weight: bold; }
+.s2 { color: rgb(204,120,50); }
+.s3 { color: rgb(104,151,187); }
+.s4 { color: rgb(106,135,89); }
+.s5 { color: rgb(128,128,128); }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+tablesorter.pager.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">(</span><span class="s1">function</span><span class="s0">($) { 
+    $.extend({ 
+        tablesorterPager: </span><span class="s1">new function</span><span class="s0">() { 
+ 
+            </span><span class="s1">function </span><span class="s0">updatePageDisplay(c) { 
+                </span><span class="s1">var </span><span class="s0">s = $(c.cssPageDisplay</span><span class="s2">,</span><span class="s0">c.container).val((c.page+</span><span class="s3">1</span><span class="s0">) + c.seperator + c.totalPages)</span><span class="s2">;</span><span class="s0"> 
+            } 
+ 
+            </span><span class="s1">function </span><span class="s0">setPageSize(table</span><span class="s2">,</span><span class="s0">size) { 
+                </span><span class="s1">var </span><span class="s0">c = table.config</span><span class="s2">;</span><span class="s0"> 
+                c.size = size</span><span class="s2">;</span><span class="s0"> 
+                c.totalPages = Math.ceil(c.totalRows / c.size)</span><span class="s2">;</span><span class="s0"> 
+                c.pagerPositionSet = </span><span class="s1">false</span><span class="s2">;</span><span class="s0"> 
+                moveToPage(table)</span><span class="s2">;</span><span class="s0"> 
+                fixPosition(table)</span><span class="s2">;</span><span class="s0"> 
+            } 
+ 
+            </span><span class="s1">function </span><span class="s0">fixPosition(table) { 
+                </span><span class="s1">var </span><span class="s0">c = table.config</span><span class="s2">;</span><span class="s0"> 
+                </span><span class="s1">if</span><span class="s0">(!c.pagerPositionSet &amp;&amp; c.positionFixed) { 
+                    </span><span class="s1">var </span><span class="s0">c = table.config</span><span class="s2">, </span><span class="s0">o = $(table)</span><span class="s2">;</span><span class="s0"> 
+                    </span><span class="s1">if</span><span class="s0">(o.offset) { 
+                        c.container.css({ 
+                            top: o.offset().top + o.height() + </span><span class="s4">'px'</span><span class="s2">,</span><span class="s0"> 
+                            position: </span><span class="s4">'absolute'</span><span class="s0"> 
+                        })</span><span class="s2">;</span><span class="s0"> 
+                    } 
+                    c.pagerPositionSet = </span><span class="s1">true</span><span class="s2">;</span><span class="s0"> 
+                } 
+            } 
+ 
+            </span><span class="s1">function </span><span class="s0">moveToFirstPage(table) { 
+                </span><span class="s1">var </span><span class="s0">c = table.config</span><span class="s2">;</span><span class="s0"> 
+                c.page = </span><span class="s3">0</span><span class="s2">;</span><span class="s0"> 
+                moveToPage(table)</span><span class="s2">;</span><span class="s0"> 
+            } 
+ 
+            </span><span class="s1">function </span><span class="s0">moveToLastPage(table) { 
+                </span><span class="s1">var </span><span class="s0">c = table.config</span><span class="s2">;</span><span class="s0"> 
+                c.page = (c.totalPages-</span><span class="s3">1</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+                moveToPage(table)</span><span class="s2">;</span><span class="s0"> 
+            } 
+ 
+            </span><span class="s1">function </span><span class="s0">moveToNextPage(table) { 
+                </span><span class="s1">var </span><span class="s0">c = table.config</span><span class="s2">;</span><span class="s0"> 
+                c.page++</span><span class="s2">;</span><span class="s0"> 
+                </span><span class="s1">if</span><span class="s0">(c.page &gt;= (c.totalPages-</span><span class="s3">1</span><span class="s0">)) { 
+                    c.page = (c.totalPages-</span><span class="s3">1</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+                } 
+                moveToPage(table)</span><span class="s2">;</span><span class="s0"> 
+            } 
+ 
+            </span><span class="s1">function </span><span class="s0">moveToPrevPage(table) { 
+                </span><span class="s1">var </span><span class="s0">c = table.config</span><span class="s2">;</span><span class="s0"> 
+                c.page--</span><span class="s2">;</span><span class="s0"> 
+                </span><span class="s1">if</span><span class="s0">(c.page &lt;= </span><span class="s3">0</span><span class="s0">) { 
+                    c.page = </span><span class="s3">0</span><span class="s2">;</span><span class="s0"> 
+                } 
+                moveToPage(table)</span><span class="s2">;</span><span class="s0"> 
+            } 
+ 
+ 
+            </span><span class="s1">function </span><span class="s0">moveToPage(table) { 
+                </span><span class="s1">var </span><span class="s0">c = table.config</span><span class="s2">;</span><span class="s0"> 
+                </span><span class="s1">if</span><span class="s0">(c.page &lt; </span><span class="s3">0 </span><span class="s0">|| c.page &gt; (c.totalPages-</span><span class="s3">1</span><span class="s0">)) { 
+                    c.page = </span><span class="s3">0</span><span class="s2">;</span><span class="s0"> 
+                } 
+ 
+                renderTable(table</span><span class="s2">,</span><span class="s0">c.rowsCopy)</span><span class="s2">;</span><span class="s0"> 
+            } 
+ 
+            </span><span class="s1">function </span><span class="s0">renderTable(table</span><span class="s2">,</span><span class="s0">rows) { 
+ 
+                </span><span class="s1">var </span><span class="s0">c = table.config</span><span class="s2">;</span><span class="s0"> 
+                </span><span class="s1">var </span><span class="s0">l = rows.length</span><span class="s2">;</span><span class="s0"> 
+                </span><span class="s1">var </span><span class="s0">s = (c.page * c.size)</span><span class="s2">;</span><span class="s0"> 
+                </span><span class="s1">var </span><span class="s0">e = (s + c.size)</span><span class="s2">;</span><span class="s0"> 
+                </span><span class="s1">if</span><span class="s0">(e &gt; rows.length ) { 
+                    e = rows.length</span><span class="s2">;</span><span class="s0"> 
+                } 
+ 
+ 
+                </span><span class="s1">var </span><span class="s0">tableBody = $(table.tBodies[</span><span class="s3">0</span><span class="s0">])</span><span class="s2">;</span><span class="s0"> 
+ 
+                </span><span class="s5">// clear the table body</span><span class="s0"> 
+ 
+                $.tablesorter.clearTableBody(table)</span><span class="s2">;</span><span class="s0"> 
+ 
+                </span><span class="s1">for</span><span class="s0">(</span><span class="s1">var </span><span class="s0">i = s</span><span class="s2">; </span><span class="s0">i &lt; e</span><span class="s2">; </span><span class="s0">i++) { 
+ 
+                    </span><span class="s5">//tableBody.append(rows[i]);</span><span class="s0"> 
+ 
+                    </span><span class="s1">var </span><span class="s0">o = rows[i]</span><span class="s2">;</span><span class="s0"> 
+                    </span><span class="s1">var </span><span class="s0">l = o.length</span><span class="s2">;</span><span class="s0"> 
+                    </span><span class="s1">for</span><span class="s0">(</span><span class="s1">var </span><span class="s0">j=</span><span class="s3">0</span><span class="s2">; </span><span class="s0">j &lt; l</span><span class="s2">; </span><span class="s0">j++) { 
+ 
+                        tableBody[</span><span class="s3">0</span><span class="s0">].appendChild(o[j])</span><span class="s2">;</span><span class="s0"> 
+ 
+                    } 
+                } 
+ 
+                fixPosition(table</span><span class="s2">,</span><span class="s0">tableBody)</span><span class="s2">;</span><span class="s0"> 
+ 
+                $(table).trigger(</span><span class="s4">&quot;applyWidgets&quot;</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+                </span><span class="s1">if</span><span class="s0">( c.page &gt;= c.totalPages ) { 
+                    moveToLastPage(table)</span><span class="s2">;</span><span class="s0"> 
+                } 
+ 
+                updatePageDisplay(c)</span><span class="s2">;</span><span class="s0"> 
+            } 
+ 
+            </span><span class="s1">this</span><span class="s0">.appender = </span><span class="s1">function</span><span class="s0">(table</span><span class="s2">,</span><span class="s0">rows) { 
+ 
+                </span><span class="s1">var </span><span class="s0">c = table.config</span><span class="s2">;</span><span class="s0"> 
+ 
+                c.rowsCopy = rows</span><span class="s2">;</span><span class="s0"> 
+                c.totalRows = rows.length</span><span class="s2">;</span><span class="s0"> 
+                c.totalPages = Math.ceil(c.totalRows / c.size)</span><span class="s2">;</span><span class="s0"> 
+ 
+                renderTable(table</span><span class="s2">,</span><span class="s0">rows)</span><span class="s2">;</span><span class="s0"> 
+            }</span><span class="s2">;</span><span class="s0"> 
+ 
+            </span><span class="s1">this</span><span class="s0">.defaults = { 
+                size: </span><span class="s3">10</span><span class="s2">,</span><span class="s0"> 
+                offset: </span><span class="s3">0</span><span class="s2">,</span><span class="s0"> 
+                page: </span><span class="s3">0</span><span class="s2">,</span><span class="s0"> 
+                totalRows: </span><span class="s3">0</span><span class="s2">,</span><span class="s0"> 
+                totalPages: </span><span class="s3">0</span><span class="s2">,</span><span class="s0"> 
+                container: </span><span class="s1">null</span><span class="s2">,</span><span class="s0"> 
+                cssNext: </span><span class="s4">'.next'</span><span class="s2">,</span><span class="s0"> 
+                cssPrev: </span><span class="s4">'.prev'</span><span class="s2">,</span><span class="s0"> 
+                cssFirst: </span><span class="s4">'.first'</span><span class="s2">,</span><span class="s0"> 
+                cssLast: </span><span class="s4">'.last'</span><span class="s2">,</span><span class="s0"> 
+                cssPageDisplay: </span><span class="s4">'.pagedisplay'</span><span class="s2">,</span><span class="s0"> 
+                cssPageSize: </span><span class="s4">'.pagesize'</span><span class="s2">,</span><span class="s0"> 
+                seperator: </span><span class="s4">&quot;/&quot;</span><span class="s2">,</span><span class="s0"> 
+                positionFixed: </span><span class="s1">true</span><span class="s2">,</span><span class="s0"> 
+                appender: </span><span class="s1">this</span><span class="s0">.appender 
+            }</span><span class="s2">;</span><span class="s0"> 
+ 
+            </span><span class="s1">this</span><span class="s0">.construct = </span><span class="s1">function</span><span class="s0">(settings) { 
+ 
+                </span><span class="s1">return this</span><span class="s0">.each(</span><span class="s1">function</span><span class="s0">() { 
+ 
+                    config = $.extend(</span><span class="s1">this</span><span class="s0">.config</span><span class="s2">, </span><span class="s0">$.tablesorterPager.defaults</span><span class="s2">, </span><span class="s0">settings)</span><span class="s2">;</span><span class="s0"> 
+ 
+                    </span><span class="s1">var </span><span class="s0">table = </span><span class="s1">this</span><span class="s2">, </span><span class="s0">pager = config.container</span><span class="s2">;</span><span class="s0"> 
+ 
+                    $(</span><span class="s1">this</span><span class="s0">).trigger(</span><span class="s4">&quot;appendCache&quot;</span><span class="s0">)</span><span class="s2">;</span><span class="s0"> 
+ 
+                    config.size = parseInt($(</span><span class="s4">&quot;.pagesize&quot;</span><span class="s2">,</span><span class="s0">pager).val())</span><span class="s2">;</span><span class="s0"> 
+ 
+                    $(config.cssFirst</span><span class="s2">,</span><span class="s0">pager).click(</span><span class="s1">function</span><span class="s0">() { 
+                        moveToFirstPage(table)</span><span class="s2">;</span><span class="s0"> 
+                        </span><span class="s1">return false</span><span class="s2">;</span><span class="s0"> 
+                    })</span><span class="s2">;</span><span class="s0"> 
+                    $(config.cssNext</span><span class="s2">,</span><span class="s0">pager).click(</span><span class="s1">function</span><span class="s0">() { 
+                        moveToNextPage(table)</span><span class="s2">;</span><span class="s0"> 
+                        </span><span class="s1">return false</span><span class="s2">;</span><span class="s0"> 
+                    })</span><span class="s2">;</span><span class="s0"> 
+                    $(config.cssPrev</span><span class="s2">,</span><span class="s0">pager).click(</span><span class="s1">function</span><span class="s0">() { 
+                        moveToPrevPage(table)</span><span class="s2">;</span><span class="s0"> 
+                        </span><span class="s1">return false</span><span class="s2">;</span><span class="s0"> 
+                    })</span><span class="s2">;</span><span class="s0"> 
+                    $(config.cssLast</span><span class="s2">,</span><span class="s0">pager).click(</span><span class="s1">function</span><span class="s0">() { 
+                        moveToLastPage(table)</span><span class="s2">;</span><span class="s0"> 
+                        </span><span class="s1">return false</span><span class="s2">;</span><span class="s0"> 
+                    })</span><span class="s2">;</span><span class="s0"> 
+                    $(config.cssPageSize</span><span class="s2">,</span><span class="s0">pager).change(</span><span class="s1">function</span><span class="s0">() { 
+                        setPageSize(table</span><span class="s2">,</span><span class="s0">parseInt($(</span><span class="s1">this</span><span class="s0">).val()))</span><span class="s2">;</span><span class="s0"> 
+                        </span><span class="s1">return false</span><span class="s2">;</span><span class="s0"> 
+                    })</span><span class="s2">;</span><span class="s0"> 
+                })</span><span class="s2">;</span><span class="s0"> 
+            }</span><span class="s2">;</span><span class="s0"> 
+ 
+        } 
+    })</span><span class="s2">;</span><span class="s0"> 
+    </span><span class="s5">// extend plugin scope</span><span class="s0"> 
+    $.fn.extend({ 
+        tablesorterPager: $.tablesorterPager.construct 
+    })</span><span class="s2">;</span><span class="s0"> 
+ 
+})(jQuery)</span><span class="s2">;             </span></pre>
+</body>
+</html>

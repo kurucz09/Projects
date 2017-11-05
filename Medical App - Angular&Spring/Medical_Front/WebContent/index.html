@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html ng-app="medicalApp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>MedApp</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" >
+    <link rel="stylesheet" type="text/css" href="assets/css/dist/sweetalert.css">
+    <!-- LIBS -->
+    <script src="assets/js/jquery-1.11.3.js"></script>
+    <script src="assets/js/angular.js"></script>
+    <script src="assets/js/bower-angular-cookies-master/bower-angular-cookies-master/angular-cookies.js"></script>
+    <script src="assets/js/bower-angular-resource-master/bower-angular-resource-master/angular-resource.js"></script>
+    <script src="//code.angularjs.org/1.2.20/angular-sanitize.min.js"></script>
+    <script src="assets/js/angular-route.min.js"></script>
+    <script src="assets/js/moment.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/transition.js"></script>
+    <script src="assets/js/collapse.js"></script>
+    <script src="assets/js/vfs_fonts.js"></script>
+    <script src="assets/css/dist/sweetalert.min.js"></script>
+    <script src="assets/js/jwt-decode-master/build/jwt-decode.js"></script>
+    <script src="assets/js/jwt-decode-master/build/jwt-decode.min.js"></script>
+    <script src="assets/css/angularUtils-master/src/directives/pagination/dirPagination.js"></script>
+    <script src="assets/js/ui-bootstrap-tpls-2.5.0.js" type="text/javascript"></script>
+    <script src="assets/js/daypilot-all.min.js" type="text/javascript"></script>
+
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/login_style.css" />
+    <link rel="stylesheet" href="assets/css/Themes/calendar_green.css" />
+    <link rel="stylesheet" href="assets/css/Themes/navigator_green.css" />
+
+    <script src="app/app.js"></script>
+    <script src="app/controller/login.js"></script>
+    <script src="app/controller/admin.js"></script>
+    <script src="app/controller/secretary.js"></script>
+    <script src="app/controller/doctor.js"></script>
+    <script src="app/index.js"></script>
+    <script src="app/service/userServices.js"></script>
+    <script src="app/service/secretaryServices.js"></script>
+    <script src="app/service/doctorServices.js"></script>
+
+
+
+
+</head>
+<body ng-app="medicalApp">
+    <!-- HEADER -->
+    <nav class="navbar navbar-default" ng-controller="mainCtrl">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="nav navbar-nav navbar-left">
+                <span>
+                <a class="navbar-brand" ng-click="return()"> <img src="\Medical_Front\WebContent\assets\img\Doctor.png"
+                                                                  align="middle" alt="LOGO"
+                                                                  width="40" height="40" style="margin: 5px"></a>
+                  <a class="navbar-brand" href="#" style="color: #FFFFFF; padding-top: 15px;">Medical Application</a>
+                </span>
+            </div>
+
+                <ul class="nav navbar-nav">
+                    <li><a href="" ng-show="showSecretary" ng-click="goPatients()">Patients</a></li>
+                    <li><a href="" ng-show="showSecretary" ng-click="goConsult()">Consulations</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="" ng-show="isLoggedIn()" ng-click="logout()">Log out</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <!-- HEADER -->
+    <div ng-view="">
+
+
+    </div>
+
+
+</body>
+</html>

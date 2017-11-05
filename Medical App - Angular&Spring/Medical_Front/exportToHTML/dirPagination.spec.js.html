@@ -1,0 +1,1225 @@
+<html>
+<head>
+<title>dirPagination.spec.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #606366; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(98,151,85); font-style: italic; }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(106,135,89); }
+.s3 { color: rgb(204,120,50); }
+.s4 { color: rgb(204,120,50); font-weight: bold; }
+.s5 { color: rgb(128,128,128); }
+.s6 { color: rgb(104,151,187); }
+.s7 { color: rgb(98,151,85); font-weight: bold; font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#2b2b2b">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+dirPagination.spec.js</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">/** 
+ * Created by Michael on 04/05/14. 
+ */</span><span class="s1"> 
+ 
+describe(</span><span class="s2">'dirPagination directive'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+    </span><span class="s4">var </span><span class="s1">$compile</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s4">var </span><span class="s1">$scope</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s4">var </span><span class="s1">$timeout</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s4">var </span><span class="s1">containingElement</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s4">var </span><span class="s1">myCollection</span><span class="s3">;</span><span class="s1"> 
+    </span><span class="s4">var </span><span class="s1">myObjectCollection</span><span class="s3">;</span><span class="s1"> 
+ 
+    beforeEach(module(</span><span class="s2">'angularUtils.directives.dirPagination'</span><span class="s1">))</span><span class="s3">;</span><span class="s1"> 
+    beforeEach(module(</span><span class="s2">'templates-main'</span><span class="s1">))</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s5">// used to test the paginationTemplateProvider (see end of file)</span><span class="s1"> 
+    </span><span class="s4">var </span><span class="s1">templateProvider</span><span class="s3">;</span><span class="s1"> 
+    angular.module(</span><span class="s2">'customTemplateTestApp'</span><span class="s3">, </span><span class="s1">[])</span><span class="s3">;</span><span class="s1"> 
+    beforeEach(module(</span><span class="s2">'customTemplateTestApp'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">(paginationTemplateProvider) { 
+        templateProvider = paginationTemplateProvider</span><span class="s3">;</span><span class="s1"> 
+    }))</span><span class="s3">;</span><span class="s1"> 
+ 
+    beforeEach(inject(</span><span class="s4">function</span><span class="s1">($rootScope</span><span class="s3">, </span><span class="s1">_$compile_</span><span class="s3">, </span><span class="s1">_$timeout_) { 
+ 
+        $compile = _$compile_</span><span class="s3">;</span><span class="s1"> 
+        $timeout = _$timeout_</span><span class="s3">;</span><span class="s1"> 
+        $scope = $rootScope.$new()</span><span class="s3">;</span><span class="s1"> 
+        containingElement = angular.element(</span><span class="s2">'&lt;div&gt;&lt;/div&gt;'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+        myCollection = []</span><span class="s3">;</span><span class="s1"> 
+        </span><span class="s4">for</span><span class="s1">(</span><span class="s4">var </span><span class="s1">i = </span><span class="s6">1</span><span class="s3">; </span><span class="s1">i &lt;= </span><span class="s6">100</span><span class="s3">; </span><span class="s1">i++) { 
+            myCollection.push(</span><span class="s2">'item ' </span><span class="s1">+ i)</span><span class="s3">;</span><span class="s1"> 
+        } 
+    }))</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s4">function </span><span class="s1">compileElement(collection</span><span class="s3">, </span><span class="s1">itemsPerPage</span><span class="s3">, </span><span class="s1">currentPage</span><span class="s3">, </span><span class="s1">customExpression</span><span class="s3">, </span><span class="s1">totalItems) { 
+        </span><span class="s4">var </span><span class="s1">expression</span><span class="s3">;</span><span class="s1"> 
+        </span><span class="s4">var </span><span class="s1">totalItemsHtml</span><span class="s3">;</span><span class="s1"> 
+        </span><span class="s4">var </span><span class="s1">html</span><span class="s3">;</span><span class="s1"> 
+        $scope.collection = collection</span><span class="s3">;</span><span class="s1"> 
+        $scope.itemsPerPage = itemsPerPage</span><span class="s3">;</span><span class="s1"> 
+        $scope.currentPage = currentPage || </span><span class="s6">1</span><span class="s3">;</span><span class="s1"> 
+        $scope.totalItems = totalItems || undefined</span><span class="s3">;</span><span class="s1"> 
+        totalItemsHtml =  (</span><span class="s4">typeof </span><span class="s1">totalItems !== </span><span class="s2">'undefined'</span><span class="s1">) ? </span><span class="s2">'total-items=&quot;totalItems&quot;' </span><span class="s1">: </span><span class="s2">''</span><span class="s3">;</span><span class="s1"> 
+        expression = customExpression || </span><span class="s2">&quot;item in collection | itemsPerPage: itemsPerPage&quot;</span><span class="s3">;</span><span class="s1"> 
+        html = </span><span class="s2">'&lt;ul class=&quot;list&quot;&gt;&lt;li dir-paginate=&quot;'</span><span class="s1">+ expression + </span><span class="s2">'&quot; current-page=&quot;currentPage&quot; ' </span><span class="s1">+ totalItemsHtml + </span><span class="s2">' &gt;{{ item }}&lt;/li&gt;&lt;/ul&gt; ' </span><span class="s1">+ 
+            </span><span class="s2">'&lt;dir-pagination-controls&gt;&lt;/dir-pagination-controls&gt;'</span><span class="s3">;</span><span class="s1"> 
+        containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s4">function </span><span class="s1">getListItems() { 
+        </span><span class="s4">return </span><span class="s1">containingElement.find(</span><span class="s2">'ul.list li'</span><span class="s1">).map(</span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">return </span><span class="s1">$(</span><span class="s4">this</span><span class="s1">).text().trim()</span><span class="s3">;</span><span class="s1"> 
+        }).get()</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s4">function </span><span class="s1">getPageLinksArray() { 
+        </span><span class="s4">return </span><span class="s1">containingElement.find(</span><span class="s2">'ul.pagination li'</span><span class="s1">).map(</span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">return </span><span class="s1">$(</span><span class="s4">this</span><span class="s1">).text().trim()</span><span class="s3">;</span><span class="s1"> 
+        }).get()</span><span class="s3">;</span><span class="s1"> 
+    } 
+ 
+    describe(</span><span class="s2">'paginated list'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+        it(</span><span class="s2">'should throw an exception if itemsPerPage filter not set'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                </span><span class="s4">var </span><span class="s1">customExpression = </span><span class="s2">&quot;item in collection&quot;</span><span class="s3">;</span><span class="s1"> 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s1">customExpression)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).toThrow(</span><span class="s2">&quot;pagination directive: the 'itemsPerPage' filter must be set.&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should repeat the items like ng-repeat'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myCollection)</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(listItems.length).toBe(</span><span class="s6">100</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should limit the items to match itemsPerPage = 10'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">var </span><span class="s1">listItems</span><span class="s3">;</span><span class="s1"> 
+ 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems.length).toBe(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should limit the items to match itemsPerPage = 50'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">var </span><span class="s1">listItems</span><span class="s3">;</span><span class="s1"> 
+ 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">50</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems.length).toBe(</span><span class="s6">50</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should not mutate the collection itself '</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myCollection)</span><span class="s3">;</span><span class="s1"> 
+            expect($scope.collection.length).toBe(</span><span class="s6">100</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">50</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect($scope.collection.length).toBe(</span><span class="s6">100</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect($scope.collection.length).toBe(</span><span class="s6">100</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should work correctly with other filters (filter)'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            $scope.filterBy = </span><span class="s2">'2'</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">customExpression = </span><span class="s2">&quot;item in collection | filter: filterBy | itemsPerPage: itemsPerPage&quot;</span><span class="s3">;</span><span class="s1"> 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s1">customExpression)</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">var </span><span class="s1">listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems).toEqual([</span><span class="s2">'item 2'</span><span class="s3">, </span><span class="s2">'item 12'</span><span class="s3">, </span><span class="s2">'item 20'</span><span class="s3">, </span><span class="s2">'item 21'</span><span class="s3">, </span><span class="s2">'item 22'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should work correctly with other filters (orderBy)'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">var </span><span class="s1">customExpression = </span><span class="s2">&quot;item in collection | orderBy:'toString()':true | itemsPerPage: itemsPerPage&quot;</span><span class="s3">;</span><span class="s1"> 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s1">customExpression)</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">var </span><span class="s1">listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems).toEqual([</span><span class="s2">'item 99'</span><span class="s3">, </span><span class="s2">'item 98'</span><span class="s3">, </span><span class="s2">'item 97'</span><span class="s3">, </span><span class="s2">'item 96'</span><span class="s3">, </span><span class="s2">'item 95'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should work inside a transcluded directive (ng-if)'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            $scope.collection = myCollection</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">html = </span><span class="s2">'&lt;div ng-if=&quot;true&quot;&gt;' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;ul class=&quot;list&quot;&gt;&lt;li dir-paginate=&quot;item in collection | itemsPerPage: 5&quot;&gt;{{ item }}&lt;/li&gt;&lt;/ul&gt; ' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;dir-pagination-controls&gt;&lt;/dir-pagination-controls&gt;' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;/div&gt;'</span><span class="s3">;</span><span class="s1"> 
+            containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">var </span><span class="s1">listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems).toEqual([</span><span class="s2">'item 1'</span><span class="s3">, </span><span class="s2">'item 2'</span><span class="s3">, </span><span class="s2">'item 3'</span><span class="s3">, </span><span class="s2">'item 4'</span><span class="s3">, </span><span class="s2">'item 5'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should display the second page when compiled with currentPage = 2'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">var </span><span class="s1">listItems</span><span class="s3">;</span><span class="s1"> 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">3</span><span class="s3">, </span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems).toEqual([</span><span class="s2">'item 4'</span><span class="s3">, </span><span class="s2">'item 5'</span><span class="s3">, </span><span class="s2">'item 6'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should display the next page when the currentPage changes'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">var </span><span class="s1">listItems</span><span class="s3">;</span><span class="s1"> 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems).toEqual([</span><span class="s2">'item 1'</span><span class="s3">, </span><span class="s2">'item 2'</span><span class="s3">, </span><span class="s2">'item 3'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+ 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage = </span><span class="s6">2</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+            listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems).toEqual([</span><span class="s2">'item 4'</span><span class="s3">, </span><span class="s2">'item 5'</span><span class="s3">, </span><span class="s2">'item 6'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+ 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage = </span><span class="s6">3</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+            listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems).toEqual([</span><span class="s2">'item 7'</span><span class="s3">, </span><span class="s2">'item 8'</span><span class="s3">, </span><span class="s2">'item 9'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+ 
+        it(</span><span class="s2">'should work if itemsPerPage is a literal value'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">var </span><span class="s1">customExpression = </span><span class="s2">&quot;item in collection | itemsPerPage: 2&quot;</span><span class="s3">;</span><span class="s1"> 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s4">null</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s1">customExpression)</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">var </span><span class="s1">listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems.length).toEqual(</span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems).toEqual([</span><span class="s2">'item 1'</span><span class="s3">, </span><span class="s2">'item 2'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        </span><span class="s5">// see https://github.com/michaelbromley/angularUtils/issues/233</span><span class="s1"> 
+        </span><span class="s4">function </span><span class="s1">testPaginationId(paginationIdString) { 
+            $scope.collection = myCollection</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">html = </span><span class="s2">'&lt;ul class=&quot;list&quot;&gt;&lt;li dir-paginate=&quot;item in collection | itemsPerPage: 2&quot;  pagination-id=&quot;' </span><span class="s1">+ paginationIdString + </span><span class="s2">'&quot; &gt;{{ item }}&lt;/li&gt;&lt;/ul&gt; ' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;dir-pagination-controls pagination-id=&quot;some.string&quot;&gt;&lt;/dir-pagination-controls&gt;'</span><span class="s3">;</span><span class="s1"> 
+            containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">var </span><span class="s1">listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems.length).toEqual(</span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems).toEqual([</span><span class="s2">'item 1'</span><span class="s3">, </span><span class="s2">'item 2'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        } 
+ 
+        it(</span><span class="s2">'should work when the pagination-id evaluates to a string containing a period.'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            testPaginationId(</span><span class="s2">'some.string'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should work when the pagination-id evaluates to a string containing a hyphen.'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            testPaginationId(</span><span class="s2">'some-string'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    describe(</span><span class="s2">'paginating over an object'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        beforeEach(</span><span class="s4">function</span><span class="s1">() { 
+            myObjectCollection = {}</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">for</span><span class="s1">(</span><span class="s4">var </span><span class="s1">i = </span><span class="s6">1</span><span class="s3">; </span><span class="s1">i &lt;= </span><span class="s6">100</span><span class="s3">; </span><span class="s1">i++) { 
+                myObjectCollection[</span><span class="s2">'key_' </span><span class="s1">+ i] = </span><span class="s2">'item ' </span><span class="s1">+ i</span><span class="s3">;</span><span class="s1"> 
+            } 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should not throw an exception when the collection is an object'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                compileElement(myObjectCollection</span><span class="s3">, </span><span class="s6">10</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;(key, item) in collection | itemsPerPage: itemsPerPage&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should correctly paginate with simple syntax'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myObjectCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;item in collection | itemsPerPage: itemsPerPage&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems()).toEqual([</span><span class="s2">'item 1'</span><span class="s3">, </span><span class="s2">'item 2'</span><span class="s3">, </span><span class="s2">'item 3'</span><span class="s3">, </span><span class="s2">'item 4'</span><span class="s3">, </span><span class="s2">'item 5'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should correctly paginate with (key, value) syntax'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myObjectCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;(key, item) in collection | itemsPerPage: itemsPerPage&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems()).toEqual([</span><span class="s2">'item 1'</span><span class="s3">, </span><span class="s2">'item 2'</span><span class="s3">, </span><span class="s2">'item 3'</span><span class="s3">, </span><span class="s2">'item 4'</span><span class="s3">, </span><span class="s2">'item 5'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should show the correct items for the currentPage'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myObjectCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">4</span><span class="s3">, </span><span class="s2">&quot;(key, item) in collection | itemsPerPage: itemsPerPage&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems()).toEqual([</span><span class="s2">'item 16'</span><span class="s3">, </span><span class="s2">'item 17'</span><span class="s3">, </span><span class="s2">'item 18'</span><span class="s3">, </span><span class="s2">'item 19'</span><span class="s3">, </span><span class="s2">'item 20'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should display the correct pagination links'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myObjectCollection</span><span class="s3">, </span><span class="s6">20</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;item in collection | itemsPerPage: itemsPerPage&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">paginationLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(paginationLinks).toEqual([</span><span class="s2">'‹'</span><span class="s3">,</span><span class="s2">'1'</span><span class="s3">, </span><span class="s2">'2'</span><span class="s3">, </span><span class="s2">'3'</span><span class="s3">, </span><span class="s2">'4'</span><span class="s3">, </span><span class="s2">'5'</span><span class="s3">, </span><span class="s2">'›'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    describe(</span><span class="s2">'valid expressions'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+        beforeEach(</span><span class="s4">function</span><span class="s1">() { 
+            $scope.getPageSize = </span><span class="s4">function</span><span class="s1">() { 
+                </span><span class="s4">return </span><span class="s6">10</span><span class="s3">;</span><span class="s1"> 
+            }</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow a space after itemsPerPage and before the colon'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;item in collection | itemsPerPage : 10&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow parentheses around the itemsPerPage filter'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;item in filtered = (collection | filter: '1' | itemsPerPage: itemsPerPage)&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+ 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems()).toEqual([</span><span class="s2">'item 1'</span><span class="s3">, </span><span class="s2">'item 10'</span><span class="s3">, </span><span class="s2">'item 11'</span><span class="s3">, </span><span class="s2">'item 12'</span><span class="s3">, </span><span class="s2">'item 13'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+            expect($scope.filtered.length).toEqual(</span><span class="s6">5</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow the itemsPerPage to be a scope method 1'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">,  </span><span class="s2">&quot;item in collection | itemsPerPage: getPageSize()&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow the itemsPerPage to be a scope method 2'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">,  </span><span class="s2">&quot;item in collection | itemsPerPage: getPageSize(myvar)&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow the itemsPerPage to be a scope method 3'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">,  </span><span class="s2">&quot;item in filtered = (collection | itemsPerPage: getPageSize(_myvar))&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow alias syntax'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">,  </span><span class="s2">&quot;item in collection  | itemsPerPage: 10 as myAlias&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect($scope.myAlias.length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow alias syntax 2'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">,  </span><span class="s2">&quot;item in collection  | itemsPerPage: getPageSize() as myAlias&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect($scope.myAlias.length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow alias syntax 3'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">,  </span><span class="s2">&quot;item in alias1 = (collection  | itemsPerPage: getPageSize()) as alias2&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect($scope.alias1.length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect($scope.alias2.length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow dot and bracket notation'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                $scope.foo = { 
+                    name: </span><span class="s2">'myCollection'</span><span class="s3">,</span><span class="s1"> 
+                    myCollection: myCollection</span><span class="s3">,</span><span class="s1"> 
+                    perPage: </span><span class="s6">10</span><span class="s1"> 
+                }</span><span class="s3">;</span><span class="s1"> 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">,  </span><span class="s2">&quot;item in foo[foo.name] | itemsPerPage:foo.perPage&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        </span><span class="s5">// see https://github.com/michaelbromley/angularUtils/issues/241</span><span class="s1"> 
+        </span><span class="s5">// the actual issue was caused by the work &quot;sharedTasksFilters&quot;, which was</span><span class="s1"> 
+        </span><span class="s5">// being matched by the part of the regex that looks for &quot;as&quot; alias syntax.</span><span class="s1"> 
+        it(</span><span class="s2">'should allow deeply nested, long-winded object for itemsPerPage'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                $scope.eventsCtrl = { eventsFilters: { sharedTasksFilters: { eventsPerPage: </span><span class="s6">10 </span><span class="s1">} } }</span><span class="s3">;</span><span class="s1"> 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">,  </span><span class="s2">&quot;item in collection | itemsPerPage:eventsCtrl.eventsFilters.sharedTasksFilters.eventsPerPage&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+ 
+        it(</span><span class="s2">'should allow track by syntax 1'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">,  </span><span class="s2">&quot;item in collection | itemsPerPage: 10 track by $index&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow track by syntax 2'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">,  </span><span class="s2">&quot;item in collection | itemsPerPage: 10 track by item&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow track by with dot in itemsPerPage'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                $scope.foo = { perPage : </span><span class="s6">10 </span><span class="s1">}</span><span class="s3">;</span><span class="s1"> 
+                compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">,  </span><span class="s2">&quot;item in collection | itemsPerPage: foo.perPage track by item&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    describe(</span><span class="s2">'if currentPage attribute is not set'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+        beforeEach(</span><span class="s4">function</span><span class="s1">() { 
+            $scope.collection = myCollection</span><span class="s3">;</span><span class="s1"> 
+            html = </span><span class="s2">'&lt;ul class=&quot;list&quot;&gt;&lt;li dir-paginate=&quot;item in collection | itemsPerPage: 3&quot;&gt;{{ item }}&lt;/li&gt;&lt;/ul&gt; ' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;dir-pagination-controls&gt;&lt;/dir-pagination-controls&gt;'</span><span class="s3">;</span><span class="s1"> 
+            containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should compile'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">var </span><span class="s1">listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems).toEqual([</span><span class="s2">'item 1'</span><span class="s3">, </span><span class="s2">'item 2'</span><span class="s3">, </span><span class="s2">'item 3'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should page correctly'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            pagination.children().eq(</span><span class="s6">3</span><span class="s1">).find(</span><span class="s2">'a'</span><span class="s1">).triggerHandler(</span><span class="s2">'click'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            expect($scope.__default__currentPage).toBe(</span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+            expect(listItems).toEqual([</span><span class="s2">'item 7'</span><span class="s3">, </span><span class="s2">'item 8'</span><span class="s3">, </span><span class="s2">'item 9'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    describe(</span><span class="s2">'pagination controls'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+        beforeEach(</span><span class="s4">function</span><span class="s1">(){ 
+            spyOn(console</span><span class="s3">, </span><span class="s2">'warn'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should throw a warning if the dir-paginate directive has not been set up'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                </span><span class="s4">var </span><span class="s1">html = </span><span class="s2">'&lt;dir-pagination-controls&gt;&lt;/dir-pagination-controls&gt;'</span><span class="s3">;</span><span class="s1"> 
+                containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+                $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            } 
+ 
+            compile()</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(console.warn).toHaveBeenCalledWith(</span><span class="s2">'Pagination directive: the pagination controls cannot be used without the corresponding pagination directive, which was not found at link time.'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should not display pagination if all rows fit on one page'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">9999</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">paginationLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(paginationLinks.length).toBe(</span><span class="s6">0</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should paginate by default if all items do not fit on page'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">40</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">paginationLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(paginationLinks).toEqual([</span><span class="s2">'‹'</span><span class="s3">,</span><span class="s2">'1'</span><span class="s3">, </span><span class="s2">'2'</span><span class="s3">, </span><span class="s2">'3'</span><span class="s3">, </span><span class="s2">'›'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should update the currentPage property of $scope when links clicked'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">40</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            pagination.children().eq(</span><span class="s6">3</span><span class="s1">).find(</span><span class="s2">'a'</span><span class="s1">).triggerHandler(</span><span class="s2">'click'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            expect($scope.currentPage).toBe(</span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            pagination.children().eq(</span><span class="s6">2</span><span class="s1">).find(</span><span class="s2">'a'</span><span class="s1">).triggerHandler(</span><span class="s2">'click'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            expect($scope.currentPage).toBe(</span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            pagination.children().eq(</span><span class="s6">1</span><span class="s1">).find(</span><span class="s2">'a'</span><span class="s1">).triggerHandler(</span><span class="s2">'click'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            expect($scope.currentPage).toBe(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should set the pagination.current value to 5 when compiled with currentPage = 5'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">3</span><span class="s3">, </span><span class="s6">5</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">activePageItem = containingElement.find(</span><span class="s2">'li.active'</span><span class="s1">).eq(</span><span class="s6">0</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">activePage = activePageItem.text().trim()</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(activePage).toEqual(</span><span class="s2">'5'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should show the correct pagination links at start of sequence'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">pageLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(pageLinks).toEqual([</span><span class="s2">'‹'</span><span class="s3">,</span><span class="s2">'1'</span><span class="s3">, </span><span class="s2">'2'</span><span class="s3">, </span><span class="s2">'3'</span><span class="s3">, </span><span class="s2">'4'</span><span class="s3">, </span><span class="s2">'5'</span><span class="s3">, </span><span class="s2">'6'</span><span class="s3">, </span><span class="s2">'7'</span><span class="s3">, </span><span class="s2">'...'</span><span class="s3">, </span><span class="s2">'100'</span><span class="s3">, </span><span class="s2">'›'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should show the correct pagination links in middle sequence'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage = </span><span class="s6">50</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">pageLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(pageLinks).toEqual([</span><span class="s2">'‹'</span><span class="s3">,</span><span class="s2">'1'</span><span class="s3">, </span><span class="s2">'...'</span><span class="s3">, </span><span class="s2">'48'</span><span class="s3">, </span><span class="s2">'49'</span><span class="s3">, </span><span class="s2">'50'</span><span class="s3">, </span><span class="s2">'51'</span><span class="s3">, </span><span class="s2">'52'</span><span class="s3">, </span><span class="s2">'...'</span><span class="s3">, </span><span class="s2">'100'</span><span class="s3">, </span><span class="s2">'›'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should show the correct pagination links at end of sequence'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage = </span><span class="s6">99</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">pageLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(pageLinks).toEqual([</span><span class="s2">'‹'</span><span class="s3">,</span><span class="s2">'1'</span><span class="s3">, </span><span class="s2">'...'</span><span class="s3">, </span><span class="s2">'94'</span><span class="s3">, </span><span class="s2">'95'</span><span class="s3">, </span><span class="s2">'96'</span><span class="s3">, </span><span class="s2">'97'</span><span class="s3">, </span><span class="s2">'98'</span><span class="s3">, </span><span class="s2">'99'</span><span class="s3">, </span><span class="s2">'100'</span><span class="s3">, </span><span class="s2">'›'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should show the correct pagination links after item removed from cllection'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage = </span><span class="s6">98</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.collection.pop()</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">pageLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(pageLinks).toEqual([</span><span class="s2">'‹'</span><span class="s3">,</span><span class="s2">'1'</span><span class="s3">, </span><span class="s2">'...'</span><span class="s3">, </span><span class="s2">'93'</span><span class="s3">, </span><span class="s2">'94'</span><span class="s3">, </span><span class="s2">'95'</span><span class="s3">, </span><span class="s2">'96'</span><span class="s3">, </span><span class="s2">'97'</span><span class="s3">, </span><span class="s2">'98'</span><span class="s3">, </span><span class="s2">'99'</span><span class="s3">, </span><span class="s2">'›'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should calculate pages based off collection after all filters are applied'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            $scope.filterBy = </span><span class="s2">'2'</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">customExpression = </span><span class="s2">&quot;item in collection | filter: filterBy | itemsPerPage: itemsPerPage&quot;</span><span class="s3">;</span><span class="s1"> 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s1">customExpression)</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">var </span><span class="s1">pageLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+            expect(pageLinks.length).toEqual(</span><span class="s6">6</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should update the active page to reflect the value of the current-page property'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">10</span><span class="s3">, </span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">var </span><span class="s1">activeLink = containingElement.find(</span><span class="s2">'ul.pagination li.active'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(activeLink.html()).toContain(</span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage = </span><span class="s6">1</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            activeLink = containingElement.find(</span><span class="s2">'ul.pagination li.active'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(activeLink.html()).toContain(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        </span><span class="s0">/** 
+         * Issue raised here https://github.com/michaelbromley/angularUtils/issues/78 
+         * Where the dir-paginate directive is inside an ngSwitch block (which is initially hidden), so the linking function is not immediately executed. 
+         * The dir-pagination-controls directive is *outside* the switch block, so it gets both compiled *and* linked on page load. 
+         */</span><span class="s1"> 
+        it(</span><span class="s2">'should allow paginate directive to be defined in a deferred-linking situation without error'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                </span><span class="s4">var </span><span class="s1">html</span><span class="s3">;</span><span class="s1"> 
+                $scope.collection = myCollection</span><span class="s3">;</span><span class="s1"> 
+                $scope.showList = </span><span class="s4">false</span><span class="s3">;</span><span class="s1"> 
+                html = </span><span class="s2">'&lt;div ng-if=&quot;showList&quot;&gt;' </span><span class="s1">+ 
+                    </span><span class="s2">'&lt;ul class=&quot;list&quot;&gt;&lt;li dir-paginate=&quot;item in collection | itemsPerPage: 10&quot;&gt;{{ item }}&lt;/li&gt;&lt;/ul&gt; ' </span><span class="s1">+ 
+                    </span><span class="s2">'&lt;/div&gt;' </span><span class="s1">+ 
+                    </span><span class="s2">'&lt;dir-pagination-controls&gt;&lt;/dir-pagination-controls&gt;'</span><span class="s3">;</span><span class="s1"> 
+                containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+                $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            } 
+ 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems().length).toEqual(</span><span class="s6">0</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.showList = </span><span class="s4">true</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        describe(</span><span class="s2">'optional attributes'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+            </span><span class="s4">function </span><span class="s1">compileWithAttributes(attributes) { 
+                $scope.collection = myCollection</span><span class="s3">;</span><span class="s1"> 
+                $scope.currentPage = </span><span class="s6">1</span><span class="s3">;</span><span class="s1"> 
+                </span><span class="s4">var </span><span class="s1">html = </span><span class="s2">'&lt;ul class=&quot;list&quot;&gt;&lt;li dir-paginate=&quot;item in collection | itemsPerPage: 10&quot; current-page=&quot;currentPage&quot;&gt;{{ item }}&lt;/li&gt;&lt;/ul&gt; ' </span><span class="s1">+ 
+                    </span><span class="s2">'&lt;dir-pagination-controls ' </span><span class="s1">+ attributes + </span><span class="s2">' &gt;&lt;/dir-pagination-controls&gt;'</span><span class="s3">;</span><span class="s1"> 
+                containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+                $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            } 
+ 
+ 
+            it(</span><span class="s2">'should accept a max-size attribute to limit the length of the control'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                compileWithAttributes(</span><span class="s2">' max-size=&quot;5&quot; '</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                </span><span class="s4">var </span><span class="s1">pageLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+ 
+                expect(pageLinks).toEqual([</span><span class="s2">'‹'</span><span class="s3">,</span><span class="s2">'1'</span><span class="s3">, </span><span class="s2">'2'</span><span class="s3">, </span><span class="s2">'3'</span><span class="s3">, </span><span class="s2">'...'</span><span class="s3">, </span><span class="s2">'10'</span><span class="s3">, </span><span class="s2">'›'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            it(</span><span class="s2">'should alter links array when value of max-size changes'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                $scope.maxSize = </span><span class="s6">5</span><span class="s3">;</span><span class="s1"> 
+                compileWithAttributes(</span><span class="s2">' max-size=&quot;maxSize&quot; '</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                </span><span class="s4">var </span><span class="s1">pageLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+ 
+                expect(pageLinks).toEqual([</span><span class="s2">'‹'</span><span class="s3">,</span><span class="s2">'1'</span><span class="s3">, </span><span class="s2">'2'</span><span class="s3">, </span><span class="s2">'3'</span><span class="s3">, </span><span class="s2">'...'</span><span class="s3">, </span><span class="s2">'10'</span><span class="s3">, </span><span class="s2">'›'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+ 
+                $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                    $scope.maxSize = </span><span class="s6">9</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+ 
+                pageLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+ 
+                expect(pageLinks).toEqual([</span><span class="s2">'‹'</span><span class="s3">,</span><span class="s2">'1'</span><span class="s3">, </span><span class="s2">'2'</span><span class="s3">, </span><span class="s2">'3'</span><span class="s3">, </span><span class="s2">'4'</span><span class="s3">, </span><span class="s2">'5'</span><span class="s3">, </span><span class="s2">'6'</span><span class="s3">, </span><span class="s2">'7'</span><span class="s3">, </span><span class="s2">'...'</span><span class="s3">, </span><span class="s2">'10'</span><span class="s3">, </span><span class="s2">'›'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            it(</span><span class="s2">'should impose a minimum max-size of 5'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                compileWithAttributes(</span><span class="s2">' max-size=&quot;2&quot; '</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                </span><span class="s4">var </span><span class="s1">pageLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+ 
+                expect(pageLinks).toEqual([</span><span class="s2">'‹'</span><span class="s3">,</span><span class="s2">'1'</span><span class="s3">, </span><span class="s2">'2'</span><span class="s3">, </span><span class="s2">'3'</span><span class="s3">, </span><span class="s2">'...'</span><span class="s3">, </span><span class="s2">'10'</span><span class="s3">, </span><span class="s2">'›'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            it(</span><span class="s2">'should go to the last page when clicking the end arrow'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                compileWithAttributes(</span><span class="s2">' boundary-links=&quot;true&quot; '</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                pagination.children().eq(</span><span class="s6">10</span><span class="s1">).find(</span><span class="s2">'a'</span><span class="s1">).triggerHandler(</span><span class="s2">'click'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+                expect($scope.currentPage).toBe(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            it(</span><span class="s2">'should go to the first page when clicking the end arrow'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                compileWithAttributes(</span><span class="s2">' boundary-links=&quot;true&quot; '</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                    $scope.currentPage = </span><span class="s6">5</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+                expect($scope.currentPage).toBe(</span><span class="s6">5</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                pagination.children().eq(</span><span class="s6">0</span><span class="s1">).find(</span><span class="s2">'a'</span><span class="s1">).triggerHandler(</span><span class="s2">'click'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+                expect($scope.currentPage).toBe(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            it(</span><span class="s2">'should page forward'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                compileWithAttributes(</span><span class="s2">'  '</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                pagination.children().eq(</span><span class="s6">10</span><span class="s1">).find(</span><span class="s2">'a'</span><span class="s1">).triggerHandler(</span><span class="s2">'click'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+                expect($scope.currentPage).toBe(</span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            describe(</span><span class="s2">'on-page-change callback'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+                beforeEach(</span><span class="s4">function</span><span class="s1">() { 
+                    $scope.myCallback = </span><span class="s4">function</span><span class="s1">(currentPage) { 
+                        </span><span class="s4">return </span><span class="s2">&quot;The current page is &quot; </span><span class="s1">+ currentPage</span><span class="s3">;</span><span class="s1"> 
+                    }</span><span class="s3">;</span><span class="s1"> 
+                    spyOn($scope</span><span class="s3">, </span><span class="s2">'myCallback'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+ 
+                it(</span><span class="s2">'should call the callback once when page link clicked'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                    compileWithAttributes(</span><span class="s2">' on-page-change=&quot;myCallback(newPageNumber)&quot; '</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                    expect($scope.myCallback.calls.count()).toEqual(</span><span class="s6">0</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    pagination.children().eq(</span><span class="s6">2</span><span class="s1">).find(</span><span class="s2">'a'</span><span class="s1">).triggerHandler(</span><span class="s2">'click'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+                    expect($scope.myCallback).toHaveBeenCalled()</span><span class="s3">;</span><span class="s1"> 
+                    expect($scope.myCallback.calls.count()).toEqual(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+ 
+                it(</span><span class="s2">'should not call the callback on loading first page, even with controls appearing above the pagination'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                    </span><span class="s4">function </span><span class="s1">compileWithControlsFirst(attributes) { 
+                        $scope.currentPage = </span><span class="s6">1</span><span class="s3">;</span><span class="s1"> 
+                        </span><span class="s4">var </span><span class="s1">html = </span><span class="s2">'&lt;dir-pagination-controls ' </span><span class="s1">+ attributes + </span><span class="s2">' &gt;&lt;/dir-pagination-controls&gt;' </span><span class="s1">+ 
+                            </span><span class="s2">'&lt;table&gt;' </span><span class="s1">+ 
+                            </span><span class="s2">'&lt;tr dir-paginate=&quot;item in collection | itemsPerPage: 10&quot;&gt;&lt;td&gt;{{ item }}&lt;/td&gt;&lt;/tr&gt;' </span><span class="s1">+ 
+                            </span><span class="s2">'&lt;/table&gt;'</span><span class="s3">;</span><span class="s1"> 
+                        containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+                        $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+                    } 
+ 
+                    compileWithControlsFirst(</span><span class="s2">' on-page-change=&quot;myCallback(newPageNumber)&quot; '</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                    $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                        $scope.collection = myCollection</span><span class="s3">;</span><span class="s1"> 
+                    })</span><span class="s3">;</span><span class="s1"> 
+ 
+                    </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                    expect($scope.myCallback.calls.count()).toEqual(</span><span class="s6">0</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    pagination.children().eq(</span><span class="s6">2</span><span class="s1">).find(</span><span class="s2">'a'</span><span class="s1">).triggerHandler(</span><span class="s2">'click'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+                    expect($scope.myCallback).toHaveBeenCalled()</span><span class="s3">;</span><span class="s1"> 
+                    expect($scope.myCallback.calls.count()).toEqual(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+ 
+                it(</span><span class="s2">'should pass the current page number to the callback'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                    compileWithAttributes(</span><span class="s2">' on-page-change=&quot;myCallback(newPageNumber)&quot; '</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                    pagination.children().eq(</span><span class="s6">2</span><span class="s1">).find(</span><span class="s2">'a'</span><span class="s1">).triggerHandler(</span><span class="s2">'click'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+                    expect($scope.myCallback).toHaveBeenCalledWith(</span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+ 
+                it(</span><span class="s2">'should pass the previous page number to the callback'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                    compileWithAttributes(</span><span class="s2">' on-page-change=&quot;myCallback(oldPageNumber)&quot; '</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                    pagination.children().eq(</span><span class="s6">3</span><span class="s1">).find(</span><span class="s2">'a'</span><span class="s1">).triggerHandler(</span><span class="s2">'click'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+                    expect($scope.myCallback).toHaveBeenCalledWith(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            describe(</span><span class="s2">'total-items attribute'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+                it(</span><span class="s2">'should give correct pagination at 200'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                    compileElement(myCollection</span><span class="s3">, </span><span class="s6">100</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s4">false</span><span class="s3">, </span><span class="s6">200</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                    </span><span class="s4">var </span><span class="s1">pageLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+                    expect(pageLinks).toEqual([</span><span class="s2">'‹'</span><span class="s3">,</span><span class="s2">'1'</span><span class="s3">, </span><span class="s2">'2'</span><span class="s3">, </span><span class="s2">'›'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+ 
+                it(</span><span class="s2">'should give correct pagination at 500'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                    compileElement(myCollection</span><span class="s3">, </span><span class="s6">100</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s4">false</span><span class="s3">, </span><span class="s6">500</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+                    </span><span class="s4">var </span><span class="s1">pageLinks = getPageLinksArray()</span><span class="s3">;</span><span class="s1"> 
+                    expect(pageLinks).toEqual([</span><span class="s2">'‹'</span><span class="s3">,</span><span class="s2">'1'</span><span class="s3">, </span><span class="s2">'2'</span><span class="s3">,</span><span class="s2">'3'</span><span class="s3">,</span><span class="s2">'4'</span><span class="s3">,</span><span class="s2">'5'</span><span class="s3">, </span><span class="s2">'›'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+ 
+                it(</span><span class="s2">'should correctly display the second page of results'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                    compileElement(myCollection</span><span class="s3">, </span><span class="s6">100</span><span class="s3">, </span><span class="s6">2</span><span class="s3">, </span><span class="s4">false</span><span class="s3">, </span><span class="s6">500</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    listItems = getListItems()</span><span class="s3">;</span><span class="s1"> 
+                    expect(listItems.length).toEqual(</span><span class="s6">100</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            describe(</span><span class="s2">'auto-hide attribute'</span><span class="s3">, </span><span class="s4">function </span><span class="s1">() { 
+                </span><span class="s4">function </span><span class="s1">compileWithAttributesAndItemsPerPage(attributes</span><span class="s3">, </span><span class="s1">itemsPerPage) { 
+                    $scope.collection = myCollection</span><span class="s3">;</span><span class="s1"> 
+                    $scope.currentPage = </span><span class="s6">1</span><span class="s3">;</span><span class="s1"> 
+                    </span><span class="s4">var </span><span class="s1">html = </span><span class="s2">'&lt;ul class=&quot;list&quot;&gt;&lt;li dir-paginate=&quot;item in collection | itemsPerPage: ' </span><span class="s1">+ 
+                        itemsPerPage + </span><span class="s2">'&quot; current-page=&quot;currentPage&quot;&gt;{{ item }}&lt;/li&gt;&lt;/ul&gt; ' </span><span class="s1">+ 
+                        </span><span class="s2">'&lt;dir-pagination-controls ' </span><span class="s1">+ attributes + </span><span class="s2">' &gt;&lt;/dir-pagination-controls&gt;'</span><span class="s3">;</span><span class="s1"> 
+                    containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+                    $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+                } 
+ 
+                it(</span><span class="s2">'when not set, should not generate pagination controls, with not enough items to paginate over'</span><span class="s3">, </span><span class="s4">function </span><span class="s1">() { 
+                    compileWithAttributesAndItemsPerPage(</span><span class="s2">''</span><span class="s3">, </span><span class="s6">100</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    expect(pagination.length).toEqual(</span><span class="s6">0</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+ 
+                it(</span><span class="s2">'when not set, should generate pagination controls, with enough items to paginate over'</span><span class="s3">, </span><span class="s4">function </span><span class="s1">() { 
+                    compileWithAttributesAndItemsPerPage(</span><span class="s2">''</span><span class="s3">, </span><span class="s6">99</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    expect(pagination.length).toEqual(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+ 
+                it(</span><span class="s2">'when set to false, should generate pagination controls, with not enough items to paginate over'</span><span class="s3">, </span><span class="s4">function </span><span class="s1">() { 
+                    compileWithAttributesAndItemsPerPage(</span><span class="s2">'auto-hide=&quot;false&quot;'</span><span class="s3">, </span><span class="s6">100</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    expect(pagination.length).toEqual(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    </span><span class="s4">var </span><span class="s1">pageLinks = containingElement.find(</span><span class="s2">'ul.pagination li.disabled'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    expect(pageLinks.length).toEqual(</span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+ 
+                it(</span><span class="s2">'when set to false, should generate pagination controls, with enough items to paginate over'</span><span class="s3">, </span><span class="s4">function </span><span class="s1">() { 
+                    compileWithAttributesAndItemsPerPage(</span><span class="s2">'auto-hide=&quot;false&quot;'</span><span class="s3">, </span><span class="s6">99</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    expect(pagination.length).toEqual(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+ 
+                it(</span><span class="s2">'when set to true, should generate pagination controls, with enough items to paginate over'</span><span class="s3">, </span><span class="s4">function </span><span class="s1">() { 
+                    compileWithAttributesAndItemsPerPage(</span><span class="s2">'auto-hide=&quot;true&quot;'</span><span class="s3">, </span><span class="s6">100</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    expect(pagination.length).toEqual(</span><span class="s6">0</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+ 
+                it(</span><span class="s2">'when set to true, should generate pagination controls, with not enough items to paginate over'</span><span class="s3">, </span><span class="s4">function </span><span class="s1">() { 
+                    compileWithAttributesAndItemsPerPage(</span><span class="s2">'auto-hide=&quot;true&quot;'</span><span class="s3">, </span><span class="s6">99</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                    expect(pagination.length).toEqual(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                })</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    describe(</span><span class="s2">'multiple pagination instances per page'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+        </span><span class="s4">var </span><span class="s1">collection1</span><span class="s3">, </span><span class="s1">collection2</span><span class="s3">, </span><span class="s1">currentPage1</span><span class="s3">, </span><span class="s1">currentPage2</span><span class="s3">;</span><span class="s1"> 
+ 
+        beforeEach(</span><span class="s4">function</span><span class="s1">() { 
+            collection1 = []</span><span class="s3">;</span><span class="s1"> 
+            collection2 = []</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">for </span><span class="s1">(</span><span class="s4">var </span><span class="s1">i = </span><span class="s6">0</span><span class="s3">; </span><span class="s1">i &lt; </span><span class="s6">20</span><span class="s3">; </span><span class="s1">i++) { 
+                collection1.push(</span><span class="s2">'c1:' </span><span class="s1">+ i)</span><span class="s3">;</span><span class="s1"> 
+                collection2.push(</span><span class="s2">'c2:' </span><span class="s1">+ i)</span><span class="s3">;</span><span class="s1"> 
+            } 
+            spyOn(console</span><span class="s3">, </span><span class="s2">'warn'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        </span><span class="s0">/** 
+         * Compile function for multiple pagination directives on a single page 
+         * </span><span class="s7">@param </span><span class="s0">collection 
+         * </span><span class="s7">@param </span><span class="s0">itemsPerPage 
+         * </span><span class="s7">@param </span><span class="s0">currentPage 
+         * </span><span class="s7">@param </span><span class="s0">paginationId 
+         * </span><span class="s7">@param </span><span class="s0">customExpression 
+         */</span><span class="s1"> 
+        </span><span class="s4">function </span><span class="s1">compileMultipleInstance(collection</span><span class="s3">, </span><span class="s1">itemsPerPage</span><span class="s3">, </span><span class="s1">currentPage</span><span class="s3">, </span><span class="s1">paginationId</span><span class="s3">, </span><span class="s1">customExpression) { 
+            </span><span class="s4">var </span><span class="s1">expression</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">html</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">if </span><span class="s1">($scope.collection === undefined) { 
+                $scope.collection = {}</span><span class="s3">;</span><span class="s1"> 
+            } 
+            </span><span class="s4">if </span><span class="s1">($scope.itemsPerPage === undefined) { 
+                $scope.itemsPerPage = {}</span><span class="s3">;</span><span class="s1"> 
+            } 
+            </span><span class="s4">if </span><span class="s1">($scope.currentPage === undefined) { 
+                $scope.currentPage = {}</span><span class="s3">;</span><span class="s1"> 
+            } 
+            $scope.collection[paginationId] = collection</span><span class="s3">;</span><span class="s1"> 
+            $scope.itemsPerPage[paginationId] = itemsPerPage</span><span class="s3">;</span><span class="s1"> 
+            $scope.currentPage[paginationId] = currentPage || </span><span class="s6">1</span><span class="s3">;</span><span class="s1"> 
+            expression = customExpression || </span><span class="s2">&quot;item in collection.&quot; </span><span class="s1">+ paginationId + </span><span class="s2">&quot; | itemsPerPage: itemsPerPage.&quot; </span><span class="s1">+ paginationId</span><span class="s3">;</span><span class="s1"> 
+            html = </span><span class="s2">'&lt;ul class=&quot;list&quot;&gt;&lt;li dir-paginate=&quot;'</span><span class="s1">+ expression + </span><span class="s2">'&quot; current-page=&quot;currentPage.' </span><span class="s1">+ paginationId + </span><span class="s2">'&quot; pagination-id=&quot;' </span><span class="s1">+ paginationId + </span><span class="s2">'&quot; &gt;{{ item }}&lt;/li&gt;&lt;/ul&gt; ' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;dir-pagination-controls pagination-id=&quot;' </span><span class="s1">+ paginationId + </span><span class="s2">'&quot;&gt;&lt;/dir-pagination-controls&gt;'</span><span class="s3">;</span><span class="s1"> 
+            containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s4">function </span><span class="s1">clickPaginationLink(paginationId</span><span class="s3">, </span><span class="s1">index) { 
+            </span><span class="s4">var </span><span class="s1">pagination = containingElement.find(</span><span class="s2">'dir-pagination-controls[pagination-id=&quot;' </span><span class="s1">+ paginationId + </span><span class="s2">'&quot;]'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            pagination.find(</span><span class="s2">'li'</span><span class="s1">).eq(index).find(</span><span class="s2">'a'</span><span class="s1">).triggerHandler(</span><span class="s2">'click'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s4">function </span><span class="s1">getMultiPageLinksArray(paginationId) { 
+            </span><span class="s4">return </span><span class="s1">containingElement.find(</span><span class="s2">'dir-pagination-controls[pagination-id=&quot;' </span><span class="s1">+ paginationId + </span><span class="s2">'&quot;] li'</span><span class="s1">).map(</span><span class="s4">function</span><span class="s1">() { 
+                </span><span class="s4">return </span><span class="s1">$(</span><span class="s4">this</span><span class="s1">).text().trim()</span><span class="s3">;</span><span class="s1"> 
+            }).get()</span><span class="s3">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s4">function </span><span class="s1">getMultiListItems(paginationId) { 
+            </span><span class="s4">return </span><span class="s1">containingElement.find(</span><span class="s2">'li[pagination-id=&quot;' </span><span class="s1">+ paginationId + </span><span class="s2">'&quot;]'</span><span class="s1">).map(</span><span class="s4">function</span><span class="s1">() { 
+                </span><span class="s4">return </span><span class="s1">$(</span><span class="s4">this</span><span class="s1">).text().trim()</span><span class="s3">;</span><span class="s1"> 
+            }).get()</span><span class="s3">;</span><span class="s1"> 
+        } 
+ 
+        it(</span><span class="s2">'should allow pagination-id to control a specific collection'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileMultipleInstance(collection1</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;c1&quot; </span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            compileMultipleInstance(collection2</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;c2&quot; </span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            clickPaginationLink(</span><span class="s2">&quot;c1&quot;</span><span class="s3">, </span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            clickPaginationLink(</span><span class="s2">&quot;c2&quot;</span><span class="s3">, </span><span class="s6">4</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect($scope.currentPage.c1).toEqual(</span><span class="s6">2</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect($scope.currentPage.c2).toEqual(</span><span class="s6">4</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow independent changing of items per page'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileMultipleInstance(collection1</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;c1&quot; </span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            compileMultipleInstance(collection2</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;c2&quot; </span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(getMultiPageLinksArray(</span><span class="s2">&quot;c1&quot;</span><span class="s1">).length).toBe(</span><span class="s6">6</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(getMultiPageLinksArray(</span><span class="s2">&quot;c2&quot;</span><span class="s1">).length).toBe(</span><span class="s6">6</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.itemsPerPage.c1 = </span><span class="s6">10</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(getMultiPageLinksArray(</span><span class="s2">&quot;c1&quot;</span><span class="s1">).length).toBe(</span><span class="s6">4</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(getMultiPageLinksArray(</span><span class="s2">&quot;c2&quot;</span><span class="s1">).length).toBe(</span><span class="s6">6</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.itemsPerPage.c2 = </span><span class="s6">7</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(getMultiPageLinksArray(</span><span class="s2">&quot;c1&quot;</span><span class="s1">).length).toBe(</span><span class="s6">4</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(getMultiPageLinksArray(</span><span class="s2">&quot;c2&quot;</span><span class="s1">).length).toBe(</span><span class="s6">5</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow independent filtering'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileMultipleInstance(collection1</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;c1&quot;</span><span class="s3">, </span><span class="s2">&quot;item in collection.c1 | filter: filter1 | itemsPerPage: itemsPerPage.c1: 'c1'&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            compileMultipleInstance(collection2</span><span class="s3">, </span><span class="s6">5</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;c2&quot;</span><span class="s3">, </span><span class="s2">&quot;item in collection.c2 | filter: filter2 | itemsPerPage: itemsPerPage.c2: 'c2'&quot; </span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.filter1 = </span><span class="s2">&quot;7&quot;</span><span class="s3">;</span><span class="s1"> 
+                $scope.filter2 = </span><span class="s2">&quot;8&quot;</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(getMultiListItems(</span><span class="s2">&quot;c1&quot;</span><span class="s1">)).toEqual([</span><span class="s2">'c1:7'</span><span class="s3">, </span><span class="s2">'c1:17'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+            expect(getMultiListItems(</span><span class="s2">&quot;c2&quot;</span><span class="s1">)).toEqual([</span><span class="s2">'c2:8'</span><span class="s3">, </span><span class="s2">'c2:18'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+ 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow independent setting of current-page externally'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileMultipleInstance(collection1</span><span class="s3">, </span><span class="s6">2</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;c1&quot; </span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            compileMultipleInstance(collection2</span><span class="s3">, </span><span class="s6">2</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;c2&quot; </span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage.c1 = </span><span class="s6">2</span><span class="s3">;</span><span class="s1"> 
+                $scope.currentPage.c2 = </span><span class="s6">4</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(getMultiListItems(</span><span class="s2">&quot;c1&quot;</span><span class="s1">)).toEqual([</span><span class="s2">'c1:2'</span><span class="s3">, </span><span class="s2">'c1:3'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+            expect(getMultiListItems(</span><span class="s2">&quot;c2&quot;</span><span class="s1">)).toEqual([</span><span class="s2">'c2:6'</span><span class="s3">, </span><span class="s2">'c2:7'</span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should print a warning if a non-existant paginationId is set in the pagination-controls'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            $scope.collection = [</span><span class="s6">1</span><span class="s3">,</span><span class="s6">2</span><span class="s3">,</span><span class="s6">3</span><span class="s3">,</span><span class="s6">4</span><span class="s3">,</span><span class="s6">5</span><span class="s1">]</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                </span><span class="s4">var </span><span class="s1">html = </span><span class="s2">'&lt;ul class=&quot;list&quot;&gt;&lt;li dir-paginate=&quot;item in collection | itemsPerPage: 3 : </span><span class="s3">\'</span><span class="s2">id1</span><span class="s3">\'</span><span class="s2">&quot; pagination-id=&quot;id1&quot; &gt;{{ item }}&lt;/li&gt;&lt;/ul&gt; ' </span><span class="s1">+ 
+                    </span><span class="s2">'&lt;dir-pagination-controls pagination-id=&quot;id2&quot;&gt;&lt;/dir-pagination-controls&gt;'</span><span class="s3">;</span><span class="s1"> 
+ 
+                containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+                $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            } 
+            compile()</span><span class="s3">;</span><span class="s1"> 
+            expect(console.warn).toHaveBeenCalledWith(</span><span class="s2">'Pagination directive: the pagination controls (id: id2) cannot be used without the corresponding pagination directive, which was not found at link time.'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should throw an exception if a non-existant paginationId is set in the itemsPerPage filter'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            $scope.collection = [</span><span class="s6">1</span><span class="s3">,</span><span class="s6">2</span><span class="s3">,</span><span class="s6">3</span><span class="s3">,</span><span class="s6">4</span><span class="s3">,</span><span class="s6">5</span><span class="s1">]</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                </span><span class="s4">var </span><span class="s1">html = </span><span class="s2">'&lt;ul class=&quot;list&quot;&gt;&lt;li dir-paginate=&quot;item in collection | itemsPerPage: 3 : </span><span class="s3">\'</span><span class="s2">id2</span><span class="s3">\'</span><span class="s2">&quot; pagination-id=&quot;id1&quot; &gt;{{ item }}&lt;/li&gt;&lt;/ul&gt; ' </span><span class="s1">+ 
+                    </span><span class="s2">'&lt;dir-pagination-controls pagination-id=&quot;id1&quot;&gt;&lt;/dir-pagination-controls&gt;'</span><span class="s3">;</span><span class="s1"> 
+ 
+                containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+                $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            } 
+ 
+            expect(compile).toThrow(</span><span class="s2">&quot;pagination directive: the itemsPerPage id argument (id: id2) does not match a registered pagination-id.&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        describe(</span><span class="s2">'valid expressions with pagination id'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+            it(</span><span class="s2">'should allow track by syntax'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                </span><span class="s4">function </span><span class="s1">compile() { 
+                    compileMultipleInstance(collection1</span><span class="s3">, </span><span class="s6">10</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;c1&quot;</span><span class="s3">, </span><span class="s2">&quot;item in collection.c1 | itemsPerPage: itemsPerPage.c1 track by $index&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                } 
+                expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+                expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            it(</span><span class="s2">'should allow track by with other filter syntax'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                </span><span class="s4">function </span><span class="s1">compile() { 
+                    compileMultipleInstance(collection1</span><span class="s3">, </span><span class="s6">10</span><span class="s3">, </span><span class="s6">1</span><span class="s3">, </span><span class="s2">&quot;c1&quot;</span><span class="s3">, </span><span class="s2">&quot;item in collection.c1 | orderBy: reverse | itemsPerPage: itemsPerPage.c1 track by $index&quot;</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                } 
+                expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+                expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        describe(</span><span class="s2">'dymanic pagination-id'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+            </span><span class="s4">function </span><span class="s1">compileWithDynamicId(paginationId</span><span class="s3">, </span><span class="s1">customExpression) { 
+                </span><span class="s4">var </span><span class="s1">html</span><span class="s3">;</span><span class="s1"> 
+                html = </span><span class="s2">'&lt;ul class=&quot;list&quot;&gt;&lt;li dir-paginate=&quot;'</span><span class="s1">+ customExpression + </span><span class="s2">'&quot; current-page=&quot;1&quot; pagination-id=&quot;' </span><span class="s1">+ paginationId + </span><span class="s2">'&quot; &gt;{{ item }}&lt;/li&gt;&lt;/ul&gt; ' </span><span class="s1">+ 
+                    </span><span class="s2">'&lt;dir-pagination-controls pagination-id=&quot;' </span><span class="s1">+ paginationId + </span><span class="s2">'&quot;&gt;&lt;/dir-pagination-controls&gt;'</span><span class="s3">;</span><span class="s1"> 
+                containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+                $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            } 
+ 
+            it(</span><span class="s2">'should allow object reference'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+                </span><span class="s4">function </span><span class="s1">compile() { 
+                    $scope.myId = { 
+                        foo: </span><span class="s2">'foo'</span><span class="s1"> 
+                    }</span><span class="s3">;</span><span class="s1"> 
+                    $scope.collection = myCollection</span><span class="s3">;</span><span class="s1"> 
+                    compileWithDynamicId(</span><span class="s2">'myId.foo'</span><span class="s3">, </span><span class="s2">'item in collection | itemsPerPage: 10'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+                } 
+ 
+                expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+                expect(getListItems().length).toEqual(</span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    describe(</span><span class="s2">'pagination controls template API'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">function </span><span class="s1">compile() { 
+            </span><span class="s4">var </span><span class="s1">html = </span><span class="s2">'&lt;ul class=&quot;list&quot;&gt;&lt;li dir-paginate=&quot;item in collection | itemsPerPage: 3&quot; current-page=&quot;currentPage&quot;&gt;{{ item }}&lt;/li&gt;&lt;/ul&gt; ' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;dir-pagination-controls template-url=&quot;directives/pagination/testTemplate.tpl.html&quot;&gt;&lt;/dir-pagination-controls&gt;'</span><span class="s3">;</span><span class="s1"> 
+            $scope.collection = [</span><span class="s6">1</span><span class="s3">,</span><span class="s6">2</span><span class="s3">,</span><span class="s6">3</span><span class="s3">,</span><span class="s6">4</span><span class="s3">,</span><span class="s6">5</span><span class="s3">,</span><span class="s6">6</span><span class="s3">,</span><span class="s6">7</span><span class="s1">]</span><span class="s3">;</span><span class="s1"> 
+            $scope.currentPage = </span><span class="s6">1</span><span class="s3">;</span><span class="s1"> 
+            containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+        } 
+ 
+        it(</span><span class="s2">'should provide correct values for current page'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compile()</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(containingElement.find(</span><span class="s2">'#tt-pagination-current'</span><span class="s1">).html()).toEqual(</span><span class="s2">'1'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage = </span><span class="s6">2</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'#tt-pagination-current'</span><span class="s1">).html()).toEqual(</span><span class="s2">'2'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should provide correct value for last page'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compile()</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'#tt-pagination-last'</span><span class="s1">).html()).toEqual(</span><span class="s2">'3'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should provide correct value for range.lower'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compile()</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'#tt-range-lower'</span><span class="s1">).html()).toEqual(</span><span class="s2">'1'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage = </span><span class="s6">2</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'#tt-range-lower'</span><span class="s1">).html()).toEqual(</span><span class="s2">'4'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage = </span><span class="s6">3</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'#tt-range-lower'</span><span class="s1">).html()).toEqual(</span><span class="s2">'7'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should provide correct value for range.upper'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compile()</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'#tt-range-upper'</span><span class="s1">).html()).toEqual(</span><span class="s2">'3'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage = </span><span class="s6">2</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'#tt-range-upper'</span><span class="s1">).html()).toEqual(</span><span class="s2">'6'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage = </span><span class="s6">3</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'#tt-range-upper'</span><span class="s1">).html()).toEqual(</span><span class="s2">'7'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should provide correct value for range.total'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compile()</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'#tt-range-total'</span><span class="s1">).html()).toEqual(</span><span class="s2">'7'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage = </span><span class="s6">2</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'#tt-range-total'</span><span class="s1">).html()).toEqual(</span><span class="s2">'7'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    describe(</span><span class="s2">'multi element functionality'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+        </span><span class="s4">function </span><span class="s1">compileMultiElement(collection</span><span class="s3">, </span><span class="s1">itemsPerPage</span><span class="s3">, </span><span class="s1">currentPage) { 
+            </span><span class="s4">var </span><span class="s1">html</span><span class="s3">;</span><span class="s1"> 
+            $scope.collection = collection</span><span class="s3">;</span><span class="s1"> 
+            $scope.itemsPerPage = itemsPerPage || </span><span class="s6">10</span><span class="s3">;</span><span class="s1"> 
+            $scope.currentPage = currentPage || </span><span class="s6">1</span><span class="s3">;</span><span class="s1"> 
+            html = </span><span class="s2">'&lt;div&gt;' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;div dir-paginate-start=&quot;item in collection | itemsPerPage: itemsPerPage&quot; current-page=&quot;currentPage&quot;&gt;header&lt;/div&gt;' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;p&gt;{{ item }}&lt;/p&gt;' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;div dir-paginate-end&gt;footer&lt;/div&gt;' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;/div&gt; '</span><span class="s3">;</span><span class="s1"> 
+            containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+        } 
+ 
+        it(</span><span class="s2">'should compile with multi element syntax'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                compileMultiElement([])</span><span class="s3">;</span><span class="s1"> 
+            } 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should display the list correctly'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileMultiElement(myCollection</span><span class="s3">, </span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'p'</span><span class="s1">).length).toEqual(</span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should page correctly'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compileMultiElement(myCollection</span><span class="s3">, </span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(containingElement.find(</span><span class="s2">'p'</span><span class="s1">).eq(</span><span class="s6">0</span><span class="s1">).html()).toEqual(</span><span class="s2">'item 1'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            $scope.$apply(</span><span class="s4">function</span><span class="s1">() { 
+                $scope.currentPage = </span><span class="s6">2</span><span class="s3">;</span><span class="s1"> 
+            })</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(containingElement.find(</span><span class="s2">'p'</span><span class="s1">).eq(</span><span class="s6">0</span><span class="s1">).html()).toEqual(</span><span class="s2">'item 4'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should work with data-dir-paginate-start syntax'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                </span><span class="s4">var </span><span class="s1">html = </span><span class="s2">'&lt;div&gt;' </span><span class="s1">+ 
+                    </span><span class="s2">'&lt;h1 data-dir-paginate-start=&quot;item in collection | itemsPerPage: 3&quot;&gt;{{ item }}&lt;/h1&gt;' </span><span class="s1">+ 
+                    </span><span class="s2">'&lt;p data-dir-paginate-end&gt;stuff&lt;/p&gt;' </span><span class="s1">+ 
+                    </span><span class="s2">'&lt;/div&gt; '</span><span class="s3">;</span><span class="s1"> 
+                $scope.collection = myCollection</span><span class="s3">;</span><span class="s1"> 
+                containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+                $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            } 
+ 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'h1'</span><span class="s1">).length).toEqual(</span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'p'</span><span class="s1">).length).toEqual(</span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        </span><span class="s0">/** 
+         * See https://github.com/michaelbromley/angularUtils/issues/92 
+         */</span><span class="s1"> 
+        it(</span><span class="s2">'should correctly compile an inner ng-repeat'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            </span><span class="s4">function </span><span class="s1">compile() { 
+                </span><span class="s4">var </span><span class="s1">html = </span><span class="s2">'&lt;div&gt;' </span><span class="s1">+ 
+                    </span><span class="s2">'&lt;h1 dir-paginate-start=&quot;item in collection | itemsPerPage: 3&quot; current-page=&quot;currentPage&quot;&gt;{{ item }}&lt;/h1&gt;' </span><span class="s1">+ 
+                    </span><span class="s2">'&lt;div dir-paginate-end&gt; yo &lt;ul class=&quot;options&quot;&gt;&lt;li ng-repeat=&quot;option in options&quot;&gt;{{ option }} : {{ item }}&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;' </span><span class="s1">+ 
+                    </span><span class="s2">'&lt;/div&gt; '</span><span class="s3">;</span><span class="s1"> 
+                $scope.options = [</span><span class="s2">'option1'</span><span class="s3">, </span><span class="s2">'option2'</span><span class="s3">, </span><span class="s2">'option3'</span><span class="s1">]</span><span class="s3">;</span><span class="s1"> 
+                $scope.collection = myCollection</span><span class="s3">;</span><span class="s1"> 
+                $scope.currentPage = </span><span class="s6">1</span><span class="s3">;</span><span class="s1"> 
+                containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+                $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+            } 
+ 
+            compile()</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">var </span><span class="s1">options = containingElement.find(</span><span class="s2">'.options'</span><span class="s1">).eq(</span><span class="s6">0</span><span class="s1">).find(</span><span class="s2">'li'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(options.length).toEqual(</span><span class="s6">3</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            expect(options.eq(</span><span class="s6">0</span><span class="s1">).text()).toEqual(</span><span class="s2">'option1 : item 1'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    </span><span class="s0">/** 
+     * THis suite tests out the ability to handle dynamically-generated pagination ids. The main use case is when 
+     * there are multiple dir-pagination instances being generated by an ng-repeat, and the pagination id is 
+     * only known at run-time. 
+     */</span><span class="s1"> 
+    describe(</span><span class="s2">'dynamic pagination ids'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+        </span><span class="s4">function </span><span class="s1">compile() { 
+            </span><span class="s4">var </span><span class="s1">html = </span><span class="s2">'&lt;div ng-repeat=&quot;list in lists&quot;&gt;&lt;ul class=&quot;list&quot;&gt;' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;li dir-paginate=&quot;item in list.collection | itemsPerPage: 3&quot; pagination-id=&quot;list.id&quot;&gt;{{ item }}&lt;/li&gt;' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;/ul&gt;' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;dir-pagination-controls pagination-id=&quot;list.id&quot;&gt;&lt;/dir-pagination-controls&gt;' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;/div&gt;'</span><span class="s3">;</span><span class="s1"> 
+ 
+            $scope.lists = [ 
+                { 
+                    id: </span><span class="s2">'list1'</span><span class="s3">,</span><span class="s1"> 
+                    collection: [</span><span class="s6">1</span><span class="s3">, </span><span class="s6">2</span><span class="s3">, </span><span class="s6">3</span><span class="s3">, </span><span class="s6">4</span><span class="s3">, </span><span class="s6">5</span><span class="s1">] 
+                }</span><span class="s3">,</span><span class="s1"> 
+                { 
+                    id: </span><span class="s2">'list2'</span><span class="s3">,</span><span class="s1"> 
+                    collection: [</span><span class="s2">'a'</span><span class="s3">, </span><span class="s2">'b'</span><span class="s3">, </span><span class="s2">'c'</span><span class="s3">, </span><span class="s2">'d'</span><span class="s3">, </span><span class="s2">'e'</span><span class="s1">] 
+                } 
+            ]</span><span class="s3">;</span><span class="s1"> 
+            containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+        } 
+ 
+        </span><span class="s4">function </span><span class="s1">getListItems($list) { 
+            </span><span class="s4">return </span><span class="s1">$list.find(</span><span class="s2">'li'</span><span class="s1">).map(</span><span class="s4">function</span><span class="s1">() { 
+                </span><span class="s4">return </span><span class="s1">$(</span><span class="s4">this</span><span class="s1">).text().trim()</span><span class="s3">;</span><span class="s1"> 
+            }).get()</span><span class="s3">;</span><span class="s1"> 
+        } 
+ 
+        it(</span><span class="s2">'should not throw an exception'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            expect(compile).not.toThrow()</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should allow independent pagination'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            compile()</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">var </span><span class="s1">$list1 = containingElement.find(</span><span class="s2">'ul.list'</span><span class="s1">).eq(</span><span class="s6">0</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">$list2 = containingElement.find(</span><span class="s2">'ul.list'</span><span class="s1">).eq(</span><span class="s6">1</span><span class="s1">)</span><span class="s3">;</span><span class="s1">  
+ 
+            expect(getListItems($list1)).toEqual([ </span><span class="s2">'1'</span><span class="s3">, </span><span class="s2">'2'</span><span class="s3">, </span><span class="s2">'3' </span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems($list2)).toEqual([ </span><span class="s2">'a'</span><span class="s3">, </span><span class="s2">'b'</span><span class="s3">, </span><span class="s2">'c' </span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s5">// click the &quot;page 2&quot; link on the first set of pagination</span><span class="s1"> 
+            </span><span class="s4">var </span><span class="s1">pagination1 = $list1.parent().find(</span><span class="s2">'ul.pagination'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            pagination1.children().eq(</span><span class="s6">2</span><span class="s1">).find(</span><span class="s2">'a'</span><span class="s1">).triggerHandler(</span><span class="s2">'click'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s5">// ensure only the first set of pagination changes</span><span class="s1"> 
+            expect(getListItems($list1)).toEqual([ </span><span class="s2">'4'</span><span class="s3">, </span><span class="s2">'5' </span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+            expect(getListItems($list2)).toEqual([ </span><span class="s2">'a'</span><span class="s3">, </span><span class="s2">'b'</span><span class="s3">, </span><span class="s2">'c' </span><span class="s1">])</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+    describe(</span><span class="s2">'paginationTemplateProvider'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+ 
+        beforeEach(inject(</span><span class="s4">function</span><span class="s1">($templateCache) { 
+            $templateCache.put(</span><span class="s2">'setPath_template'</span><span class="s3">, </span><span class="s2">'&lt;div class=&quot;set-path-template&quot;&gt;&lt;span&gt;Test Template&lt;/span&gt;{{ pages.length }}&lt;/div&gt;'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            $templateCache.put(</span><span class="s2">'templateUrl_template'</span><span class="s3">, </span><span class="s2">'&lt;div class=&quot;template-url-template&quot;&gt;&lt;span&gt;Test TemplateUrl Template&lt;/span&gt;{{ pages.length }}&lt;/div&gt;'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        }))</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should use the custom template specified by setPath()'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            templateProvider.setPath(</span><span class="s2">'setPath_template'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(containingElement.find(</span><span class="s2">'.set-path-template'</span><span class="s1">).html()).toContain(</span><span class="s2">'Test Template'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should use the custom template specified by setString()'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            templateProvider.setString(</span><span class="s2">'&lt;div class=&quot;set-string-template&quot;&gt;&lt;span&gt;Test Template String&lt;/span&gt;{{ pages.length }}&lt;/div&gt;'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(containingElement.find(</span><span class="s2">'.set-string-template'</span><span class="s1">).html()).toContain(</span><span class="s2">'Test Template String'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should prioritize setString() if both path and string have been set'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            templateProvider.setString(</span><span class="s2">'&lt;div class=&quot;set-string-template&quot;&gt;&lt;span&gt;Test Template String&lt;/span&gt;{{ pages.length }}&lt;/div&gt;'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            templateProvider.setPath(</span><span class="s2">'setPath_template'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            compileElement(myCollection</span><span class="s3">, </span><span class="s6">10</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(containingElement.find(</span><span class="s2">'.set-path-template'</span><span class="s1">).html()).toBeUndefined()</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'.set-string-template'</span><span class="s1">).html()).toContain(</span><span class="s2">'Test Template String'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+        it(</span><span class="s2">'should prioritize setString() over path and template-url attribute.'</span><span class="s3">, </span><span class="s4">function</span><span class="s1">() { 
+            templateProvider.setString(</span><span class="s2">'&lt;div class=&quot;set-string-template&quot;&gt;&lt;span&gt;Test Template String&lt;/span&gt;{{ pages.length }}&lt;/div&gt;'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+            templateProvider.setPath(</span><span class="s2">'setPath_template'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+ 
+            </span><span class="s4">var </span><span class="s1">html = </span><span class="s2">'&lt;ul class=&quot;list&quot;&gt;&lt;li dir-paginate=&quot;item in collection | itemsPerPage: itemsPerPage&quot; current-page=&quot;currentPage&quot;&gt;{{ item }}&lt;/li&gt;&lt;/ul&gt; ' </span><span class="s1">+ 
+                </span><span class="s2">'&lt;dir-pagination-controls template-url=&quot;templateUrl_template&quot;&gt;&lt;/dir-pagination-controls&gt;'</span><span class="s3">;</span><span class="s1"> 
+            containingElement.append($compile(html)($scope))</span><span class="s3">;</span><span class="s1"> 
+            $scope.$apply()</span><span class="s3">;</span><span class="s1"> 
+ 
+            expect(containingElement.find(</span><span class="s2">'.set-path-template'</span><span class="s1">).html()).toBeUndefined()</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'.template-url-template'</span><span class="s1">).html()).toBeUndefined()</span><span class="s3">;</span><span class="s1"> 
+            expect(containingElement.find(</span><span class="s2">'.set-string-template'</span><span class="s1">).html()).toContain(</span><span class="s2">'Test Template String'</span><span class="s1">)</span><span class="s3">;</span><span class="s1"> 
+        })</span><span class="s3">;</span><span class="s1"> 
+ 
+    })</span><span class="s3">;</span><span class="s1"> 
+ 
+})</span><span class="s3">;</span><span class="s1"> 
+</span></pre>
+</body>
+</html>
