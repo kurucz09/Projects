@@ -1,0 +1,276 @@
+<style>
+    .inactiveLink {
+        pointer-events: none;
+        cursor: default;
+    }
+
+    .btn-color-red {
+        background-color: #761c19;
+        margin-outside: 20px;
+        color: #fff;
+        text-align: center;
+        border-color: #FFFFFF
+    }
+
+    .btn-color-red:hover {
+        color: #fff;
+        background-color: #4a1312;
+        border-color: #FFFFFF
+    }
+
+    .allBoxed {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        -o-box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    }
+
+    .refresh_icon {
+        border-radius: 50%;
+        -webkit-transition: -webkit-transform .8s ease-in-out;
+        transition: transform .8s ease-in-out;
+    }
+
+    .refresh_icon:hover {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+</style>
+
+<div ng-controller="accountsToCtrl">
+    <nav class="navbar navbar-default">
+
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" ng-click="return()"> <img src="\Bank_Front\WebContent\assets\img\LOGO_SBANK.png"
+                                                                 align="middle" alt="LOGO"
+                                                                 width="100" height="25"></a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="inactiveLink"><a href="#">Clients</a></li>
+                    <li class="active inactiveLink"><a href="#">Accounts<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="inactiveLink"><a href="#">Process bills</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+
+                    <p class="navbar-text">Signed in as {{usernameLogged}}. <a ng-click="return()" class="navbar-link">Sign
+                        out</a>
+                    </p>
+
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+
+    </nav>
+    <div class="container">
+        <div class="col-md-4"
+             style="background-color: #761c19; color: #ffffff; font-weight: bold;  box-shadow: -3px -3px 5px rgba(0, 0, 0, 0.3);">
+            <h5>Accounts of {{accountsId}}, {{accountsName}} </h5>
+        </div>
+    </div>
+
+
+    <div data-ng-init="init()">
+        <div class="container allBoxed" style=" padding-top: 10px">
+            <div>
+                <section>
+                    <!--  Account Number -->
+                    <div class="col-md-4">
+                        <label>Account Number:</label>
+                        <input id="iban_input" type="text" class="form-control col-md-12" name="clusterName"
+                               placeholder="Account Number"
+                               ng-model="select.accountNumber" required>
+                        <br/>
+                    </div>
+
+                    <!--  Currency -->
+                    <div class="col-md-4">
+                        <label>Currency:</label>
+                        <span ng-switch on="select.showCancel">
+                            <select ng-switch-when="true" disabled ng-model="selectedCurrency"
+                                    class="form-control col-md-12" ng-change="changedCurrency(selectedCurrency)"
+                                    ng-options="curenc.cur for curenc in currency">
+                                <option value='' disabled style='display:none;'>
+                                    Select Currency
+                                </option>
+                            </select>
+                            <select ng-switch-default ng-model="selectedCurrency" class="form-control col-md-12"
+                                    ng-options="curenc.cur for curenc in currency"
+                                    ng-change="changedCurrency(selectedCurrency)">
+                                <option value='' disabled style='display:none;'>
+                                    Select Currency
+                                </option>
+                            </select>
+                    </span>
+                        <br/>
+                    </div>
+
+                    <!--  Date Created -->
+                    <div class="col-md-4">
+                        <label>Date Created:</label>
+                        <input id="accounts_dateCreated_input" type="text" class="form-control col-md-12"
+                               name="clusterName"
+                               placeholder="Date created"
+                               ng-model="select.dateCreated" required>
+                        <br/>
+                    </div>
+                </section>
+            </div>
+            <div>
+                <section>
+
+                    <!--  Credit -->
+                    <div class="col-md-4">
+                        <label>Credit:</label>
+                        <input id="accounts_credit_input" type="text" class="form-control col-md-12" name="clusterName"
+                               placeholder="Credit"
+                               ng-model="select.credit" required>
+                        <br/>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Manage client account - Operations on credit</label>
+                        <input id="accounts_edit_credit" type="text" class="form-control col-md-6" name="clusterName"
+                               placeholder="Credit"
+                               ng-model="creditToCompute" required>
+                        <button id="addMoney" type="button" class="btn btn-primary pull-right col-md-2" disabled
+                                ng-click="addMoney(creditToCompute)">
+                            +
+                        </button>
+                        <button id="subtractMoney" type="button" class="btn btn-primary pull-right col-md-2" disabled
+                                ng-click="subtractMoney(creditToCompute) ">
+                            -
+                        </button>
+                        <br/>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="pull-right">Manage account Database - Perform operations</label>
+
+                        <!-- add button -->
+                        <button id="addAccount" type="button" class="btn btn-primary pull-right col-md-5"
+                                ng-click="addNewAccount()">
+                            Add Account
+                        </button>
+
+                        <!-- update button -->
+                        <button id="updateButtonAccount" type="button" class="btn btn-primary pull-right col-md-5"
+                                disabled
+                                ng-click="updateAccount() ">
+                            Update Account
+                        </button>
+
+                        <br>
+                    </div>
+
+                </section>
+            </div>
+        </div>
+
+        <div class="container allBoxed" style="margin-top: 20px; padding-top: 10px;">
+            <section>
+                <div class="container row">
+                    <!--  Selected account -->
+                    <div class="col-md-4">
+                        <label>Transfer to another Account : </label>
+                        <span ng-switch on="select.showCancel">
+                            <select ng-switch-when="true" disabled ng-model="selectedAllAccounts"
+                                    class="form-control col-md-12" ng-change="changedAccount(selectedAllAccounts)"
+                                    ng-options="acc.accountNumber for acc in allAccounts">
+                                <option value='' disabled style='display:none;'>
+                                    Select Account
+                                </option>
+                            </select>
+                            <select ng-switch-default ng-model="selectedAllAccounts" class="form-control col-md-12"
+                                    ng-options="acc.accountNumber for acc in allAccounts"
+                                    ng-change="changedAccount(selectedAllAccounts)">
+                                <option value='' disabled style='display:none;'>
+                                    Select Account
+                                </option>
+                            </select>
+                    </span>
+                        <input id="dfda" type="text" class="form-control col-md-12" name="clusterName"
+                               placeholder="Or write account"
+                               ng-model="select.accountEnteredManually" required>
+
+                    </div>
+
+                    <!--  Credit -->
+                    <div class="col-md-3">
+                        <label>Ammount to transfer : </label>
+                        <input type="text" class="form-control col-md-12" name="clusterName"
+                               placeholder="Ammount to send" ng-model="ammountToMakeTransfersCredit" required>
+                        <br/>
+                    </div>
+
+                    <div class="col-md-5">
+                        <label>Manage client account - Transactions</label>
+                        <input id="dadda" type="text" class="form-control col-md-8" name="clusterName"
+                               placeholder="Reason of transaction"
+                               ng-model="creditToSend" required>
+                        <button id="processTransaction_id" type="button" class="btn btn-primary  pull-right col-md-4"
+                                disabled
+                                ng-click="processTransaction()">
+                            Process
+                        </button>
+                        <button type="button" class="btn btn-color-red  pull-right col-md-8"
+                                ng-click="processBills()">
+                            Process bills
+                        </button>
+                        <br/>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <hr>
+    <!--  table -->
+    <div class="container">
+        <table class="table table-striped table-bordered table-responsive table-hover">
+            <thead>
+            <tr>
+                <th>Account number</th>
+                <th>Currency</th>
+                <th>Credit</th>
+                <th>Date created</th>
+                <th class="btn-color-red " style="background-color: #761c19; text-align: center">
+                    <a href="" ng-click="refreshAccountsTable()"><span
+                            class="glyphicon glyphicon-refresh refresh_icon"
+                            style="color: white; background-color: #761c19; align-items: center;">
+                    </span></a></th>
+            </tr>
+            </thead>
+            <tr ng-repeat="account in accounts">
+                <td>{{account.accountNumber}}</td>
+                <td>{{account.currency}}</td>
+                <td>{{account.credit}}</td>
+                <td>{{account.dateCreated}}</td>
+                <td style="width: 150px; text-align: center" ;>
+                    <a href=""
+                       ng-click=
+                               "openEditAccount(account.currency);
+                           setSelectedAccount(account.accountNumber, account.credit, account.currency);
+                           select.accountNumber = account.accountNumber;
+                           select.currency = $scope.selectedCurrency;
+                           select.credit = account.credit;
+                           select.dateCreated = account.dateCreated"
+                       title="Edit"><span class="glyphicon glyphicon-edit"></span>Edit</a>
+                    |
+                    <a href="" ng-click="deleteAccount(account.accountNumber)" title="Delete"><span
+                            class="glyphicon glyphicon-trash"></span>Delete</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!--  table -->
+</div>
+</div>
+

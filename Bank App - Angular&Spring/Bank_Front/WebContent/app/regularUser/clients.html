@@ -1,0 +1,159 @@
+<style>
+    .inactiveLink {
+        pointer-events: none;
+        cursor: default;
+    }
+    .allBoxed {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        -o-box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    }
+
+</style>
+
+<div ng-controller="clientsToCtrl">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" ng-click="return()"> <img src="\Bank_Front\WebContent\assets\img\LOGO_SBANK.png"
+                                                                align="middle" alt="LOGO"
+                                                                width="100" height="25"></a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active inactiveLink"><a href="#">Clients <span class="sr-only">(current)</span></a></li>
+                    <li class="inactiveLink"><a href="#">Accounts</a></li>
+                    <li class="inactiveLink"><a href="#">Process bills</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+
+                    <p class="navbar-text">Signed in as {{usernameLogged}}. <a  ng-click="return()" class="navbar-link">Sign out</a>
+                    </p>
+
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+
+
+    </nav>
+
+    <div class="menuContent" data-ng-init="init()">
+        <div class="container ">
+            <div class="container allBoxed" style="padding-top: 10px">
+                <section>
+                    <!--  Client Name -->
+                    <div class="col-md-4">
+                        <label>Client Name:</label>
+                        <input id="clientName_input" type="text" class="form-control col-md-12" name="clusterName"
+                               placeholder="Name"
+                               ng-model="select.name" required>
+                        <br/>
+                    </div>
+
+                    <!--  ID Card -->
+                    <div class="col-md-4">
+                        <label>ID Card:</label>
+                        <input id="idCard_input" type="text" class="form-control col-md-12" name="clusterName"
+                               placeholder="Card ID"
+                               ng-model="select.idClient" required>
+                        <br/>
+                    </div>
+
+                    <!--  CNP -->
+                    <div class="col-md-4">
+                        <label>CNP:</label>
+                        <input id="cnp_input" type="text" class="form-control col-md-12" name="clusterName"
+                               placeholder="Personal numerical code"
+                               ng-model="select.cnp" required>
+                        <br/>
+                    </div>
+                </section>
+                <section>
+                    <!--  Phone -->
+                    <div class="col-md-4">
+                        <label>Phone:</label>
+                        <input id="phone_input" type="text" class="form-control col-md-12" name="clusterName"
+                               placeholder="Phone"
+                               ng-model="select.phone" required>
+                        <br/>
+                    </div>
+
+                    <!--  Address -->
+                    <div class="col-md-4">
+                        <label>Address:</label>
+                        <input id="address_input" type="text" class="form-control col-md-12" name="clusterName"
+                               placeholder="Address"
+                               ng-model="select.address" required>
+                        <br/>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="pull-right">Manage clients Database - Perform operations</label>
+
+                        <!-- add button -->
+                        <button id="addButton" type="button" class="btn btn-primary pull-right col-md-4"
+                                ng-click="addClient()">
+                            Add client
+                        </button>
+
+                        <!-- update button -->
+                        <button id="updateButton" type="button" class="btn btn-primary pull-right col-md-4" disabled
+                                ng-click="updateClient() ">
+                            Update client
+                        </button>
+
+                    </div>
+                </section>
+            </div>
+
+            <hr>
+
+            <!--  table -->
+            <div class="container">
+                <table class="table table-striped table-bordered table-responsive table-hover">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>ID Card</th>
+                        <th>CNP</th>
+                        <th>Address</th>
+                        <th>Phone</th>
+                    </tr>
+                    </thead>
+                    <tr ng-repeat="client in clients">
+                        <td>{{client.name}}</td>
+                        <td>{{client.idClient}}</td>
+                        <td>{{client.cnp}}</td>
+                        <td>{{client.address}}</td>
+                        <td>{{client.phone}}</td>
+                        <td style="text-align: center; width: 250px">
+                            <a href=""
+                               ng-click=
+                                       "editClient();
+                           setSelected(client.cnp);
+                           select.name = client.name;
+                           select.idClient = client.idClient;
+                           select.cnp = client.cnp;
+                           select.address = client.address;
+                           select.phone = client.phone"
+                               title="Edit"><span class="glyphicon glyphicon-edit"></span>Edit</a>
+                            |
+                            <a href="" ng-click="deleteClient(client.cnp)" title="Delete"><span
+                                    class="glyphicon glyphicon-trash"></span>Delete</a>
+                            |
+                            <a href="" ng-click="accountsClient(client.cnp,client.name)" title="Accounts"><span
+                                    class="glyphicon glyphicon-eur"></span>Accounts</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!--  table -->
+        </div>
+    </div>
+
+</div>

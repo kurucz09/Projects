@@ -1,0 +1,77 @@
+<style>
+    .inactiveLink {
+        pointer-events: none;
+        cursor: default;
+    }
+</style>
+
+<nav class="navbar navbar-default">
+    <div ng-controller="billsController">
+
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" ng-click="return()"> <img src="\Bank_Front\WebContent\assets\img\LOGO_SBANK.png" align="middle" alt="LOGO"
+                                                                 width="100" height="25"></a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="inactiveLink"><a href="#">Clients</a></li>
+                    <li class="inactiveLink"><a href="#">Accounts</a></li>
+                    <li class="active inactiveLink"><a href="#">Process billss<span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+
+                    <p class="navbar-text">Signed in as {{usernameLogged}}. <a ng-click="return()" class="navbar-link">Sign out</a>
+                    </p>
+
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </div>
+</nav>
+
+<!--  table -->
+<div class="container" ng-controller="billsController">
+    <div class="container" ng-repeat="account in allAccounts">
+        <span class="col-md-6">
+            Sum in account {{account.accountNumber}}
+        </span>
+        <span class="col-md-6" style="font-weight: bold">
+            {{account.credit}}
+            {{account.currency}}
+        </span>
+    </div>
+
+    <div >
+        <hr>
+    </div>
+    <table class="table table-striped table-bordered table-responsive">
+        <thead>
+        <tr>
+            <th>Bill id</th>
+            <th>From account</th>
+            <th>Ammount to be paid</th>
+            <th>To account</th>
+            <th>Date created</th>
+            <th>State</th>
+        </tr>
+        </thead>
+        <tr ng-repeat="bill in allBills">
+            <td>{{bill.billId}}</td>
+            <td>{{bill.senderAccount}}</td>
+            <td>{{bill.ammound}}</td>
+            <td>{{bill.receiverAccount}}</td>
+            <td>{{bill.dateCreated}}</td>
+            <td>{{bill.state}}</td>
+            <td style="text-align: center">
+                <a href="" ng-click="chengeBillState(bill.billId,bill.senderAccount,bill.state)" title="Delete"><span
+                        class="glyphicon glyphicon-ok-sign"></span> Sovle</a>
+            </td>
+        </tr>
+    </table>
+</div>
