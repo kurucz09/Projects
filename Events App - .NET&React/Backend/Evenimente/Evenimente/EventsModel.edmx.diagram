@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d148fe2950af4d8084fa55537dee0fc6" Name="Diagram1">
+        <EntityTypeShape EntityType="EvenimenteModel.Category" Width="1.5" PointX="6" PointY="3" />
+        <EntityTypeShape EntityType="EvenimenteModel.Comment" Width="1.5" PointX="5.25" PointY="5.625" />
+        <EntityTypeShape EntityType="EvenimenteModel.Event" Width="1.5" PointX="8.25" PointY="4.5" />
+        <EntityTypeShape EntityType="EvenimenteModel.Picture" Width="1.5" PointX="5.625" PointY="10.25" />
+        <EntityTypeShape EntityType="EvenimenteModel.Rating" Width="1.5" PointX="10.5" PointY="5.75" />
+        <EntityTypeShape EntityType="EvenimenteModel.Role" Width="1.5" PointX="0.75" PointY="6" />
+        <EntityTypeShape EntityType="EvenimenteModel.sysdiagram" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="EvenimenteModel.Ticket" Width="1.5" PointX="10.5" PointY="2.625" />
+        <EntityTypeShape EntityType="EvenimenteModel.User" Width="1.5" PointX="3" PointY="5.125" />
+        <AssociationConnector Association="EvenimenteModel.FK__Events__Category__208CD6FA" />
+        <AssociationConnector Association="EvenimenteModel.FK__Comments__EventI__31B762FC" />
+        <AssociationConnector Association="EvenimenteModel.FK__Comments__UserId__32AB8735" />
+        <AssociationConnector Association="EvenimenteModel.FK__Events__UserId__1F98B2C1" />
+        <AssociationConnector Association="EvenimenteModel.FK__Pictures__EventI__236943A5" />
+        <AssociationConnector Association="EvenimenteModel.FK__Ratings__EventId__2DE6D218" />
+        <AssociationConnector Association="EvenimenteModel.FK__Tickets__EventId__2645B050" />
+        <AssociationConnector Association="EvenimenteModel.FK__Ratings__UserId__2EDAF651" />
+        <AssociationConnector Association="EvenimenteModel.FK__Users__RoleId__1CBC4616" />
+        <AssociationConnector Association="EvenimenteModel.FK__Tickets__UserId__2739D489" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

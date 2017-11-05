@@ -1,0 +1,14 @@
+D:\Git\Evenimente\FacebookApi\bin\FacebookApi.dll.config
+D:\Git\Evenimente\FacebookApi\bin\FacebookApi.dll
+D:\Git\Evenimente\FacebookApi\bin\FacebookApi.pdb
+D:\Git\Evenimente\FacebookApi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+D:\Git\Evenimente\FacebookApi\bin\Newtonsoft.Json.dll
+D:\Git\Evenimente\FacebookApi\bin\System.Net.Http.Extensions.dll
+D:\Git\Evenimente\FacebookApi\bin\System.Net.Http.Primitives.dll
+D:\Git\Evenimente\FacebookApi\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+D:\Git\Evenimente\FacebookApi\bin\Newtonsoft.Json.xml
+D:\Git\Evenimente\FacebookApi\bin\System.Net.Http.Extensions.xml
+D:\Git\Evenimente\FacebookApi\bin\System.Net.Http.Primitives.xml
+D:\Git\Evenimente\FacebookApi\obj\Debug\FacebookApi.csproj.App.config
+D:\Git\Evenimente\FacebookApi\obj\Debug\FacebookApi.dll
+D:\Git\Evenimente\FacebookApi\obj\Debug\FacebookApi.pdb

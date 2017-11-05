@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="EvenimenteEntities-Web.config Connection String" description="EvenimenteEntities Connection String used in web.config by the application to access the database." defaultValue="Data Source=internproject.database.windows.net;Initial Catalog=Evenimente;Integrated Security=False;User ID=bogdanst;Password=Sbf240895.; Connect Timeout=60;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\Git\\Evenimente\\WebApplication\\obj\\Debug\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='EvenimenteEntities']/@connectionString" />
+  </parameter>
+</parameters>

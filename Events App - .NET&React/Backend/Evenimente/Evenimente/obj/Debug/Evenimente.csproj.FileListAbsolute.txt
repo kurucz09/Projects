@@ -1,0 +1,9 @@
+D:\Git\Evenimente\Evenimente\bin\Debug\Evenimente.dll.config
+D:\Git\Evenimente\Evenimente\bin\Debug\Evenimente.dll
+D:\Git\Evenimente\Evenimente\bin\Debug\Evenimente.pdb
+D:\Git\Evenimente\Evenimente\bin\Debug\EntityFramework.dll
+D:\Git\Evenimente\Evenimente\bin\Debug\EntityFramework.SqlServer.dll
+D:\Git\Evenimente\Evenimente\bin\Debug\EntityFramework.xml
+D:\Git\Evenimente\Evenimente\bin\Debug\EntityFramework.SqlServer.xml
+D:\Git\Evenimente\Evenimente\obj\Debug\Evenimente.dll
+D:\Git\Evenimente\Evenimente\obj\Debug\Evenimente.pdb
