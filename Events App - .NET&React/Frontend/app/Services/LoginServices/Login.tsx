@@ -14,7 +14,6 @@ export class LoginServices {
     static tryToLog(login : any,lg : LoginObject) {
         var myheader = new Headers();
         myheader.set('content-type', 'application/json');
-        myheader.set('Access-Control-Allow-Origin', '*')
 
         var request = new Request(this.API + "login/login", {
             method: "POST",
