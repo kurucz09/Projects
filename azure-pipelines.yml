@@ -10,10 +10,14 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- checkout: self
+  clean: true
+  persistCredentials: true
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- template: ADO/Build-Readiness.yml@Templates
+
+- template: ADO/DEV-plan.yml@Templates
+
+- template: ADO/Publish-Terraform-Artifact.yml@Templates
+
+- template: ADO/Publish-Plan-To-Wiki.yml@Templates
